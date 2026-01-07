@@ -1,0 +1,31 @@
+particle cyboquatic.telemetry.profile.v1
+  meta
+    id              cyboquatic.telemetry.profile.v1
+    name            Cyboquatic Telemetry Profile
+    kind            telemetry-profile
+    version         v1
+    maintainer      Cyboquatics
+    sourcerepo      https://github.com/Doctor0Evil/Cyboquatics
+    specpath        aln/particles/cyboquatic.telemetry.profile.v1.aln
+    jurisdictiontags global, pqc, observability
+    description     Telemetry schema for cyboquatic units: power, flow, contaminant load, and marine-safety envelope compliance.[file:6]
+  fields
+    profile_id              string
+    node_id                 string
+    sampling_period_s       float
+    fields_power_kw         bool
+    fields_flow_ms          bool
+    fields_pfbs_ug_per_l    bool
+    fields_sound_db         bool
+    fields_emf_uT           bool
+    fields_marine_events    bool
+    retention_days          int
+  defaults
+    sampling_period_s       10.0
+    fields_power_kw         true
+    fields_flow_ms          true
+    fields_pfbs_ug_per_l    true
+    fields_sound_db         true
+    fields_emf_uT           true
+    fields_marine_events    true
+    retention_days          365
