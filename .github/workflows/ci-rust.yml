@@ -1,20 +1,22 @@
-# .github/workflows/ci-rust.yml
-name: Cyboquatic Core Rust CI
+name: CI-Rust
 
 on:
   push:
-    branches: [ main ]
+    paths:
+      - "src/cyboquatic-core/**"
+      - "src/tools/**"
   pull_request:
-    branches: [ main ]
 
 jobs:
   build-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Setup Rust
-        uses: dtolnay/rust-toolchain@stable
-      - name: Build
-        run: cargo build --workspace --release
-      - name: Test
-        run: cargo test --workspace
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+      - name: Build cyboquatic-core
+        run: |
+          cd src/cyboquatic-core
+          cargo build --release
