@@ -1,0 +1,6 @@
+node_id,latitude_deg,longitude_deg,depth_m,mean_flow_ms,flow_variance_ms2,rated_power_kw,pfbs_removal_kg_per_h,max_intake_flow_ms,marine_envelope_id,eco_impact_score_max
+AZ-GULF-001,31.50,-114.50,20.0,0.85,0.04,45.0,1.20,0.25,cyboquatic.marine.safety.envelope.v1,1.0
+CA-COAST-014,36.80,-122.10,30.0,0.65,0.03,32.0,0.95,0.22,cyboquatic.marine.safety.envelope.v1,1.0
+HI-CHANNEL-007,21.50,-158.10,40.0,1.10,0.06,78.0,1.80,0.28,cyboquatic.marine.safety.envelope.v1,1.0
+FL-ATL-009,27.80,-80.20,18.0,0.55,0.02,18.0,0.60,0.20,cyboquatic.marine.safety.envelope.v1,1.0
+OR-COAST-003,44.50,-124.20,25.0,0.75,0.05,40.0,1.10,0.24,cyboquatic.marine.safety.envelope.v1,1.0
