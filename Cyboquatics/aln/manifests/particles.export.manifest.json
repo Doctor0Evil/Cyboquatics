@@ -1,0 +1,23 @@
+{
+  "repo": "Cyboquatics",
+  "version": "v1",
+  "exported_at": "2026-01-07T00:00:00Z",
+  "particles": [
+    {
+      "id": "cyboquatic.core.v1",
+      "specpath": "aln/particles/cyboquatic.core.v1.aln"
+    },
+    {
+      "id": "cyboquatic.marine.safety.envelope.v1",
+      "specpath": "aln/particles/cyboquatic.marine.safety.envelope.v1.aln"
+    },
+    {
+      "id": "cyboquatic.power.node.v1",
+      "specpath": "aln/particles/cyboquatic.power.node.v1.aln"
+    },
+    {
+      "id": "cyboquatic.telemetry.profile.v1",
+      "specpath": "aln/particles/cyboquatic.telemetry.profile.v1.aln"
+    }
+  ]
+}
