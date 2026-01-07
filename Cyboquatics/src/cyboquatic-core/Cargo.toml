@@ -1,0 +1,16 @@
+[package]
+name = "cyboquatic-core"
+version = "0.1.0"
+edition = "2021"
+license = "Apache-2.0"
+description = "Core hydrokinetic power, intake safety, and PFBS remediation models for non-biomechanical cyboquatic systems."
+repository = "https://github.com/Doctor0Evil/Cyboquatics"
+
+[lib]
+name = "cyboquatic_core"
+path = "src/lib.rs"
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+thiserror = "1.0"
