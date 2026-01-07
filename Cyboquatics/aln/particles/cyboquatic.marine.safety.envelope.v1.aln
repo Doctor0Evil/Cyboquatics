@@ -1,0 +1,33 @@
+particle cyboquatic.marine.safety.envelope.v1
+  meta
+    id              cyboquatic.marine.safety.envelope.v1
+    name            Cyboquatic Marine Safety Envelope
+    kind            safety-envelope
+    version         v1
+    maintainer      Cyboquatics
+    sourcerepo      https://github.com/Doctor0Evil/Cyboquatics
+    specpath        aln/particles/cyboquatic.marine.safety.envelope.v1.aln
+    jurisdictiontags global, marine-ecosystem
+    description     Safety envelopes for non-biomechanical cyboquatic units operating near marine life, including flow, acoustic, EMF, intake, and illumination bounds.[web:13]
+  fields
+    speciesclass          string      # e.g. coastal-mammal, reef-fish, benthic-invertebrate
+    max_flow_velocity_ms  float       # local water speed at hull/intake [m/s]
+    max_intake_gradient_ms float      # allowed dV/dx near screens [m/s per cm]
+    min_screen_mesh_mm    float       # screen mesh size [mm]
+    max_sound_level_db    float       # broadband sound at 1 m [dB re 1 µPa]
+    max_emf_uT            float       # magnetic field deviation from ambient [µT]
+    max_light_lux         float       # continuous illumination at 1 m [lux]
+    night_dimming_factor  float       # 0-1 scaling at night
+    exclusion_radius_m    float       # zone where active intake is disallowed [m]
+    monitoring_tick_s     float       # telemetry interval [s]
+  defaults
+    speciesclass          generic-mixed-reef
+    max_flow_velocity_ms  0.3
+    max_intake_gradient_ms 0.05
+    min_screen_mesh_mm    5.0
+    max_sound_level_db    140.0
+    max_emf_uT            50.0
+    max_light_lux         500.0
+    night_dimming_factor  0.2
+    exclusion_radius_m    10.0
+    monitoring_tick_s     5.0
