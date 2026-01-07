@@ -1,0 +1,29 @@
+particle cyboquatic.power.node.v1
+  meta
+    id              cyboquatic.power.node.v1
+    name            Cyboquatic Power Node
+    kind            power-profile
+    version         v1
+    maintainer      Cyboquatics
+    sourcerepo      https://github.com/Doctor0Evil/Cyboquatics
+    specpath        aln/particles/cyboquatic.power.node.v1.aln
+    jurisdictiontags coastal-node, energy, marine-ecosystem
+    description     Power and flow profile for a cyboquatic node: hydrokinetic capture, PFBS remediation capacity, and eco-impact scoring hooks.[file:6][web:9]
+  fields
+    node_id                 string
+    latitude_deg            float
+    longitude_deg           float
+    depth_m                 float
+    mean_flow_ms            float
+    flow_variance_ms2       float
+    rated_power_kw          float
+    pfbs_removal_kg_per_h   float
+    max_intake_flow_ms      float
+    marine_envelope_id      string
+    eco_impact_score_max    float
+  defaults
+    depth_m                 15.0
+    flow_variance_ms2       0.02
+    pfbs_removal_kg_per_h   0.0
+    max_intake_flow_ms      0.25
+    eco_impact_score_max    1.0
