@@ -1,0 +1,46 @@
+particle cyboquatic.core.v1
+  meta
+    id              cyboquatic.core.v1
+    name            Cyboquatics Core Stack
+    kind            core
+    version         v1
+    maintainer      Cyboquatics
+    sourcerepo      https://github.com/Doctor0Evil/Cyboquatics
+    specpath        aln/particles/cyboquatic.core.v1.aln
+    jurisdictiontags global, pqc, sovereign-ci
+    description     Core particle for non-biomechanical cyboquatic systems: hydrokinetic power, intake safety, contaminant remediation, and telemetry routing linked into Cybercore-Brain and The Great Perplexity.
+  fields
+    version                 string
+    ciworklineparticle      string
+    auditrootparticle       string
+    cyberrankfield          string
+    marineenvelopeparticle  string
+    telemetryprofileparticle string
+    createdat               string
+    updatedat               string
+  defaults
+    version                 v1
+    ciworklineparticle      ci.workline.zerotrust.v1
+    auditrootparticle       audit.pqc.rollback.v1
+    cyberrankfield          cyberrank.core.field.v1
+    marineenvelopeparticle  cyboquatic.marine.safety.envelope.v1
+    telemetryprofileparticle cyboquatic.telemetry.profile.v1
+    createdat               2026-01-07T00:00:00Z
+    updatedat               2026-01-07T00:00:00Z
+  cyberlinks
+    link
+      target      ci.workline.zerotrust.v1
+      relation    drives
+      weighthint  0.97
+    link
+      target      audit.pqc.rollback.v1
+      relation    anchored-by
+      weighthint  0.95
+    link
+      target      cyboquatic.marine.safety.envelope.v1
+      relation    constrained-by
+      weighthint  0.96
+    link
+      target      cyboquatic.telemetry.profile.v1
+      relation    reports-via
+      weighthint  0.94
