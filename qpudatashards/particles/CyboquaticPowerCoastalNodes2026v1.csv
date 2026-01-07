@@ -1,0 +1,6 @@
+node_id,site,region,latitude,longitude,avg_current_ms,pfbs_ngL_est,parameter_primary,unit,cin,cout,flow_m3h,window_start,window_end,tech_stack,ecoimpactscore,notes
+CYP-CF-01,Cape Fear River Mouth,NC USA,33.900,-77.950,1.2,15-50,PFBS,ngL,30,3,50,2026-06-01T00:00:00Z,2026-12-31T23:59:59Z,HDPE hull + shrouded turbine + GAC-IX,0.92,High PFAS site downstream industrial inputs; strong estuarine currents
+CYP-SFB-01,San Francisco Bay South,CA USA,37.600,-122.300,1.0,10-40,PFBS,ngL,25,2.5,40,2026-07-01T00:00:00Z,2026-12-31T23:59:59Z,Recycled HDPE structure + low-velocity intake,0.90,Urban coastal PFAS + microplastics; moderate tidal flows
+CYP-PUGET-01,Puget Sound Admiralty Inlet,WA USA,48.100,-122.600,1.8,5-20,PFBS,ngL,15,1.5,60,2026-05-01T00:00:00Z,2026-11-30T23:59:59Z,Ducted turbine + sealed cartridges,0.93,Known tidal energy site; emerging PFAS from urban/military sources
+CYP-ECS-01,East China Sea Coastal,China,30.500,122.500,1.1,20-70,PFBS,ngL,45,4.5,45,2026-08-01T00:00:00Z,2026-12-31T23:59:59Z,Recycled net-derived PP + IX train,0.91,Documented PFBS-dominant coastal zone; suitable currents
+CYP-COOK-01,Cook Inlet Anchorage,AK USA,61.100,-150.000,2.5,<10,PFBS,ngL,8,0.8,80,2026-04-01T00:00:00Z,2026-10-31T23:59:59Z,High-flow shrouded turbine array,0.95,Premier tidal current site; baseline low PFBS for validation
