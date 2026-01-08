@@ -1,0 +1,6 @@
+node_id,site_name,region,latitude,longitude,avg_flow_m3h,pfas_monitor_ngL,protocol_stack,telemetry_mWh_day,solar_autonomy_factor,edge_latency_ms,eco_score,destination_path
+PHX-CC-01,Cave Creek Reclamation Plant,Phoenix AZ USA,33.7489,-112.1056,5000,5-50,MQTT-TLS/LoRaWAN,26.5,8.8,5,0.94,/infra/phoenix/water/cavecreek/2026
+PHX-NG-01,North Gateway AWP Facility,Phoenix AZ USA,33.7000,-112.2000,8000,2-30,MQTT-TLS/NB-IoT,45.0,7.2,6,0.95,/infra/phoenix/water/northgateway/2026
+PHX-91A-01,91st Avenue WWTP,Phoenix AZ USA,33.3889,-112.2333,10000,10-60,MQTT-TLS/LoRaWAN,26.5,8.8,5,0.93,/infra/phoenix/water/91stave/2026
+PHX-CAN-01,Arizona Canal Mid,Phoenix AZ USA,33.5420,-112.0710,2000,1-20,MQTT-TLS/LoRaWAN,26.5,9.1,7,0.96,/infra/phoenix/water/canals/2026
+PHX-RES-01,SRP Reservoir Node,Phoenix AZ USA,33.6000,-111.9000,3000,3-40,MQTT-TLS/NB-IoT,45.0,7.5,8,0.92,/infra/phoenix/water/reservoirs/2026
