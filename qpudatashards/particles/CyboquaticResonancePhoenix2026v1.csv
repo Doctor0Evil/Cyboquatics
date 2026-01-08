@@ -1,0 +1,6 @@
+node_id,waterbody,region,mode_id,frequency_hz,mode_type,cin_baseline,cin_unit,q_avg,q_unit,ecoimpactscore,karma_per_unit,notes
+CAP-LP-M1,Lake Pleasant,Maricopa-Yavapai AZ,LP_SAFE_MIX_1,0.003,surface_gravity,3.9,ng/L,50.0,m3/s,0.88,1.0e6,"Low-frequency safe mixing mode targeting PFBS and TP dilution without shoreline stress; anchored to CAP PFBS detection and TP levels."
+GILA-RCH7-M2,Gila River Reach 7,Central AZ,GILA_ECO_DAMP_1,0.010,internal_wave,600,MPN/100mL,5.0,m3/s,0.92,2.0e6,"Mode correlated with E. coli accumulation damped by cyboquatic actuation; supports ADEQ E. coli impairment reductions."
+CAP-LAT-A-M3,CAP Lateral A,Central AZ,CAP_CANAL_MIX_1,0.020,channel_slosh,0.10,mg/L,3.0,m3/s,0.80,8.0e5,"Safe canal mixing mode designed from 1D advection–diffusion to minimize nutrient and salinity stagnation zones."
+CRB-POOL-M4,Colorado River Pool,Interstate CO-UT-WY-AZ,CRB_SAL_SAFE_1,0.001,basin_long_wave,650,mg/L,150.0,m3/s,0.78,6.7e5,"Large-scale mode aligned with salinity-control program (≈1.3 Mt/year reduction) while respecting structural limits on banks and dams."
+AZ-TESTPOND-M5,Test Pond,Central AZ,LAB_POND_RES_1,0.050,lab_resonator,0.05,mg/L,0.02,m3/s,0.75,5.0e5,"Controlled pond experiment for validating cyboquatic resonance predictions and energy-per-ton pollutant reduction metrics."
