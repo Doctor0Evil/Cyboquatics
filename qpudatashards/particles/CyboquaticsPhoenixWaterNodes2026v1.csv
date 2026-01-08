@@ -1,0 +1,6 @@
+nodeid,assettype,waterbody,region,cpvmprofile,cinbaseline,cinunit,qavg,qunit,horizons,ecoimpactscore,karmaperunit,notes
+CAP-LP-PFBS-NODE,Reservoir,Lake Pleasant,Maricopa-Yavapai-AZ,PFAS_PFBS_LP_v1,3.9,ng/L,50.0,m3/s,3600,0.88,1.0e6,"PFBS 3.9 ng/L at Lake Pleasant Parkway; CPVM-constrained PFAS control linked to EcoNet CEIM node." 
+PHX-WTP-ECOLI-01,Plant,Phoenix-WTP,Central-AZ,ECOLI_GILA_INT_v1,700,cfu/100mL,3.0,m3/s,1800,0.92,2.0e6,"Gila-influenced E. coli 700→210 cfu/100mL; CPVM supervises disinfection and diversion." 
+GILA-RCH-NUT-07,RiverReach,Gila-River,Central-AZ,NUTRIENT_TP_GILA_v1,0.15,mg/L,5.0,m3/s,7200,0.85,8.0e5,"Riparian BMP cluster targeting 30–50% P reduction using EcoNet CEIM load models." 
+CRB-SAL-BASIN-01,Basin,Colorado-River-Basin,CO-UT-WY-AZ,SALINITY_CRB_v1,650,mg/L,150.0,m3/s,86400,0.78,6.7e5,"Salinity control aligned with ~1.3 Mt/year basin reduction; Cyboquatic intakes tuned via CPVM+CEIM." 
+AZ-NPS-GILA-CLSTR-03,WatershedCluster,Upper-Gila,Greenlee-AZ,ECOLI_TP_COMBO_v1,0.10,mg/L,2.0,m3/s,7200,0.90,1.5e6,"Fencing+buffers modeled for joint E. coli and nutrient load cuts in EcoNet nodes."
