@@ -1,0 +1,6 @@
+node_id;asset_type;location_city;location_region;baseline_fog_mg_L;post_treatment_fog_mg_L;avg_flow_L_min;operation_seconds_per_day;ecoimpact_score;karma_per_kg_fog_avoided;notes
+AZ-REST-FOG-01;KitchenSink;Phoenix;AZ;250;50;15;28800;0.85;6.7e5;"QSR site with fryer oil diversion, real data from EPA FOG study"
+CA-REST-FOG-01;DishLine;FountainValley;CA;300;60;18;28800;0.82;6.7e5;"Full-service restaurant, aligned with 25% rule compliance"
+AZ-REST-FOG-02;KitchenSink;Winslow;AZ;280;70;20;28800;0.84;6.7e5;"Measured grab samples per 40 CFR 136 methods"
+CA-REST-FOG-02;KitchenSink;FountainValley;CA;220;55;16;28800;0.86;6.7e5;"Eco-help for biodiesel recycling integration"
+AZ-REST-FOG-03;DishLine;Phoenix;AZ;260;65;17;28800;0.83;6.7e5;"Karma reflection for reduced sewer overflows"
