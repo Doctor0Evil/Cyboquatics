@@ -1,6 +1,11 @@
-node_id,asset_type,location_city,location_region,baseline_fog_mg_L,post_treatment_fog_mg_L,avg_flow_L_min,operation_seconds_per_day,ecoimpact_score,karma_per_kg_fog_avoided,notes
-PHX-REST-FOG-01,KitchenSink,Phoenix,AZ,300,60,20,28800,0.88,6.7e5,"Full-service restaurant, under-sink Cyboquatic desiccator on main wash bay."
-PHX-REST-FOG-02,DishwasherLine,Phoenix,AZ,200,50,15,28800,0.82,6.7e5,"High-volume chain location, unit installed downstream of dish machine."
-NYC-REST-FOG-01,KitchenSink,NewYork,NY,400,80,18,28800,0.90,6.7e5,"Urban restaurant in jurisdiction with strict FOG ordinances and frequent inspections."
-LA-REST-FOG-01,KitchenSink,LosAngeles,CA,250,75,22,28800,0.84,6.7e5,"Casual dining site, desiccator integrated with existing grease trap."
-CHI-REST-FOG-01,KitchenSink,Chicago,IL,280,70,19,28800,0.86,6.7e5,"Mid-size restaurant, significant soda-fountain syrup and fryer oil residues."
+node_id,baseline_fog_mg_L,post_treatment_fog_mg_L,avg_flow_L_min,ecoimpact_score,karma_per_kg_fog_avoided,latitude,longitude
+node_001,300,60,10,0.85,670000,33.4484,-112.0740
+node_002,300,60,10,0.85,670000,33.7175,-117.9870
+node_003,300,60,10,0.85,670000,34.0522,-118.2437
+node_004,300,60,10,0.85,670000,34.0522,-118.2437
+node_005,300,60,10,0.85,670000,34.0522,-118.2437
+node_006,300,60,10,0.85,670000,34.0522,-118.2437
+node_007,300,60,10,0.85,670000,34.0522,-118.2437
+node_008,300,60,10,0.85,670000,34.0522,-118.2437
+node_009,300,60,10,0.85,670000,34.0522,-118.2437
+node_010,300,60,10,0.85,670000,34.0522,-118.2437
