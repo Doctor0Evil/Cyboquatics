@@ -1,0 +1,11 @@
+node_id,location,system,contaminant,parameter,unit,baseline_Cin,baseline_Cout,Q_cms,cref,wsup,ecoimpactscore,karmaperunit,notes
+CAP_LakePleasant_PFBS,Lake Pleasant,Phoenix-CAP,PFBS,Concentration,ng/L,3.9,2.0,150.0,2.0,1.0,0.82,0.00010,Persistent PFBS in reservoir with resonance-safe mixer profile.
+GilaEstrella_EColi,Gila Estrella Reach,Gila River,EColi,MPNper100mL,410,126,25.0,126.0,1.0,0.79,0.00012,Adaptive diversion plus wetland polishing for trail safety.
+Kelvin_TP,Kelvin Well Field,Gila-Aquifer,TP,mg/L,0.10,0.05,2.0,0.05,0.8,0.75,0.00009,MAR-linked nutrient polishing near criteria threshold.
+LowerColorado_CAP_TDS,Lower Colorado/CAP Outlets,Colorado-CAP,TDS,mg/L,640,580,250.0,500.0,0.6,0.88,0.00020,Basin-scale salinity control for ag reuse and CAP delivery.
+Phoenix_MAR_Urban_1,Phoenix MAR Basin,Phoenix-MAR,TDS,mg/L,650,570,1.5,500.0,0.6,0.81,0.00011,Urban MAR eco-help engine optimizing TDS mass offset.
+Gila_TrailSegment_1,Gila Trail Crossing,Gila River,EColi,MPNper100mL,600,200,10.0,126.0,1.0,0.77,0.00013,Trail-adjacent notifier for contact recreation risk.
+Phoenix_WTP_EColi,Phoenix WTP Outlet,WTP-Phoenix,EColi,MPNper100mL,50,5,3.0,126.0,1.0,0.86,0.00008,Finishing barrier node for CEIM calibration and safety.
+Phoenix_UV_PFAS,Lake Pleasant UV Train,Lake Pleasant,PFBS,ng/L,3.9,1.0,100.0,2.0,1.0,0.89,0.00015,Advanced PFBS polishing train for CPVM/CEIM benchmarking.
+Gila_Nutrient_Cluster,Gila Nutrient Reach,Gila River,TP,mg/L,0.15,0.07,15.0,0.05,0.8,0.80,0.00010,Riverine nutrient reduction node linked to MAR operations.
+Colorado_Basin_Salinity,Lower Colorado Basin,Colorado Basin,TDS,mg/L,700,600,500.0,500.0,0.6,0.92,0.00025,Basin-scale Karma anchor for cross-basin benchmarking.
