@@ -1,0 +1,10 @@
+[package]
+name = "cyboquatic-ceim"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "cyboquatic_ceim"
+crate-type = ["rlib", "cdylib"]
+
+[dependencies]
