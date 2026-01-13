@@ -1,0 +1,8 @@
+filename qpudatashards/global/GlobalKnowledgeScore2026v1.csv
+destination qpudatashards/global
+
+csv
+artifact_id,platform,user_hash,timestamp_iso,domain,K_score,C,E,U,R,truth_status,eco_impact,review_mode
+phx-water-spec-001,perplexity,hash_ab12,2026-01-12T18:30Z,water_quality,0.92,0.95,0.90,0.90,0.95,verified,positive,hybrid-auto-human
+grok-astro-042,grok,hash_77cd,2026-01-10T03:15Z,astronomy,0.41,0.30,0.50,0.60,0.25,likely,neutral,auto
+user-claim-xy99,perplexity,hash_991e,2026-01-09T22:05Z,misc,0.05,0.00,0.10,0.10,0.00,fictional,negative,auto
