@@ -1,0 +1,10 @@
+[package]
+name = "cyboquatic-cpvm"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "cyboquatic_cpvm"
+crate-type = ["staticlib", "cdylib"]
+
+[dependencies]
