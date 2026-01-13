@@ -1,0 +1,6 @@
+node_id,station_id,waterbody,lat,lon,contaminant,unit,Cin,Cout,Q,ecoimpactscore,window_start,window_end,Kn,mass_avoided_tonnes,karma_k,source_program
+CAP-LP-PFBS,CAP-LP-PFBS,Lake Pleasant,33.853,-112.269,PFBS,ng/L,3.9,0.39,5.0,0.85,2024-11-01,2024-11-30,0.12,0.003,0.0020,CAPAnnualReport2024
+GILA-EST-ECOLI,USGS-09514100,Gila R at Estrella,33.300,-112.400,E_COLI,MPN/100mL,410,205,10.0,0.82,2025-05-01,2025-05-31,1.85,0.070,0.0469,ADEQRecreationalUseSurvey
+GILA-KEL-TP,USGS-09474000,Gila R at Kelvin,33.100,-110.900,TP,mg/L,0.10,0.07,15.0,0.79,2024-08-01,2024-08-31,0.96,0.450,0.3015,ADEQIntegratedReport2024-2026
+CAP-COLO-TDS,CAP-COLORADO,Lower Colorado via CAP,32.700,-114.700,TDS,mg/L,650,600,120.0,0.72,2024-01-01,2024-12-31,2.10,220000,147400,USBRSalinityControlProgram
+PHX-MAR-01,PHX-MAR-01,Phoenix MAR Basin,33.430,-112.050,TDS,mg/L,550,500,2.0,0.77,2025-01-01,2025-12-31,0.65,45,30.15,PHXMAROperations
