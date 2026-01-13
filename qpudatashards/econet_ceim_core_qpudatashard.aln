@@ -1,0 +1,62 @@
+text
+filename econet_ceim_core_qpudatashard.aln
+destination qpudatashards
+format ALN 1.0
+purpose CEIM mass-load + Karma engine for Arizona smart-city nodes
+license MIT
+org Phoenix-AU-EcoNet-Lab
+
+schema.csv.qpuroot
+  fields stationid, parameter, unit, value, measurementdate, ecoimpactscore
+  index stationid, parameter, measurementdate
+  refkernel CEIMv1
+
+kernel.ceim
+  language C++
+  libname libeconet_ceim_core.so
+  entrypoints
+    compute_node_score(QpuRow row, NodeConfig node, ContaminantConfig cfg) -> double
+    integrate_timeseries(std::vector<QpuRow> rows, NodeConfig node) -> NodeResult
+  units
+    flow_cfs, conc_ngL, conc_mgL, load_kgd, load_tony
+  determinism true
+  mass_conservative true
+
+kernel.params
+  contaminant PFBS
+    cref_ngL 4.0
+    weight 1.5
+    econ_karma_per_ngy 0.000001
+  contaminant ECOLI
+    cref_cfu100mL 126.0
+    weight 2.0
+    econ_karma_per_kgd 0.25
+  contaminant TDS
+    cref_mgL 500.0
+    weight 1.0
+    econ_karma_per_tony 0.67
+
+nodeconfig CAP-LP-PFBS
+  basin CAP
+  stationid CAP-LP-PFBS
+  parameter PFBS
+  baseline_conc_ngL 3.9
+  flow_source USBR-CAP
+  ecoimpact_target 0.3
+
+nodeconfig GILA-ECOLI-SEG
+  basin GILA
+  parameter ECOLI
+  hazard_weight 2.2
+  ecoimpact_baseline 0.85
+
+nodeconfig COLO-TDS-MAIN
+  basin COLORADO
+  parameter TDS
+  annual_reduction_tony 1300000
+  karma_scale 0.67
+
+governance
+  traceability_sources EPA, ADEQ, USBR, CRSCF
+  build_reproducible true
+  audit_blockchain Googolswarm-HyperledgerVital
