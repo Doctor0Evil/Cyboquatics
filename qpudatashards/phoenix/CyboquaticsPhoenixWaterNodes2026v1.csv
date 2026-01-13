@@ -1,3 +1,7 @@
+filename qpudatashards/phoenix/CyboquaticsPhoenixWaterNodes2026v1.csv
+destination-path qpudatashards/phoenix
+format csv
+
 node_id,location,system,contaminant,parameter,unit,baseline_Cin,baseline_Cout,Q_cms,cref,wsup,ecoimpactscore,karmaperunit,notes
 CAP_LakePleasant_PFBS,Lake Pleasant,Phoenix-CAP,PFBS,Concentration,ng/L,3.9,2.0,150.0,2.0,1.0,0.82,0.00010,Persistent PFBS in reservoir with resonance-safe mixer profile.
 GilaEstrella_EColi,Gila Estrella Reach,Gila River,EColi,MPNper100mL,410,126,25.0,126.0,1.0,0.79,0.00012,Adaptive diversion plus wetland polishing for trail safety.
