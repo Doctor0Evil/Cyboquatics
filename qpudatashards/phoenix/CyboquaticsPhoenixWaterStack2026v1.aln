@@ -1,0 +1,11 @@
+destination-path,module,version,role,security-protocol,interop-standard,identity-mgmt,ai-agent-integration,device-type,authentication,digital-twin,edge-analytics,compliance,log-persistence
+vnodephoenix-cpvm-kernel,cyboquatic-cpvm,0.1.0,ControlKernel,AES256-PostQ-TLS,C-API-RustFFI,DIDVitalChain,None,CanalNode,HardwareToken,Enabled,CLF-CBF-Safety,GDPR-HIPAA-EPA,HyperledgerVital
+vnodephoenix-ceim-core,cyboquatic-ceim,0.1.0,ImpactKernel,ChaCha20-ZT,ALN-gRPC,DIDVitalChain,MistralQwen,ImpactNode,FIDO2Service,Enabled,CEIM-Karma,GDPR-EUAI-LocalWater,CephRADOS
+vnodephoenix-io-bridge,cyboquatic-io,0.1.0,TelemetryBridge,Argon2-TLS,REST-MQTT,OIDC-PlantOps,ClaudeEnhance,GatewayNode,MutualTLS,Enabled,StreamSanitizer,NIST-CSF,LogChainFull
+vnodephoenix-sim-runner,cyboquatic-sim,0.1.0,ScenarioEngine,AES256-GCM,ALN-QPU,OAuthVital,MistralQwen,SimNode,FIDO2Dev,Enabled,CPVM-CEIM-Batch,ISO-9001-Test,ImmutableCILog
+vnodephoenix-econet-node,EcoNet-CyboNode,0.1.0,GovParticle,AES256-PostQ,ALN-PolicyAPI,OIDC-Gov,ClaudeEnhance,GovernanceNode,FIDO2Portal,Enabled,KarmaScoreboard,EUAIAct-GDPR,HyperledgerVital
+vnodephoenix-ci-pipeline,PHX-Cybo-CI,0.1.0,ALN-CICD,Argon2-TLS,GitHub-GitLab,OIDCVital,None,CICDNode,FIDO2Dev,Enabled,KarmaRegression,ISO42001-NIST-AI,ImmutableCILog
+vnodephoenix-sdntsn-core,PHX-WaterNet-SDN,0.1.0,NetworkPlane,AES256-TSN,SDN-TSN-OpenFlow,OAuthVital,GPTAugment,CanalBackbone,FingerprintLife,Enabled,FlowAnomalySNN,FCC-NERC,HyperledgerAudit
+vnodephoenix-mesh-edge,PHX-CyboMesh,0.1.0,EdgeCluster,AES256-PostQ-TLS,MQTT-Secure,DIDVitalChain,MistralQwen,FieldNode,DeviceCert,Enabled,EnergyBudgetCPVM,GDPR-LocalLaw,LogChainFull
+vnodephoenix-karma-portal,PHX-KarmaPortal,0.1.0,PublicDashboard,HTTPS-TLS1.3,GraphQL-Safe,WebAuthn,ClaudeEnhance,WebPortal,WebAuthnPasskey,Enabled,KarmaPerKWh,CCPA-GDPR,HyperledgerVital
+vnodephoenix-audit-probe,PHX-AuditProbe,0.1.0,ComplianceSensor,AES256-GCM,ALN-AuditTrail,OIDC-Auditor,None,ProbeNode,FIDO2Auditor,Enabled,PolicyConformance,SOX-ISO27001,LogChainFull
