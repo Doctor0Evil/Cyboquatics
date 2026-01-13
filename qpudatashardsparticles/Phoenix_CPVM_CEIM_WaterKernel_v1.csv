@@ -1,0 +1,6 @@
+node_id,timestep,x1_PFBS_ngL,x2_ECOLI_MPN100mL,x3_TP_mgL,x4_TDS_mgL,x5_filter_sat,x6_pump_load,u1_pfas_treat,u2_gila_retention,u3_tds_blend,u4_throttle,Kn_step,mass_avoided_tonnes,karma_k,ecoimpactscore,source_program
+CAP-LP-PFBS,2024-11-15T00:00Z,3.9,0,0.05,650,0.2,0.3,0.0,0.0,0.0,0.0,0.00,0.000,0.0000,0.85,CAPAnnualReport2024
+GILA-EST-ECOLI,2025-05-20T00:00Z,0,410,0.12,650,0.1,0.4,0.0,0.0,0.0,0.0,0.00,0.000,0.0000,0.82,ADEQRecreationalUseSurvey
+GILA-KEL-TP,2024-08-10T00:00Z,0,200,0.10,640,0.1,0.3,0.0,0.0,0.0,0.0,0.00,0.000,0.0000,0.79,ADEQIntegratedReport2024-2026
+CAP-COLO-TDS,2024-07-01T00:00Z,0,50,0.08,650,0.2,0.5,0.0,0.0,0.0,0.0,0.00,0.000,0.0000,0.72,USBRSalinityControlProgram
+PHX-MAR-01,2025-01-01T00:00Z,0,150,0.09,550,0.3,0.4,0.0,0.0,0.0,0.0,0.00,0.000,0.0000,0.77,PHXMAROperations
