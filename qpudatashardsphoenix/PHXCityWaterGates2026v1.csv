@@ -1,0 +1,8 @@
+filename qpudatashardsphoenix/PHXCityWaterGates2026v1.csv
+destination qpudatashardsphoenix
+
+csv
+node_id,segment_type,dt_min,Q_m3s,pressure_kPa,C_PFOA_ppt,C_PFOS_ppt,C_PFNA_ppt,C_PFHxS_ppt,C_PFBS_ppt,HI,hardness_mgL_CaCO3,TDS_mgL,Cl_mgL,turbidity_NTU,Mass_residual_rel,Mass_drift_rel,pfas_status,blend_feasible,gate_setpoint,gac_mode,ix_mode,flush_flag
+PLANT-CAP-01,plant,15,3.5,420,2.1,2.5,3.0,4.0,5.0,0.42,220,640,180,0.10,7.0e-4,3.0e-4,safe,true,0.75,on,off,0
+JUNC-CAP-SRP-07,junction,15,1.2,390,3.0,3.3,4.5,5.0,6.0,0.73,200,610,170,0.08,1.2e-3,4.5e-4,warning,true,0.55,on,off,0
+ZONE-NW-22,zone,15,0.8,360,3.8,3.9,6.0,7.0,9.0,0.96,240,680,190,0.12,9.5e-4,5.0e-4,warning,false,0.40,on,on,1
