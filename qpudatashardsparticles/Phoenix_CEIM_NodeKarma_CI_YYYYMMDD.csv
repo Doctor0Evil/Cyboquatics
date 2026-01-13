@@ -1,0 +1,6 @@
+date,nodeid,stationid,contaminant,kn_value,mass_avoided_tonnes,karma_k,ecoimpactscore,window_start,window_end,unitsM,source_run
+2025-05-21,CAP-LP-PFBS,CAP-LP-PFBS,PFBS,0.12,0.003,0.0020,0.85,2025-05-01,2025-05-21,tonnes,phoenix_ceim_ci
+2025-05-21,GILA-ECOLI-EST,USGS-09514100,E_COLI,1.85,0.070,0.0469,0.82,2025-05-01,2025-05-21,tonnes,phoenix_ceim_ci
+2025-05-21,GILA-TP-KELVIN,USGS-09474000,TP,0.96,0.450,0.3015,0.79,2025-04-01,2025-05-21,tonnes,phoenix_ceim_ci
+2025-05-21,GILA-TURB-CLIF,USGS-09442000,TURBIDITY,0.73,1.200,0.8040,0.75,2025-03-01,2025-05-21,tonnes,phoenix_ceim_ci
+2025-05-21,COLO-TDS-MAIN,CAP-COLORADO,TDS,2.10,220000.0,147400.0,0.72,2024-01-01,2025-05-21,tonnes,phoenix_ceim_ci
