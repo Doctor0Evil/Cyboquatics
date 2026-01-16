@@ -1,0 +1,4 @@
+site_id,lat,lon,A_footprint,H_clear,d_soil,d_pipe,zoning_code,Q_min,Q_max,v_max,h_loss,backflow_flag,P_avail,E_daily,O_crew,M_interval,habitat_type,D_exclusion,N_species,noise_limit,EM_limit,bio_stress_index_max
+PHX-DRAIN-001,33.450,-112.070,12.0,3.0,2.5,3.2,MU-IND,0.02,0.15,2.0,0.5,false,15.0,60.0,4.0,90,URBAN_CANAL,15.0,2,65.0,1.0,0.30
+PHX-SEWER-014,33.430,-112.095,8.0,2.5,1.8,2.6,MU-RES,0.01,0.10,1.5,0.4,false,10.0,40.0,3.0,120,RES-RIPARIAN,25.0,4,55.0,0.5,0.20
+GILA-EST-INTAKE,33.300,-112.400,20.0,4.0,3.0,3.5,OPEN-SPACE,0.05,0.30,1.2,0.6,false,20.0,80.0,6.0,60,SENSITIVE_RIVER,50.0,6,50.0,0.3,0.15
