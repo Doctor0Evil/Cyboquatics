@@ -1,0 +1,6 @@
+nodeid,assettype,waterbody,region,latitude,longitude,baseline_debris_kg_per_day,post_flowvac_debris_kg_per_day,baseline_co2eq_t_per_year,post_flowvac_co2eq_t_per_year,avg_flow_m3s,operation_seconds_per_day,ecoimpactscore,karmaper_tonnes_co2eq_avoided,notes
+PHX-SEWER-FV-01,SewerNode,Downtown-Sewer,Phoenix-AZ,33.451,-112.073,0.80,0.10,12.0,9.5,0.25,43200,0.88,6.7e5,"Downtown trunk manhole Flow-Vac; captures floatables and organics before treatment plant."
+PHX-STORM-FV-01,StormInlet,Roosevelt-Drain,Phoenix-AZ,33.459,-112.070,0.50,0.05,5.0,3.0,0.15,21600,0.86,6.7e5,"Storm inlet Flow-Vac near Roosevelt corridor; reduces trash export to Gila-connected outfall."
+CAP-CANAL-FV-01,CanalBay,CAP-Canal-Segment-12,Maricopa-AZ,33.580,-112.310,1.20,0.15,20.0,14.0,5.00,86400,0.90,6.7e5,"Side-bay Flow-Vac on CAP canal for floating trash and scum removal."
+PHX-DAC-FV-01,AirNode,Phoenix-District-DAC,Phoenix-AZ,33.480,-112.060,0.00,0.00,200.0,150.0,0.00,86400,0.92,6.7e5,"Flow-Vac housing co-located with Air-Globe-style DAC array; 200 t CO2/year class node."
+PHX-SEWER-FV-02,SewerNode,Airport-Corridor-Sewer,Phoenix-AZ,33.435,-112.011,0.60,0.08,10.0,7.8,0.30,43200,0.87,6.7e5,"Sewer Flow-Vac at airport corridor; high security, high debris, audited under EcoNet governance."
