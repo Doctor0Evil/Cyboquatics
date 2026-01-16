@@ -1,0 +1,6 @@
+node_id,asset_type,medium,location,cpvm_profile,cin_baseline,cin_unit,qavg,qunit,head,head_unit,ecoimpactscore,karmaperunit,notes
+CITY-SEWER-MAIN-01,SewerNode,water,33.45N-112.07W,FLOWVAC_BOD_NH3_V1,250,mg/L,2.5,m3/s,0.6,m,0.86,8.0e5,"Main interceptor; Flow-Vac rotor + aeration; targets 40% BOD, 30% NH3 removal."
+CITY-CSO-TANK-02,CSOTank,water-air,33.46N-112.10W,FLOWVAC_VOC_H2S_V1,1.5,mg/L,1.2,m3/s,0.4,m,0.90,1.2e6,"CSO equalization tank; air stripping + sorbent polishing of VOCs/H2S."
+WWTP-INLET-03,TreatmentNode,water,33.44N-112.05W,FLOWVAC_PREPOLISH_PFAS_V1,0.012,µg/L,1.8,m3/s,0.5,m,0.88,1.5e6,"Headworks polishing; PFAS and micro‑contaminant removal before plant."
+STREET-VENT-04,VentStack,air,33.45N-112.06W,FLOWVAC_AIREXHAUST_V1,0.25,ppm,0.05,m3/s,NA,NA,0.82,6.0e5,"Street‑level vent; demister + carbon bed for cleaned air exhaust."
+SLUDGE-SUMP-05,Sump,water-solid,33.43N-112.04W,FLOWVAC_SLUDGE_V1,35000,mg/L,0.03,m3/s,0.3,m,0.80,9.5e5,"Sludge contactor; captures bound pollutants, tracks safe disposal."
