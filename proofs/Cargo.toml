@@ -1,0 +1,15 @@
+[package]
+name = "safety-proofs"
+version = "0.1.0"
+
+[dependencies]
+cyboquatic_safety = { path = "..", features = [] }
+
+[dev-dependencies]
+kani = "0.31"  # Rust formal verification tool
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"
