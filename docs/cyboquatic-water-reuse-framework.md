@@ -37,3 +37,58 @@ Each gate is defined formally in `aln/pilot_gates.cyboquatic-phoenix.aln` and en
 - `qpudatashards.cyboquatic-phoenix.aln`
 - `docs/phoenix-cyboquatic-engine.md` (evidence-based framework and math spine).
 - `src/cyboquatic/core.rs`, `src/cyboquatic/turbine.rs`, `src/cyboquatic/airfilter.rs`. [file:3]
+
+## CI ecosafety checks for Phoenix cyboquatic pilot
+
+The Phoenix cyboquatic pilot uses a hard ecosafety gate implemented in:
+
+- `aln/pilot_gates.cyboquatic-phoenix.aln`
+- `src/cyboquatic/pilot_guard.rs`
+- `qpudatashards/cyboquatic-phoenix/*.csv` (telemetry + evidence)  
+
+Before any deployment tag is allowed, CI runs a Rust test harness that:
+
+1. Loads recent pilot metrics from `qpudatashards/cyboquatic-phoenix/`.
+2. Maps them into `CyboquaticPilotMetrics`.
+3. Applies `PilotCorridor::pilot_scale_up_ok(&metrics)` with corridor bounds that encode ADEQ / Clean Water Act limits, SAT constraints, and social-license thresholds. [file:3]
+
+The CI job **must fail** if:
+
+- Any metric violates its corridor (e.g., BOD/TSS/N/P, CEC/PFAS, SAT HLR, fouling rate, social trust, dashboard uptime), or
+- `pilot_scale_up_ok` returns `false` for the current pilot state. [file:3]
+
+### Example CI hook (Rust test)
+
+```rust
+// tests/pilot_scale_up_ci.rs
+
+use cyboquatic::pilot_guard::{PilotCorridor};
+use cyboquatic::types::CyboquaticPilotMetrics;
+
+#[test]
+fn phoenix_pilot_must_pass_scale_up_gate() {
+    // 1. Load metrics from qpudatashards (CSV/ALN adapter not shown here).
+    let m: CyboquaticPilotMetrics = load_phoenix_pilot_metrics()
+        .expect("failed to load Phoenix pilot metrics");
+
+    // 2. Corridor parameters (kept conservative; align with ALN schema).
+    let corridor = PilotCorridor {
+        bod_mg_l_max: 10.0,
+        tss_mg_l_max: 10.0,
+        n_total_mg_l_max: 5.0,
+        p_total_mg_l_max: 0.5,
+        cec_index_max: 0.3,
+        pfbs_index_max: 0.3,
+        sat_hlr_mday_min: 0.05,
+        sat_hlr_mday_max: 0.30,
+        fouling_rate_rel_min: -0.01,
+        fouling_rate_rel_max: 0.00,
+        social_trust_min: 0.75,
+        violation_residual_max: 1.0,
+    };
+
+    assert!(
+        corridor.pilot_scale_up_ok(&m),
+        "Phoenix cyboquatic pilot failed ecosafety gate; deployment tag must not be created."
+    );
+}
