@@ -1,0 +1,4 @@
+node_id,lat,lon,context,a_footprint_m2,h_clear_m,d_soil_m,d_pipe_m,q_min_m3s,q_max_m3s,v_max_ms,h_loss_max_m,backflow_flag,p_avail_kw,e_daily_kwh,o_crew_hours,m_interval_days,d_exclusion_m,n_species,noise_limit_db,em_limit_ut,bio_stress_max,ecoimpact_score,karma_per_unit,notes
+PHX-DRAIN-001,33.450,-112.070,URBAN,12.0,3.0,2.5,3.2,0.02,0.15,2.0,0.5,false,15.0,60.0,4.0,90,15.0,2,65.0,1.0,0.30,0.88,1.0e6,"Phoenix urban drainage node with non-harm safety."
+GILA-EST-INTAKE,33.300,-112.400,URBAN,20.0,4.0,3.0,3.5,0.05,0.30,1.2,0.6,false,20.0,80.0,6.0,60,50.0,6,50.0,0.3,0.15,0.92,2.0e6,"Gila Estrella intake with bio-reversible paths."
+COAST-NODE-031,36.850,-122.120,COASTAL,25.0,5.0,4.0,4.5,0.10,0.60,1.0,0.8,false,25.0,120.0,6.0,60,60.0,6,50.0,0.3,0.15,0.88,1.5e6,"Coastal node with marine safety envelopes."
