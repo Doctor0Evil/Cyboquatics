@@ -1,0 +1,6 @@
+destination-path,module,version,role,security-protocol,interop-standard,identity-mgmt,ai-agent-integration,asset-type,authentication,digital-twin,edge-analytics,compliance,log-persistence
+vnodephx-base,PhxBaseMap,1.0.0,BaseLayers,AES256,OGC-WMS,OIDC-City,PlannerAgent,ParcelStreetBldg,APIKey,Enabled,None,PHX-Zoning,CityDataLake
+vnodephx-water,PhxWaterSewer,1.0.0,HydroGrid,TLS1.3,OPC-UA,OAuth2-Svc,HydroAgent,PipeManholeCanal,ServiceCert,Enabled,HydroSim,PHX-DrainageCode,ImmutableLedger
+vnodephx-fog,PhxFOGGrid,1.0.0,FOGControl,ChaCha20,MQTT-Secure,DID-Restaurant,FOGAgent,GreaseTrapLineSensor,MutualTLS,Enabled,FOGAnomaly,SewerFOG-Ordinance,HyperledgerVital
+vnodephx-xr,PhxXRGrid,1.0.0,XRSpatialGrid,Argon2-TLS,WebXR-API,WebAuthn,XRNavAgent,XRCellVoxel,Passkey,Enabled,SNNPoseError,EUAI-USPrivacy,AuditBlob
+vnodephx-cybo,CyboquaticOps,1.0.0,CyboquaticMachine,AES256-PostQ,TSN-SDN,FIDO2-Admin,RoutingAgent,CyboBotUnit,HardwareKey,Enabled,SNNBlockageDetect,NIST-CritInfra,HyperledgerVital
