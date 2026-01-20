@@ -1,4 +1,3 @@
-text
 nodeid,region,domain,metric_set,knowledgefactor_01,ecoimpact_01,riskofharm_01,ncorridors,ngatepredicates,nverifiedinvariants,V_node_current,V_node_prev,legal_ok,gold_ok_season,gates_ok_season
 PHX-WWTP-01,Phoenix-AZ-US,water,PFBS_ECOLI_NP_ASP,0.88,0.84,0.14,7,4,5,0.120,0.135,true,false,false
 PHX-WWTP-01-POSTUPD,Phoenix-AZ-US,water,PFBS_ECOLI_NP_ASP,0.91,0.86,0.12,9,4,7,0.108,0.120,true,true,true
