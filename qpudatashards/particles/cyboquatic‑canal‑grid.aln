@@ -1,0 +1,6 @@
+destination-path,module,version,role,security-protocol,interop-standard,identity-mgmt,ai-agent-integration,asset-type,authentication,digital-twin,edge-analytics,compliance,log-persistence
+vnodecanalgrid,CyboquaticCanalCore,1.0.0,CanalNode,AES256-PostQ,TSN-SDN,WebAuthn-FIDO2,MistralQwen,OpenCanalSegment,MutualTLS,Enabled,SNNFlowPredict,PHX-Stormwater,HyperledgerVital
+vnodesewergrid,CyboquaticSewerCore,1.0.0,SewerNode,ChaCha20-ZT,MQTT-Secure,OIDC-Vital,MistralQwen,ClosedConduit,ServiceToken,Enabled,SNNBlockageDetect,NIST-CRITINFRA,HyperledgerVital
+vnodeds-twin,HydroTwinEngine,1.0.0,DrainageTwin,TLS1.3-gPTP,OPC-UA,OAuth2-Svc,PlannerAgent,HydroModel,ServiceAccount,Enabled,HydroSim,PHX-DrainageCode,ImmutableBlob
+vnodeedge-bci,NeuroEdgeNode,1.0.0,EdgeAnalyticsNode,AES256-Edge,PTP-Sync,DID-Vital,OptimizerAgent,EdgeSensor,DeviceCert,Enabled,SNNAnomaly,EUAI-HIPAA-Overlay,HyperledgerVital
+vnodeops-soc,InfraNetSOC,1.0.0,SecurityOps,Argon2-TLS,Syslog-CEF,FIDO2-Admin,GuardianAgent,ControlRoom,HardwareKey,Disabled,None,CISA-NIST,SIEM-Archive
