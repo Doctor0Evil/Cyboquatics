@@ -1,0 +1,12 @@
+text
+nodeid,region,domain,metric_set,knowledgefactor_01,ecoimpact_01,riskofharm_01,ncorridors,ngatepredicates,nverifiedinvariants,V_node_current,V_node_prev,legal_ok,gold_ok_season,gates_ok_season
+PHX-WWTP-01,Phoenix-AZ-US,water,PFBS_ECOLI_NP_ASP,0.88,0.84,0.14,7,4,5,0.120,0.135,true,false,false
+PHX-WWTP-01-POSTUPD,Phoenix-AZ-US,water,PFBS_ECOLI_NP_ASP,0.91,0.86,0.12,9,4,7,0.108,0.120,true,true,true
+PHX-DIGESTER-ASP-01,Phoenix-AZ-US,sludge,ASP_METHANE_ARG,0.80,0.78,0.18,5,3,3,0.145,0.160,true,false,false
+PHX-DIGESTER-ASP-01-POSTUPD,Phoenix-AZ-US,sludge,ASP_METHANE_ARG,0.86,0.82,0.13,7,3,5,0.118,0.145,true,true,true
+PHX-CYBO-AIR-01,Phoenix-AZ-US,air,NOX_PM_CO2e,0.89,0.90,0.13,6,3,4,0.112,0.130,true,true,true
+PHX-SAT-CELL-01,Phoenix-AZ-US,water,SAT_PFBS_NP,0.90,0.88,0.12,6,4,6,0.110,0.125,true,true,true
+PHX-FOG-DESICCATOR-01,Phoenix-AZ-US,water,FOG_TSS_FLOW,0.92,0.87,0.11,5,3,5,0.105,0.118,true,true,true
+PHX-ASPARTAME-RIVER-01,Phoenix-AZ-US,water,ASP_ECOLI_FLOW,0.82,0.80,0.17,4,2,3,0.138,0.152,true,false,false
+PHX-ASPARTAME-RIVER-01-POSTUPD,Phoenix-AZ-US,water,ASP_ECOLI_FLOW,0.88,0.83,0.12,6,3,4,0.112,0.138,true,true,true
+PHX-CYBOQUATIC-HUB-01,Phoenix-AZ-US,multi,ALL_METRICS_TRIAD,0.94,0.90,0.11,10,5,8,0.098,0.112,true,true,true
