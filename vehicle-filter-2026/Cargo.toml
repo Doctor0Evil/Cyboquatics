@@ -1,0 +1,3 @@
+# vehicle-filter-2026/Cargo.toml (snippet)
+[build-dependencies]
+aln-transpiler = { path = "../your-aln-crate" }  # Your internal ALN-to-Rust tool.
