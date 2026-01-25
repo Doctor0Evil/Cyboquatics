@@ -1,0 +1,6 @@
+nodeid,assettype,region,materialstack,energy_kwh_per_kg,process_type,pfas_free,heavy_metal_free,compostable_cert,ecoimpactscore,karmaperunit,notes
+PHX-FIBER-BOX-01,CybocindricTrayLine,Central-AZ,BAGASSE-STARCH-PHX-v1,0.45,ElectricHotPress,YES,YES,ASTM-D6400,0.92,7.5e5,Low-energy molded fiber box line using bagasse and starch; PFAS-free coatings, certified compostable.
+PHX-AGWASTE-CLAM-01,CybocindricTrayLine,Central-AZ,ONION-HULL-RICE-v2,0.50,FoamBakeElectric,YES,YES,EN-13432,0.89,6.8e5,Clamshell containers from onion skins and rice hulls following agricultural-residue foam baking methods.
+PHX-KRAFT-REUSE-02,FiberReformLine,Central-AZ,RECYCLED-KRAFT-PHX-v1,0.30,ElectricThermoform,YES,YES,BPI,0.87,5.9e5,Recycled kraft mailers thermoformed with minimal electric heating; strong reuse potential before composting.
+PHX-GLASS-HYBRID-03,HybridGlassContainerLine,Central-AZ,RECYCLED-GLASS-80PCT,1.20,HybridElectricFurnace,N/A,N/A,INERT,0.80,4.0e5,Returnable glass containers produced in a hybrid furnace using ≥80% cullet to cut CO2 by ~60% vs standard glass.
+PHX-BIOPOLY-FLEX-04,BiofilmLine,Central-AZ,PLA-PHA-FILM-PHX-v1,0.70,ElectricExtrusion,YES,YES,ASTM-D6400,0.84,4.8e5,Thin flexible biofilm pouches from certified PLA/PHA blends with verified PFAS-free formulation and safe migration profiles.
