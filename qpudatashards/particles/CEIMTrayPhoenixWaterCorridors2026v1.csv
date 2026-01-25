@@ -1,0 +1,6 @@
+nodeid,assettype,region,contaminant,materialstack,cinbaseline,cinunit,qavg,qunit,horizon_h,ecoimpactscore,karmaperunit,notes
+CAP-LP-PFBS-TRAY-01,ReservoirTrayPilot,Central-AZ,PFBS,SILK-PLGA-PHX-v1,3.9,ng/L,50.0,m3/s,24,0.88,6.7e5,Tray pilot coupled to Lake Pleasant PFBS node using CEIM/CPVM kernel for validated mass offsets.
+PHX-WTP-ECOLI-TRAY-01,PlantTrayPilot,Central-AZ,Ecoli,SUGAR-FIBER-PHX-v1,700,cfu/100mL,3.0,m3/s,12,0.92,8.0e5,Biodegradable tray line recovering high-E. coli-risk solids upstream of Phoenix WTP under CEIM governance.
+GILA-RCH-NUT-TRAY-07,RiverReachTrayCluster,Central-AZ,TotalP,BIOPULP-CLAY-PHX-v1,0.15,mg/L,5.0,m3/s,72,0.85,5.0e5,Cluster of tray-fed wetlands along Gila reach targeting 30–50% TP reduction with CEIM-aligned load accounting.
+CRB-SAL-BASIN-TRAY-01,BasinTrayHub,CO-UT-WY-AZ,TDS,SALT-MIN-LOW-ZN-v1,650,mg/L,150.0,m3/s,168,0.78,4.0e5,Salinity-aware tray hub linked to Colorado River Basin salinity program scales and Karma factors.
+PHX-TRAY-LCA-PLANT-01,ManufacturingNode,Phoenix-AZ,EmbodiedCarbon,PHX-TRAY-MIX-2026,0.35,kgCO2e/tray,0.01,m3/s,24,0.81,1.0e4,LCA-linked tray plant node tying tray production to water-quality nodes via CEIM/CEIM-XJ mass-load and Karma metrics.
