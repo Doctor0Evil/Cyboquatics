@@ -1,0 +1,5 @@
+machine_id,location,lat,lon,material_mix,target_t90_days,measured_t90_days,iso14851_class,eco_impact_score,waste_reduced_kg_per_cycle,tox_risk_corridor,energy_kwh_per_cycle,hydro_power_kw,throughput_m3_per_s,notes
+HK-PULP-01,Phoenix-Canal-Segment-1,33.45,-112.07,"70% bagasse + 30% starch",90,82,"Phoenix-ISO14851-StrongPass",0.93,320,0.08,14.2,4.1,0.032,"Canal-powered pulp molding line diverting agricultural bagasse from landfill."
+HK-PULP-02,Phoenix-Canal-Segment-2,33.42,-112.05,"60% bagasse + 40% wheat-straw",120,105,"Phoenix-ISO14851-Pass",0.91,280,0.09,13.7,3.8,0.028,"Mixed-fiber trays for MRE-style packs; slower t90 but within 180 d corridor."
+HK-PLASTIC-01,Port-Ocean-Skimmer-Node-3,32.30,-111.00,"50% ocean-HDPE + 50% starch binder",180,160,"ISO14851-InherentBio",0.88,450,0.11,18.5,5.2,0.035,"Ocean plastic + starch composite trays; used only where LC-MS leachate passes r_tox<=0.1."
+HK-TRAY-DEV-01,Lab-Pilot-Phoenix,33.46,-112.02,"bagasse/wheat-straw adaptive mix",90,76,"Phoenix-ISO14851-StrongPass",0.95,210,0.07,9.8,2.9,0.021,"Pilot node validating turbine-slurry feedback loops for child-safe school trays."
