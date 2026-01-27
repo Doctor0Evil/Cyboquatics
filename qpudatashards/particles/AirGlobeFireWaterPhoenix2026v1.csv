@@ -1,0 +1,5 @@
+nodeid,assettype,region,lane,twindowstart,twindowend,cinppm,coutppm,flowQ_m3h,regen_kWh,Tshell_max_C,Th2o_jacket_C,grid_gCO2perkWh,Mcaptured_kgday,ecoimpact_raw,cpvm_V,multonry_D,ecoimpact_adj,karma_delta,evidence_hex
+AG-FW-PHX-01,AirGlobeFireWater,Central-AZ,CONSERV,2026-01-20T00:00:00Z,2026-01-21T00:00:00Z,420.5,105.2,2400000,115.0,41.5,32.0,45,548.1,0.88,0.93,0.95,0.78,0.86,a3f1e8b9c4d2f7e6d5c4b3a192807f6e
+AG-FW-PHX-01,AirGlobeFireWater,Central-AZ,BALANCED,2026-01-21T00:00:00Z,2026-01-22T00:00:00Z,421.0,104.9,2600000,128.0,43.0,33.1,44,596.7,0.89,0.91,0.94,0.76,0.85,b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e
+AG-FW-PHX-CAIN-01,AirGlobe_CAINSynergy,Central-AZ,BALANCED,2026-01-21T00:00:00Z,2026-01-22T00:00:00Z,PM25_baseline_ugm3,PM25_local_ugm3,water_sav_m3day,fanpower_Wavg,Tshell_max_C,Th2o_jacket_C,grid_gCO2perkWh,PMremoved_gday,ecoimpact_raw,cpvm_V,multonry_D,ecoimpact_adj,karma_delta,evidence_hex
+AG-FW-PHX-CAIN-01,AirGlobe_CAINSynergy,Central-AZ,BALANCED,2026-01-21T00:00:00Z,2026-01-22T00:00:00Z,27.5,23.1,4.2,1.6,38.8,29.7,45,18.4,0.86,0.90,0.92,0.71,0.82,c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f
