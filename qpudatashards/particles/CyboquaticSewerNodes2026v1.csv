@@ -1,0 +1,4 @@
+nodeid,assettype,region,street_segment,cin_tss_mgL,cout_tss_mgL,cin_fog_mgL,cout_fog_mgL,q_Ls,window_s,mass_tss_avoided_kg,mass_fog_avoided_kg,ecoimpactscore,karma_units,notes
+PHX-SEWER-FV-01,CyboquaticSewerNode,Central-AZ,7TH-AVE-SEG-12,450,120,180,60,35.0,3600,12.4,3.6,0.89,1.1e6,"Under-street flow-vac node; upstream of interceptor; solids+FOG removal in high-restaurant corridor."
+PHX-SEWER-RES-02,CyboquaticSewerNode,Central-AZ,MONROE-RES-05,300,90,80,40,18.0,3600,5.7,1.2,0.83,4.2e5,"Residential catchment; emphasis on TSS; integrated with cybocindric furnace Tier-2."
+PHX-SEWER-IND-03,CyboquaticSewerNode,South-AZ,WAREHOUSE-CL-09,600,200,220,90,45.0,3600,18.6,5.1,0.91,1.8e6,"Mixed light-industrial inflow; strict corridor gating for FOG and grit loads."
