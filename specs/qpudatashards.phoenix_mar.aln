@@ -1,0 +1,44 @@
+aln particle phoenix.mar.module.v1
+  field meta.shard_id        string
+  field meta.module_type     string    -- "PhoenixMARCell.v1"
+  field meta.region          string    -- "Phoenix-AZ"
+  field meta.sim_or_live     string    -- "sim" | "live"
+  field meta.timestamp_utc   string
+  field meta.did_signature   string    -- Bostrom DID / CHAT-linked
+  field meta.rust_build_hash string
+  field meta.aln_schema_ver  string
+  field meta.hex_stamp       string    -- governance hex stamp
+
+  -- Triad scores
+  field ker.knowledge_factor_01 f64
+  field ker.eco_impact_01       f64
+  field ker.risk_of_harm_01     f64
+
+  -- Design / impact kernel
+  field kernel.q_design_m3s          f64
+  field kernel.recharge_m3_per_year  f64
+  field kernel.m_removed_kg_per_year f64
+
+  -- Residual summary
+  field residual.vt          f64
+  field residual.n_coords    u32
+
+  -- Corridors table (one row per risk variable)
+  table corridors
+    column var_id       string  -- e.g. "r_SAT", "r_PFAS"
+    column units        string  -- "m/d", "ng/L", etc.
+    column safe         f64
+    column gold         f64
+    column hard         f64
+    column weight_w     f64
+    column lyap_channel u16
+    column mandatory    bool
+  end
+
+  -- Current risk state (can also be timeseries in extended schema)
+  table risk_state
+    column var_id string
+    column r_val  f64    -- normalized r_x ∈ [0,1]
+    column sigma  f64    -- uncertainty
+  end
+end
