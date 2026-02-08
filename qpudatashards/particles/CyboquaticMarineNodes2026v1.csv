@@ -1,0 +1,6 @@
+nodeid,assettype,waterbody,region,parameter,cinunit,cinbaseline,coutunit,couttarget,qavg_m3s,horizon_s,ecoimpactscore,karmaperkg_removed,latitude,longitude,notes
+PAC-WHALE-PFAS-EST01,EstuaryNode,ColumbiaRiverMouth,US-OR-WA,PFBS,ngL,8.5,ngL,2.0,500.0,86400,0.88,1.0e6,46.25,-124.10,"PFBS polishing at river mouth, protecting NE Pacific feeding grounds."
+PAC-WHALE-HG-BAY02,BayNode,SanFranciscoBay,US-CA,Hg,ngL,12.0,ngL,4.0,300.0,86400,0.90,2.0e6,37.80,-122.50,"Heavy-metal reduction node near dredged shipping channel."
+ATL-WHALE-NUT-FJORD03,FjordNode,Sognefjord,NO-Hordaland,TotalN,mgL,1.5,mgL,0.7,150.0,86400,0.86,5.0e5,61.00,6.80,"Nutrient-throttling pumps to limit coastal hypoxia and blooms."
+IND-WHALE-OIL-LANE04,LaneNode,ArabianSeaShippingLane,INTL,SurfaceOil,mgm2,0.25,mgm2,0.05,50.0,43200,0.84,8.0e5,18.50,63.00,"Autonomous skimmer corridor on major tanker route, low-wake mode."
+SOUTHERN-WHALE-RAD-BIGHT05,CoastalNode,GreatAustralianBight,AU-SA,Cs137,Bqm3,0.20,Bqm3,0.05,80.0,172800,0.82,3.0e6,-34.50,132.00,"Radiological polishing near monitored discharge, hard export limit."
