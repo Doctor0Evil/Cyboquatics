@@ -1,0 +1,6 @@
+node_id,material_id,test_type,sediment_type,water_matrix,temp_C,pH,k_1_per_d,dt50_d,dt90_d,criterion_pass,t90_limit_d,ecoimpact_level,notes
+PHX-MAR-SED-01,PCL-PHA-GEL-01,OECD308,sandy,PHX-MAR-water-2026,20.0,7.2,0.0150,46.2,153.5,TRUE,180,HIGH,"Phoenix sandy MAR sediment; t90 < 180d, eligible for deployment"
+PHX-MAR-SED-02,PCL-PHA-GEL-01,OECD308,fine,PHX-MAR-water-2026,20.0,7.3,0.0135,51.3,170.4,TRUE,180,HIGH,"Phoenix fine MAR sediment; confirms upper-bound t90 corridor"
+PHX-MAR-WAT-01,PCL-PHA-GEL-01,OECD310,NA,PHX-MAR-water-2026,20.0,7.8,NA,NA,NA,TRUE,28,HIGH,"≥60% ThIC in 10-day window within 28d; ready biodegradable in Phoenix matrix"
+PHX-MAR-SED-03,PCL-PHA-GEL-02,OECD308,sandy,PHX-MAR-water-2026,20.0,7.1,0.0080,86.6,288.4,FALSE,180,LOW,"Fails t90 ≤ 180d; excluded from soft-robot library"
+PHX-MAR-WAT-02,PCL-PHA-GEL-02,OECD310,NA,PHX-MAR-water-2026,20.0,7.9,NA,NA,NA,FALSE,28,LOW,"Does not reach 60% ThIC in any 10-day window; not ready biodegradable"
