@@ -1,0 +1,11 @@
+nodeid,assettype,locationlat,locationlon,parameter,rawvalue,rawunit,rxvalue,rxcorridormin,rxcorridormax,wi,Vt,ecoimpactscore,ecoimpactlevel,notes
+CAP-LP-MAR-01,MARVAULT,33.853,-112.269,PFBS,3.9,ngL,0.98,0.0,1.0,1.0,0.98,0.88,High,PFBS at Lake Pleasant; PFAS corridor from EPA PFAS rule
+CAP-LP-MAR-01,MARVAULT,33.853,-112.269,TDS,650,mgL,0.85,0.0,1.0,0.67,0.48,0.82,High,Salinity aligned with Colorado Basin control targets
+GILA-EST-NODE-01,SOFTNODE,33.300,-112.400,ECOLI,410,MPN100mL,1.10,0.0,1.0,3.0,3.63,0.80,High,E. coli impairment at Gila Estrella
+GILA-KELV-NODE-01,SOFTNODE,33.100,-110.900,TP,0.10,mgL,1.00,0.0,1.0,1.5,1.50,0.78,Medium,Total P near threshold at Kelvin reach
+PHX-CANAL-NODE-01,BIODEGNODE,33.450,-112.080,t90,180,days,1.00,0.0,1.0,1.2,1.20,0.76,Medium,Biodegradable node t90 corridor 180d for Phoenix canals
+PHX-CANAL-NODE-01,BIODEGNODE,33.450,-112.080,LEACHATETOX,0.10,relative,0.40,0.0,1.0,2.0,0.32,0.84,High,Leachate toxicity below Phoenix-matrix NOEC limits
+PHX-CANAL-NODE-01,BIODEGNODE,33.450,-112.080,MICRORESIDUE,0.05,relative,0.30,0.0,1.0,1.8,0.16,0.85,High,Micro-residue flux below ambient corridor
+CAP-LP-MAR-01,MARVAULT,33.853,-112.269,SAT,2.0,Cdelta,0.40,0.0,1.0,1.1,0.18,0.83,High,Temperature deviation within biota-safe band
+GILA-EST-NODE-01,SOFTNODE,33.300,-112.400,MICRORESIDUE,0.02,relative,0.20,0.0,1.0,1.8,0.07,0.86,High,Soft-node fiber loss below corridor
+CAP-LP-MAR-01,MARVAULT,33.853,-112.269,VTOTAL,.,.,.,.,.,.,6.12,0.87,High,Aggregate Lyapunov residual for MAR vault ecosystem state
