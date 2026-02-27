@@ -1,0 +1,36 @@
+schema CyboEcosafetyShard2026v1 {
+  shard_id:        String,       // unique ID per shard
+  node_id:         String,       // physical/logical node
+  grammar_id:      String,       // e.g. "CyboquaticPhoenixKER2026v1"
+  origin:          String,       // "internal" | "external"
+  did_author:      String,       // your Bostrom DID
+  timestamp_utc:   String,       // ISO-8601
+
+  // core ecosafety payload (simplified)
+  ker: {
+    knowledge_k:   Float,
+    eco_impact_e:  Float,
+    risk_of_harm_r:Float
+  },
+  residual: {
+    vt:            Float,
+    vt_prev:       Float
+  },
+  fields: [
+    {
+      param_id:    String,       // "PFBS", "TP", "HLR", etc.
+      raw_value:   Float,
+      unit:        String,
+      rx_value:    Float,
+      corridor_id: String
+    }
+  ],
+
+  // branding / narrative labels, tightly controlled
+  labels: [
+    String        // MAY NOT include forbidden external brands unless whitelisted
+  ],
+
+  // cryptographic integrity
+  hex_stamp:      String         // hash(core_math ∥ grammar_id ∥ did_author)
+}
