@@ -1,0 +1,2 @@
+nodeid,waterbody,lat,lon,t90daysmin,t90daysmax,rtoxmin,rtoxmax,rmicromin,rmicromax,K,E,R,vtmax,corridorpresent,safestep,iso14851hex,oecdtoxhex,signinghex
+SR-CANAL-01,PHX-Central-Canal,33.4600,-112.0800,90,180,0.00,0.10,0.00,0.10,0.88,0.90,0.18,0.22,TRUE,TRUE,d6e7f8a9b0c1d2e3,e7f8a9b0c1d2e3f4,c1d2e3f4a5b6c7d8
