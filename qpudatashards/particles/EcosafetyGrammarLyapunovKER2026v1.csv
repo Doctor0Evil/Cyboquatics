@@ -1,0 +1,2 @@
+nodeid,region,lat,lon,medium,nodetype,twindowstart,twindowend,cin,cout,flow,cref,hazardweight,parameter,rawvalue,rawunit,rxvalue,rmin,rmax,wi,vt,ecoimpactscore,ecoimpactlevel,speciesid,rspecies,vspecies,rsigma,dt,kerdeployable,lane,evidencehex,signinghex
+PHX-MAR-VAULT-01,PHX-West-Basin,33.853,-112.269,groundwater,MARVAULT,2026-02-01T00:00Z,2026-02-02T00:00Z,7.5,0.75,0.29,4.0,3.0,PFBS,3.9,ng/L,0.98,0.0,1.0,1.0,0.92,0.88,High,soilmicrobiome,0.18,0.03,0.22,0.96,TRUE,PROD,0xa1b2c3d4e5f67890,0x9f8e7d6c5b4a3210
