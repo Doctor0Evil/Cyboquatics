@@ -1,0 +1,4 @@
+controller_id,swarm_id,corridor_id,tool,model_ref,property_id,property_type,status,lower_bound,upper_bound,confidence,delta,notes
+DRLBN-PHX-AIRGLOBE-01,PHX-AIRGLOBE-SWARM-01,CORRIDOR-I17-SCHOOL-SEG-A,NeuralCBF,net_cbfschoolv3.onnx,SAFESET-LOCAL,CBF_FORWARD_INVARIANT,PROVED,0.0,0.0,1.0,1.0e-3,"Exact ReLU CBF verification over X_safe_local, dt=0.1s."
+DRLBN-PHX-AIRGLOBE-01,PHX-AIRGLOBE-SWARM-01,CORRIDOR-I17-SCHOOL-SEG-A,TLA+Apalache,Spec_SwarmCorridor_I17_SegA.tla,INV-NO-COMMAND-LEAVES-SAFESET,INVARIANT,PROVED,0.0,0.0,1.0,0.0,"Max 32 nodes, message delay ≤ 200 ms."
+DRLBN-PHX-AIRGLOBE-01,PHX-AIRGLOBE-SWARM-01,CORRIDOR-I17-SCHOOL-SEG-A,PRISM-PSY,Model_Swarm_I17_SegA.pm,PROB-EXIT-SAFESET,P<=p_max[ F unsafe ],BOUND,0.0,2.0e-4,0.99,1.0e-5,"Stochastic wind, packet loss 1e-3, 20 min horizon."
