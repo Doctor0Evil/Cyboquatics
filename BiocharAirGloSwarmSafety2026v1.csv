@@ -1,0 +1,3 @@
+nodeid,region,medium,controller_type,verification_stack,corridor_id,vtmax,cbf_margin_min,smc_runs,smc_violations,prism_p_safe_bound,tla_spec_id,iso42001_lane,nist_ai_rmf_lane,ecoimpactscore,karmaperunit,evidencehex,signinghex
+AG-PHX-SWARM-01,Phoenix-AZ-US,air,GNN-CLF-CBF,PRISM-PSY+TLA+Safe-ROS,PHX-AIR-CORR-01,0.17,0.08,10000,0,0.995,TLA-SWARM-LOCKSTEP-2026A,Lane-ESG-1,Map-Measure-Manage,0.89,7.5e5,0xA1B2C3D4E5F6SWARM01,0x9F8E7D6C5B4A3210
+AG-PHX-SWARM-EXP-02,Phoenix-AZ-US,air,RL-DRLBN-HYBRID,StatMC+FTLE+Safe-ROS,PHX-AIR-CORR-EXPER-02,0.24,0.04,5000,3,0.970,TLA-SWARM-EXPER-2026B,Lane-RD-2,Map-Measure,0.76,3.1e5,0xC4D5E6F7A8B9SWARM02,0x8E7D6C5B4A32109F
