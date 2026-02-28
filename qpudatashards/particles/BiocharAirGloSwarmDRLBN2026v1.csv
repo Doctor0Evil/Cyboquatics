@@ -1,24 +1,4 @@
-node_id,
-corridor_id,
-state_id,
-t_window_start,
-t_window_end,
-biochar_dose_ppm,
-airglobe_state_vector,
-swarm_mode,
-h_x,
-V_x,
-dr_lb_constraint_id,
-delta_robustness,
-distribution_set_id,
-neural_cbf_certainty_score,
-ecosafety_level,
-aln_expression,
-aln_action_type,
-aln_temporal_scope,
-mcaptured_t,
-cpvm_V,
-dt_multonry,
-ecoimpact_score,
-swarm_ecosafety_score,
-evidence_hex
+node_id,corridor_id,state_id,t_window_start,t_window_end,biochar_dose_ppm,airglobe_state_vector,swarm_mode,h_x,V_x,dr_lb_constraint_id,delta_robustness,distribution_set_id,neural_cbf_certainty_score,ecosafety_level,aln_expression,aln_action_type,aln_temporal_scope,mcaptured_t,cpvm_V,dt_multonry,ecoimpact_score,swarm_ecosafety_score,evidence_hex
+AG-PHX-DRLBN-01,PHX-URBAN-AIR-01,STATE-0001,2026-01-20T00:00:00Z,2026-01-20T00:05:00Z,12.5,"[420.5,105.2,2400000,25.0,101.3]","nanoswarm-support",0.145,0.932,DRLBN-C1,0.021,QSET-ALPHA,0.987,verified,"ALN::assert(forall t in [0,300]: h(x(t)) >= 0)","corridor_invariant","[0,300]s",0.548,0.93,0.95,0.89,0.87,a3f1e8b9c4d2f7e6d5c4b3a192807f6e
+AG-PHX-DRLBN-01,PHX-URBAN-AIR-01,STATE-0002,2026-01-20T00:05:00Z,2026-01-20T00:10:00Z,12.5,"[421.0,104.9,2600000,25.2,101.4]","nanoswarm-support",0.133,0.928,DRLBN-C1,0.024,QSET-ALPHA,0.982,verified,"ALN::assert(forall t in [300,600]: h(x(t)) >= 0)","corridor_invariant","[300,600]s",0.597,0.92,0.96,0.88,0.86,b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e
+AG-PHX-DRLBN-01,PHX-URBAN-AIR-01,STATE-0003,2026-01-20T00:10:00Z,2026-01-20T00:15:00Z,12.5,"[421.3,104.7,2600000,25.4,101.5]","nanoswarm-support",-0.012,0.901,DRLBN-C1,0.067,QSET-ALPHA,0.941,critical,"ALN::assert(exists t in [600,900]: h(x(t)) < 0)","corridor_violation","[600,900]s",0.602,0.88,0.89,0.81,0.62,c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f
