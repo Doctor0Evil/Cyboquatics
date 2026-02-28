@@ -1,0 +1,3 @@
+node_id,asset_type,medium,region,controller_id,corridor_id,cin_baseline,cin_unit,qavg,qunit,horizon_s,ecoimpact_score,safety_violation_prob,verification_profile,notes
+CYBOQ-I17-AIRGLOBE-01,AirGlobe,Air,Phoenix-AZ,DRLBN-PHX-AIRGLOBE-01,CORRIDOR-I17-SCHOOL-SEG-A,35,ug/m3,2.0,m3/s,3600,0.91,2.0e-4,DRLBN+NCBF+TLA+PRISM,"School-zone PM2.5 corridor; nanoswarm nodes enforce air-cleaning while staying in certified safe tunnel."
+CYBOQ-CANAL-PFBS-01,Drone,Water,Maricopa-AZ,DRLBN-PHX-CYBOQ-WATER-01,CORRIDOR-CAP-LAKEPLEASANT-PFBS,3.9,ng/L,50.0,m3/s,3600,0.88,1.0e-4,DRLBN+NCBF+TLA+PRISM,"Cyboquatic pumping nanoswarm controlling PFBS risk at Lake Pleasant node."
