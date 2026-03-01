@@ -1,0 +1,135 @@
+// Purpose: ALN ecosafety grammar for drain / cyboquatic nodes
+// Scope: FOG, COD/BOD, nutrients, PFAS, microplastics, TSS, blockages, deforestation
+
+namespace ecosafety.drain.v1 {
+
+  type CorridorBands {
+    id: String            // e.g. "pfas_sum", "fog_load", "microplastics_count"
+    unit: String          // e.g. "µg/L", "mg/L", "items/L", "events/month"
+    safe: Float64         // upper edge of safe band
+    gold: Float64         // target / design band ≤ hard
+    hard: Float64         // hard limit (must not be exceeded)
+    weight_w: Float64     // contribution weight in Lyapunov residual
+    lyap_channel: String  // optional channel tag, e.g. "chem", "hydraulic"
+  }
+
+  // Normalized risk coordinate r_x ∈ [0,1] with uncertainty
+  type RiskCoord {
+    id: String            // must match CorridorBands.id
+    rx: Float64           // normalized risk ∈ [0,1]
+    sigma: Float64        // 1σ uncertainty on rx
+    bands: CorridorBands
+  }
+
+  // Lyapunov-style residual V_t over a set of RiskCoord
+  type DrainResidual {
+    vt: Float64
+    coords: List<RiskCoord>
+  }
+
+  // Uncertainty residual U_t (separate channel)
+  type UncertaintyResidual {
+    ut: Float64
+    coords: List<RiskCoord>
+  }
+
+  // Schema for drain eco-safety corridors at a node
+  type DrainCorridorTable {
+    metrics: List<CorridorBands>
+  }
+
+  // Minimal shard header needed for contracts (linked from qpudatashard)
+  type DrainShardHeader {
+    node_id: String
+    timestamp_utc: String
+    corridor_table: DrainCorridorTable
+  }
+
+  // --- Invariants ---
+
+  // 1) Corridor presence: no corridor, no build
+  predicate corridor_present(table: DrainCorridorTable) -> Bool {
+    // Required metric IDs for drain ecosafety v1
+    let required: List<String> = [
+      "fog_load",
+      "cod_effluent",
+      "nutrients_total",
+      "pfas_sum",
+      "microplastics_total",
+      "tss_effluent",
+      "blockage_rate",
+      "deforestation_risk"
+    ];
+
+    // All required IDs appear exactly once, and bands are ordered safe ≤ gold ≤ hard
+    forall r in required {
+      exists b in table.metrics where {
+        b.id == r &&
+        b.safe <= b.gold &&
+        b.gold <= b.hard
+      }
+    }
+  }
+
+  // 2) Per-coordinate hard-band safety (for next state)
+  predicate coord_safe(c: RiskCoord) -> Bool {
+    c.rx <= 1.0
+  }
+
+  // 3) Lyapunov monotonicity outside safe interior (residual must not increase)
+  predicate lyap_non_increasing(prev: DrainResidual, next: DrainResidual) -> Bool {
+    // safe interior: vt below small epsilon
+    let eps: Float64 = 0.01;
+    if prev.vt <= eps {
+      // inside interior, allow equal or small increase (bounded by eps)
+      next.vt <= prev.vt + eps
+    } else {
+      // outside interior, strictly non-increasing
+      next.vt <= prev.vt
+    }
+  }
+
+  // 4) Uncertainty monotonicity outside safe interior
+  predicate unc_non_increasing(prev: UncertaintyResidual, next: UncertaintyResidual) -> Bool {
+    let eps: Float64 = 0.01;
+    if prev.ut <= eps {
+      next.ut <= prev.ut + eps
+    } else {
+      next.ut <= prev.ut
+    }
+  }
+
+  // 5) Safe step predicate: combines per-coordinate and residual checks
+  type SafeStepDecision {
+    derate: Bool
+    stop: Bool
+  }
+
+  function safe_step(
+    prev_res: DrainResidual,
+    prev_unc: UncertaintyResidual,
+    next_res: DrainResidual,
+    next_unc: UncertaintyResidual
+  ) -> SafeStepDecision {
+
+    // Any coordinate with rx > 1 → stop
+    let any_hard_violation: Bool =
+      exists c in next_res.coords where { c.rx > 1.0 };
+
+    if any_hard_violation {
+      return SafeStepDecision { derate: false, stop: true };
+    }
+
+    // Residual or uncertainty increases outside safe interior → derate
+    let lyap_ok: Bool = lyap_non_increasing(prev_res, next_res);
+    let unc_ok:  Bool = unc_non_increasing(prev_unc, next_unc);
+
+    if not lyap_ok or not unc_ok {
+      return SafeStepDecision { derate: true, stop: false };
+    }
+
+    // Otherwise, safe to continue
+    SafeStepDecision { derate: false, stop: false }
+  }
+
+}
