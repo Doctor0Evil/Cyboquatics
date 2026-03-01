@@ -1,0 +1,10 @@
+node_id = "phx-cyboquatic-drain-001"
+location = "Phoenix-AZ"
+safe_interior_eps = 0.05
+
+[risk_weights]
+FOG = 1.5
+Microplastics = 2.0
+PFAS = 2.0
+SewerBlockage = 1.5
+Deforestation = 1.2
