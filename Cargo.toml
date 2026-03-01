@@ -1,0 +1,11 @@
+[workspace]
+members = [
+    "ecosafety-core",
+    "qpudatashard-schema",
+    "cyboquatic-drain-node",
+]
+
+[profile.release]
+lto = true
+codegen-units = 1
+opt-level = "z"
