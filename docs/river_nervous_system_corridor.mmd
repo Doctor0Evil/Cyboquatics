@@ -1,0 +1,10 @@
+graph TD
+  A[Sewer SCADA & PIPEON robots] --> B(Sewer Corridors<br/>Ecorr, DW, events)
+  B --> C[Corridor Controller<br/>K/E/R + Eco-Sys]
+  D[Canal & River Sensors<br/>Cyboquatic Swarms] --> E(Canal/River Corridors<br/>risk r_j, OSK bands)
+  E --> C
+  F[Riparian Sensors & Reforestation Bots] --> G(Riparian Corridors<br/>fishscalar, habitat)
+  G --> C
+  C --> H[Dispatch Power & Duty<br/>Sewer / Cyboquatic / Riparian]
+  C --> I[ROW/RPM Ledgers<br/>DID & ALN audit]
+  I --> C
