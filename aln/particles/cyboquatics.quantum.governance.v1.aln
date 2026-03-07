@@ -1,0 +1,190 @@
+# ALN Particle: Cyboquatics Quantum Governance Specification v1
+# SCHEMA: cyboquatics.particles.quantum.governance.v1
+# VERSION: 1.0.0
+# EVIDENCE_HEX: 0xCQ2026QUANTUM9F8E7D6C
+
+particle.id	cyboquatics.quantum.governance.v1
+name	Cyboquatics Quantum Governance Specification
+kind	quantum.governance.v1
+version	v1
+maintained.by	Doctor0Evil
+sourcerepo	git+https://github.com/Doctor0Evil/Cyboquatics.git
+spec.path	aln/particles/cyboquatics.quantum.governance.v1.aln
+jurisdiction.tags	global,pqc,quantum-safe,US-AZ-Maricopa-Phoenix
+created.at	2026-03-07T00:00:00Z
+updated.at	2026-03-07T00:00:00Z
+
+# Quantum encryption requirements
+field.id	quantum_encryption_algorithm
+field.type	enum
+field.enum.values	kyber-1024|dilithium-5|falcon-1024|sphincs-plus
+field.default	kyber-1024
+field.description	Post-quantum cryptographic algorithm for particle signatures
+
+field.id	quantum_key_rotation_interval_hours
+field.type	integer
+field.default	24
+field.description	Hours between quantum key rotation events
+
+field.id	minimum_quantum_safety_threshold
+field.type	float
+field.default	0.95
+field.description	Minimum quantum safety score for governance operations
+
+# Quantum circuit configurations
+field.id	governance_circuit_qubits
+field.type	integer
+field.default	16
+field.description	Number of qubits for governance optimization circuits
+
+field.id	soul_boundary_circuit_qubits
+field.type	integer
+field.default	8
+field.description	Number of qubits for soul-boundary verification circuits
+
+field.id	optimization_iterations
+field.type	integer
+field.default	1000
+field.description	Number of iterations for quantum optimization
+
+field.id	target_circuit_fidelity
+field.type	float
+field.default	0.99
+field.description	Target fidelity for quantum circuit operations
+
+# Quantum verification requirements
+field.id	require_quantum_verification
+field.type	bool
+field.default	true
+field.description	All governance decisions must be quantum-verified
+
+field.id	quantum_verification_timeout_seconds
+field.type	integer
+field.default	300
+field.description	Timeout for quantum verification operations
+
+field.id	quantum_backup_classical_path
+field.type	bool
+field.default	true
+field.description	Enable classical fallback if quantum verification fails
+
+# Integration with existing particles
+field.id	binds_to_soul_guardrail
+field.type	string
+field.default	soul.guardrail.spec.v1
+field.description	Soul guardrail particle this quantum governance binds to
+
+field.id	binds_to_bio_envelope
+field.type	string
+field.default	bio.safety.envelope.citizen.v1
+field.description	Bio-safety envelope particle for quantum checks
+
+field.id	binds_to_karma_metric
+field.type	string
+field.default	karma.metric.spec.v1
+field.description	Karma metric particle for quantum governance scoring
+
+# Quantum audit and compliance
+field.id	quantum_audit_log_required
+field.type	bool
+field.default	true
+field.description	All quantum operations must be logged to audit trail
+
+field.id	quantum_audit_retention_days
+field.type	integer
+field.default	365
+field.description	Days to retain quantum audit logs
+
+field.id	quantum_compliance_standards
+field.type	list
+field.default	["neurorights-2026","quantum-safe-governance","aln-compliance","pqc-nist"]
+field.description	Compliance standards for quantum governance
+
+# Quantum optimization constraints
+field.id	optimization_objective
+field.type	enum
+field.enum.values=minimize-risk|maximize-eco-impact|balance-safety-efficiency
+field.default	balance-safety-efficiency
+field.description	Primary objective for quantum governance optimization
+
+field.id	max_risk_tolerance
+field.type	float
+field.default	0.10
+field.description	Maximum acceptable risk level for quantum-optimized decisions
+
+field.id	min_eco_impact_threshold
+field.type	float
+field.default	0.70
+field.description	Minimum ecological impact score for quantum-optimized decisions
+
+# Quantum-safe automation rules
+field.id	auto_quantum_rekey_on_threshold_breach
+field.type	bool
+field.default	true
+field.description	Automatically rekey if quantum safety threshold is breached
+
+field.id	quantum_circuit_health_check_interval_minutes
+field.type	integer
+field.default	60
+field.description	Interval between quantum circuit health checks
+
+field.id	quantum_error_recovery_strategy
+field.type	enum
+field.enum.values=fallback-classical|halt-and-alert|retry-with-backoff
+field.default	retry-with-backoff
+field.description	Strategy for handling quantum operation errors
+
+rights.invariants	
+  bind.envelope.particle=bio.safety.envelope.citizen.v1;
+  bind.envelope.kernel=bio.safety.envelope.citizen.viability-kernel.v1;
+  bind.soul.guardrail=soul.guardrail.spec.v1;
+  require.quantum.verification=true;
+  require.quantum.audit=true;
+  allow.classical.fallback=true;
+
+cyberlink.targetid	soul.guardrail.spec.v1
+cyberlink.relation	constrains
+cyberlink.weighthint	1.0
+
+cyberlink.targetid	bio.safety.envelope.citizen.v1
+cyberlink.relation	constrains
+cyberlink.weighthint	1.0
+
+cyberlink.targetid	karma.metric.spec.v1
+cyberlink.relation	annotated-by
+cyberlink.weighthint	0.95
+
+cyberlink.targetid	cyboquatics.ceim.kernel.v1
+cyberlink.relation	constrains
+cyberlink.weighthint	0.95
+
+cyberlink.targetid	cyboquatics.ker.evaluator.v1
+cyberlink.relation	constrains
+cyberlink.weighthint	0.95
+
+cyberlink.targetid	nanoswarm.compliance.field.v1
+cyberlink.relation	aligned-with
+cyberlink.weighthint	0.98
+
+metrics.id	quantum_verification_count
+metrics.domain	governance
+metrics.module	cyboquatics.quantum
+metrics.unit	count
+
+metrics.id	quantum_optimization_count
+metrics.domain	governance
+metrics.module	cyboquatics.quantum
+metrics.unit	count
+
+metrics.id	quantum_safety_score
+metrics.domain	governance
+metrics.module	cyboquatics.quantum
+metrics.unit	score
+
+metrics.id	quantum_error_count
+metrics.domain	governance
+metrics.module	cyboquatics.quantum
+metrics.unit	count
+
+evidence.hex	0xCQ2026QUANTUM9F8E7D6C
+knowledge.factor	0.92
