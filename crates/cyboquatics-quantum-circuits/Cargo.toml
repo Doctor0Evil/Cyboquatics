@@ -1,0 +1,81 @@
+[package]
+name = "cyboquatics-quantum-circuits"
+version = "1.0.0"
+edition = "2021"
+authors = ["Doctor Jacob Scott Farmer <did:ion:EiD8J2b3K8k9Q8x9...>"]
+description = "Quantum-learning circuits for Cyboquatics governance and soul-boundary enforcement"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/Doctor0Evil/Cyboquatics"
+keywords = ["quantum", "governance", "cyboquatics", "neurorights", "aln"]
+categories = ["cryptography", "science", "simulation"]
+readme = "README.md"
+
+[features]
+default = ["quantum-simulation"]
+quantum-simulation = ["dep:qiskit-terra", "dep:quantum"]
+quantum-hardware = ["dep:qiskit-ibm-runtime", "dep:quantum-hardware"]
+quantum-verification = ["dep:zk-snarks", "dep:quantum-verification"]
+full = ["quantum-simulation", "quantum-hardware", "quantum-verification"]
+
+[dependencies]
+# Core dependencies
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+thiserror = "1.0"
+tokio = { version = "1.0", features = ["full"] }
+clap = { version = "4.0", features = ["derive"] }
+
+# Cryptography
+pqcrypto = "0.1"
+pqcrypto-kyber = "0.1"
+pqcrypto-dilithium = "0.1"
+ring = "0.17"
+
+# Quantum simulation (optional)
+qiskit-terra = { version = "0.45", optional = true }
+quantum = { version = "0.5", optional = true }
+
+# Quantum hardware integration (optional)
+qiskit-ibm-runtime = { version = "0.18", optional = true }
+quantum-hardware = { version = "0.3", optional = true }
+
+# Zero-knowledge proofs (optional)
+zk-snarks = { version = "0.4", optional = true }
+quantum-verification = { version = "0.2", optional = true }
+
+# Logging and monitoring
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["json"] }
+prometheus = "0.13"
+
+# ALN particle handling
+aln-particle-core = { path = "../aln-particle-core", version = "1.0" }
+cyboquatics-core = { path = "../cyboquatics-core", version = "1.0" }
+
+# Testing
+[dev-dependencies]
+criterion = "0.5"
+proptest = "1.0"
+tempfile = "3.0"
+
+[[bin]]
+name = "quantum-automation"
+path = "src/bin/quantum-automation.rs"
+required-features = ["quantum-simulation"]
+
+[[bench]]
+name = "quantum_circuit_benchmarks"
+harness = false
+
+[build-dependencies]
+cc = "1.0"
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
+
+[package.metadata.release]
+pre-release-replacements = [
+  { file = "README.md", search = "version = \"[^\"]+\"", replace = "version = \"{{version}}\"" },
+  { file = "src/lib.rs", search = "pub const VERSION: &str = \"[^\"]+\";", replace = "pub const VERSION: &str = \"{{version}}\";" },
+]
