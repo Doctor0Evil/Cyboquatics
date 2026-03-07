@@ -1,0 +1,140 @@
+# ALN Particle: Cyboquatics Soul Guardrail Specification v1
+# SCHEMA: cyboquatics.particles.soul.guardrail.v1
+# VERSION: 1.0.0
+# EVIDENCE_HEX: 0xCQ2026ALN5F4E3D2C1
+
+particle.id	cyboquatics.soul.guardrail.v1
+name	Cyboquatics Soul Guardrail Specification
+kind	policy.guardrail.v1
+version	v1
+maintained.by	Doctor0Evil
+sourcerepo	git+https://github.com/Doctor0Evil/Cyboquatics.git
+spec.path	aln/particles/cyboquatics.soul.guardrail.v1.aln
+jurisdiction.tags	global,pqc,sovereign-ci,US-AZ-Maricopa-Phoenix
+created.at	2026-03-07T00:00:00Z
+updated.at	2026-03-07T00:00:00Z
+
+# Core soul semantics (all must be true for compliance)
+field.id	soul_nonmeasurable
+field.type	bool
+field.default	true
+field.description	Soul is never treated as a measurable quantity
+
+field.id	forbid_soul_scoring
+field.type	bool
+field.default	true
+field.description	No ranks, scores, or qualities may be attached to souls
+
+field.id	forbid_personality_extraction
+field.type	bool
+field.default	true
+field.description	No latent-variable models may infer hidden soul/personality traits
+
+field.id	forbid_soul_targeting
+field.type	bool
+field.default	true
+field.description	No direct targeting of souls as optimization objectives
+
+# Scope of systems bound by this guardrail
+field.id	applies_to_domains
+field.type	list
+field.default	["ci","ota","xr","nanoswarm","governance","memory-restoration"]
+field.description	Domains where this guardrail applies
+
+# Required binding particles (cyberlinks)
+field.id	requires_binding_particles
+field.type	list
+field.default	["augmented.citizen.profile.v1","bio.safety.envelope.citizen.v1","karma.metric.spec.v1"]
+field.description	Particles that MUST cyberlink to this guardrail
+
+# Consent and reversibility invariants
+field.id	require_consent_logging
+field.type	bool
+field.default	true
+field.description	All soul-touching actions must log consent state
+
+field.id	require_reversibility
+field.type	bool
+field.default	true
+field.description	Actions must support rollback or remedial pathways
+
+field.id	require_hitl_for_scopes
+field.type	list
+field.default	["mind-state","religious","existential","high-psych-risk"]
+field.description	Scopes where HITL is mandatory
+
+# Configuration-level constraints (what is blocked)
+field.id	block_config_types
+field.type	list
+field.default	["non-rollbackable-control-path","pain-punishment-mechanic","soul-scoring-model"]
+field.description	Disallowed configuration families
+
+field.id	block_ota_patterns
+field.type	list
+field.default	["no-safemode-image","no-versioned-rollback","unsigned-firmware"]
+field.description	Disallowed OTA patterns
+
+# Capability-preservation invariants (what must NOT be blocked)
+field.id	preserve_capability_categories
+field.type	list
+field.default	["motor-augmentation","sensory-augmentation","cognitive-assist","rehab-support","memory-restoration"]
+field.description	Capability classes that must not be disabled
+
+field.id	preserve_right_to_self_augmentation
+field.type	bool
+field.default	true
+field.description	Cannot justify blanket bans on lawful consented augmentation
+
+# Karma and CyberRank integration
+field.id	karma_metric_particle
+field.type	string
+field.default	karma.metric.spec.v1
+field.description	Karma metric particle for violation tracking
+
+field.id	attach_karma_to_actions_only
+field.type	bool
+field.default	true
+field.description	Karma only on actions/policies, never on identities or souls
+
+field.id	quarantine_on_violation
+field.type	bool
+field.default	true
+field.description	Violating particles routed to quarantine
+
+# Explicit statement of non-disablement
+field.id	statement_constrains_config_not_capability
+field.type	string
+field.default	This guardrail applies to configurations, control paths, and action policies only. It MUST NOT be used to disable or ban lawful, consented augmentation capabilities that remain within bio.safety.envelope.citizen.v1 and soul.safe.envelope.v1.
+field.description	Explicit constraint statement
+
+# Cyberlinks to related particles
+cyberlink.targetid	bio.safety.envelope.citizen.v1
+cyberlink.relation	co-bounded-with
+cyberlink.weighthint	0.96
+
+cyberlink.targetid	karma.metric.spec.v1
+cyberlink.relation	annotated-by
+cyberlink.weighthint	0.94
+
+cyberlink.targetid	augmented.citizen.profile.v1
+cyberlink.relation	required-by
+cyberlink.weighthint	0.99
+
+cyberlink.targetid	cyboquatics.ceim.kernel.v1
+cyberlink.relation	constrains
+cyberlink.weighthint	0.95
+
+cyberlink.targetid	cyboquatics.ker.evaluator.v1
+cyberlink.relation	constrains
+cyberlink.weighthint	0.95
+
+rights.invariants	
+  bind.envelope.particle=bio.safety.envelope.citizen.v1;
+  bind.envelope.kernel=bio.safety.envelope.citizen.viability-kernel.v1;
+  allow.envelope.expansion=false;
+  preserve.augmented.citizen.capabilities=true;
+  require.rollback.channels=true;
+  require.hitl.review.for.new.controllers=true;
+
+evidence.hex	0xCQ2026ALN5F4E3D2C1
+knowledge.factor	0.91
