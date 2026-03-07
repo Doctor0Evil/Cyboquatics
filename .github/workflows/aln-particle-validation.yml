@@ -1,0 +1,182 @@
+# Cyboquatics ALN Particle Validation Pipeline
+# Validates all ALN particles against soul.guardrail.spec constraints
+# before merge to main branch. Ensures quantum-safe governance compliance.
+
+name: ALN Particle Validation
+
+on:
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'aln/particles/**/*.aln'
+      - 'src/rust/**/*.rs'
+  push:
+    branches: [main]
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: 1
+  CYBOQUATICS_EVIDENCE_HEX: 0xCQ2026QUANTUM9F8E7D6C
+
+jobs:
+  validate-particles:
+    name: Validate ALN Particles
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-action@stable
+        with:
+          components: rustfmt, clippy
+          targets: wasm32-unknown-unknown
+
+      - name: Cache Cargo dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          cache-on-failure: true
+
+      - name: Install ALN validation tools
+        run: |
+          cargo install --path crates/aln-particle-validator
+          cargo install --path crates/cyboquatics-quantum-circuits
+
+      - name: Validate particle schemas
+        run: |
+          aln-validator check --schema aln/schemas/particle-schema.v1.json
+          aln-validator verify-cyberlinks aln/particles/
+          aln-validator check-soul-guardrails aln/particles/
+
+      - name: Run particle linting
+        run: |
+          aln-lint --strict aln/particles/**/*.aln
+          aln-lint --check-evidence-hex aln/particles/**/*.aln
+
+      - name: Validate quantum-safe signatures
+        run: |
+          quantum-sig-verify --algorithm kyber-1024 aln/particles/
+          quantum-sig-verify --algorithm dilithium-5 aln/particles/
+
+      - name: Check soul-boundary compliance
+        run: |
+          cargo run --bin soul-boundary-checker -- \
+            --particles aln/particles/ \
+            --guardrail aln/particles/soul.guardrail.spec.v1.aln \
+            --output reports/soul-compliance.json
+
+      - name: Generate validation report
+        if: always()
+        run: |
+          mkdir -p reports
+          aln-validator report --format markdown --output reports/validation-report.md
+          aln-validator report --format json --output reports/validation-report.json
+
+      - name: Upload validation artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: validation-reports
+          path: reports/
+          retention-days: 90
+
+      - name: Post validation status to CyberNet
+        if: always()
+        env:
+          CYBERNET_API_KEY: ${{ secrets.CYBERNET_API_KEY }}
+          CYBERNET_NODE_ID: ${{ secrets.CYBERNET_NODE_ID }}
+        run: |
+          curl -X POST https://api.cybernet.ai/v1/validation-status \
+            -H "Authorization: Bearer $CYBERNET_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "node_id": "$CYBERNET_NODE_ID",
+              "repository": "Doctor0Evil/Cyboquatics",
+              "commit_sha": "${{ github.sha }}",
+              "validation_status": "${{ job.status }}",
+              "evidence_hex": "$CYBOQUATICS_EVIDENCE_HEX",
+              "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            }'
+
+  quantum-circuit-tests:
+    name: Quantum Circuit Integration Tests
+    runs-on: ubuntu-latest
+    needs: validate-particles
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-action@stable
+
+      - name: Install quantum simulation dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libquantum-dev qiskit-terra
+
+      - name: Run quantum circuit tests
+        run: |
+          cargo test --package cyboquatics-quantum-circuits --features quantum-simulation
+          cargo test --package cyboquatics-quantum-circuits --features quantum-verification
+
+      - name: Verify quantum-safe encryption
+        run: |
+          cargo run --bin quantum-encryption-test -- \
+            --algorithm kyber-1024 \
+            --iterations 1000 \
+            --output reports/quantum-encryption-results.json
+
+      - name: Upload quantum test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: quantum-test-results
+          path: reports/quantum-*.json
+          retention-days: 90
+
+  compliance-audit:
+    name: Compliance and Audit Check
+    runs-on: ubuntu-latest
+    needs: [validate-particles, quantum-circuit-tests]
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run compliance audit
+        run: |
+          cargo run --bin compliance-auditor -- \
+            --repository . \
+            --standards neurorights-2026,quantum-safe-governance,alN-compliance \
+            --output reports/compliance-audit.json
+
+      - name: Check evidence hex integrity
+        run: |
+          cargo run --bin evidence-hex-verifier -- \
+            --repository . \
+            --expected-hex 0xCQ2026QUANTUM9F8E7D6C \
+            --verify-all-particles
+
+      - name: Generate compliance certificate
+        if: success()
+        run: |
+          cargo run --bin compliance-certificate-generator -- \
+            --input reports/compliance-audit.json \
+            --output reports/compliance-certificate.aln \
+            --sign-with ${{ secrets.COMPLIANCE_SIGNING_KEY }}
+
+      - name: Upload compliance artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: compliance-artifacts
+          path: reports/compliance-*
+          retention-days: 365
