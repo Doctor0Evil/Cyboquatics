@@ -103,7 +103,7 @@ field.description	Compliance standards for quantum governance
 # Quantum optimization constraints
 field.id	optimization_objective
 field.type	enum
-field.enum.values=minimize-risk|maximize-eco-impact|balance-safety-efficiency
+field.enum.values	minimize-risk|maximize-eco-impact|balance-safety-efficiency
 field.default	balance-safety-efficiency
 field.description	Primary objective for quantum governance optimization
 
@@ -130,7 +130,7 @@ field.description	Interval between quantum circuit health checks
 
 field.id	quantum_error_recovery_strategy
 field.type	enum
-field.enum.values=fallback-classical|halt-and-alert|retry-with-backoff
+field.enum.values	fallback-classical|halt-and-alert|retry-with-backoff
 field.default	retry-with-backoff
 field.description	Strategy for handling quantum operation errors
 
