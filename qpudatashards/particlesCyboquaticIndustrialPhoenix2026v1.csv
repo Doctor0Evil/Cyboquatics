@@ -1,0 +1,6 @@
+nodeid,assettype,region,lat,lon,
+q_m3s,hlr_m_per_h,c_cec,c_pfas,
+substrate_stack,t90_days,r_tox,r_micro,
+e_surplus_j,p_margin_kw,r_hlr,r_cec,r_pfas,vt,
+k_score,e_score,r_score,
+hexstamp,notes
