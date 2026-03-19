@@ -1,0 +1,543 @@
+# ============================================================================
+# Econet Material Cybo - Rust Package Manifest
+# ============================================================================
+# Version: 1.0.0
+# License: Apache-2.0 OR MIT
+# Authors: Cyboquatic Research Collective
+#
+# This manifest defines the Econet Material Cybo crate, which provides
+# biodegradable substrate validation, PFAS-safe material traits, and
+# corridor-bounded material risk assessment for ecologically-restorative
+# Cyboquatic machinery construction.
+#
+# Continuity Guarantee: This crate is designed for 20-50 year operational
+# lifespan with stable API, semantic versioning, and long-term dependency
+# pinning for reproducibility. All material specifications are
+# cryptographically hashed and audit-logged.
+# ============================================================================
+
+[package]
+name = "econet-material-cybo"
+version = "1.0.0"
+edition = "2021"
+rust-version = "1.75.0"
+authors = ["Cyboquatic Research Collective <research@cyboquatic.org>"]
+description = "Biodegradable substrate validation and PFAS-safe material library for Cyboquatic machinery with t90/PFAS corridor gating"
+license = "Apache-2.0 OR MIT"
+repository = "https://github.com/cyboquatic/econet-material-cybo"
+homepage = "https://cyboquatic.org/materials"
+documentation = "https://docs.cyboquatic.org/materials"
+readme = "README.md"
+keywords = ["biodegradable", "pfas-free", "materials", "ecology", "sustainability"]
+categories = ["science", "environment", "materials-science", "embedded"]
+exclude = [
+    ".gitignore",
+    ".github/",
+    "tests/",
+    "benches/",
+    "*.md",
+    "docs/",
+    "data/"
+]
+
+# ============================================================================
+# Feature Flags
+# ============================================================================
+
+[features]
+default = ["std", "alns", "registry"]
+
+# Standard library support (disable for no_std embedded)
+std = []
+
+# ALN shard export for regulatory compliance
+alns = ["std", "serde", "serde_json", "hex"]
+
+# Material registry for fleet management
+registry = ["std", "hashbrown"]
+
+# ISO/OECD compliance validation
+compliance = ["std", "chrono"]
+
+# Cryptographic hashing for material specs
+crypto = ["alns", "sha2", "md5"]
+
+# Full production feature set
+production = ["std", "alns", "registry", "compliance", "crypto"]
+
+# Development and testing utilities
+dev-utils = ["std", "rand", "proptest"]
+
+# ============================================================================
+# Core Dependencies
+# ============================================================================
+
+[dependencies]
+
+# Standard library extensions
+anyhow = { version = "1.0", features = ["backtrace"] }
+thiserror = "1.0"
+
+# Logging and tracing
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+log = "0.4"
+
+# Time handling (for lifecycle tracking)
+chrono = { version = "0.4", features = ["serde"], optional = true }
+instant = "0.1"
+
+# Serialization (for ALN shards and material specs)
+serde = { version = "1.0", features = ["derive"], optional = true }
+serde_json = { version = "1.0", optional = true }
+
+# Cryptographic hashing (for spec integrity)
+hex = { version = "0.4", optional = true }
+sha2 = { version = "0.10", optional = true }
+md5 = { version = "0.7", optional = true }
+
+# Hash maps for material registry
+hashbrown = { version = "0.14", optional = true }
+
+# Numerical computing for kinetics
+nalgebra = "0.32"
+
+# Configuration management
+config = "0.14"
+
+# Unit handling (for material properties)
+uom = { version = "0.34", features = ["si", "f64"] }
+
+# Statistics for material analysis
+statrs = "0.16"
+
+# ============================================================================
+# Platform-Specific Dependencies
+# ============================================================================
+
+[target.'cfg(target_os = "linux")'.dependencies]
+libc = "0.2"
+
+[target.'cfg(target_os = "windows")'.dependencies]
+winapi = { version = "0.3", features = ["winbase", "winerror"] }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+libc = "0.2"
+
+# ============================================================================
+# Embedded/No-Std Support
+# ============================================================================
+
+[target.'cfg(not(any(target_os = "linux", target_os = "windows", target_os = "macos")))'.dependencies]
+# For embedded targets without std
+core = { version = "1.0", package = "rustc-std-workspace-core" }
+alloc = { version = "1.0", package = "rustc-std-workspace-alloc" }
+
+# ============================================================================
+# Development Dependencies
+# ============================================================================
+
+[dev-dependencies]
+criterion = { version = "0.5", features = ["html_reports"] }
+tempfile = "3.0"
+mockall = "0.12"
+pretty_assertions = "1.4"
+assert_matches = "1.5"
+rand = "0.8"
+proptest = "1.0"
+
+# ============================================================================
+# Build Dependencies
+# ============================================================================
+
+[build-dependencies]
+# Version information generation
+vergen = { version = "8.0", features = ["build", "cargo", "git", "rustc"] }
+
+# ============================================================================
+# Package Metadata
+# ============================================================================
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
+targets = ["x86_64-unknown-linux-gnu", "x86_64-pc-windows-msvc", "x86_64-apple-darwin"]
+
+[package.metadata.release]
+pre-release-replacements = [
+    { file = "CHANGELOG.md", search = "Unreleased", replace = "{{version}}" },
+    { file = "CHANGELOG.md", search = "\\.\\.\\.HEAD", replace = "...{{tag_name}}" },
+    { file = "CHANGELOG.md", search = "ReleaseDate", replace = "{{date}}" },
+    { file = "CHANGELOG.md", search = "<!-- next-header -->", replace = "<!-- next-header -->\n## [Unreleased] - ReleaseDate" },
+    { file = "CHANGELOG.md", search = "<!-- next-url -->", replace = "<!-- next-url -->\n[Unreleased]: https://github.com/cyboquatic/econet-material-cybo/compare/{{tag_name}}...HEAD" },
+]
+
+# ============================================================================
+# Build Profiles
+# ============================================================================
+
+[profile.dev]
+opt-level = 0
+debug = true
+debug-assertions = true
+overflow-checks = true
+lto = false
+panic = "unwind"
+incremental = true
+codegen-units = 256
+
+[profile.dev.package."*"]
+opt-level = 3
+
+[profile.release]
+opt-level = 3
+debug = false
+debug-assertions = false
+overflow-checks = false
+lto = "thin"
+panic = "unwind"
+incremental = false
+codegen-units = 16
+strip = "symbols"
+
+[profile.release-lto]
+inherits = "release"
+lto = "fat"
+codegen-units = 1
+
+[profile.profiling]
+inherits = "release"
+debug = true
+strip = "none"
+
+[profile.bench]
+inherits = "release"
+debug = true
+
+# ============================================================================
+# Linting Configuration
+# ============================================================================
+
+[lints.rust]
+unsafe_code = "forbid"
+missing_docs = "deny"
+rust_2018_idioms = "warn"
+trivial_casts = "warn"
+trivial_numeric_casts = "warn"
+unused_import_braces = "warn"
+unused_qualifications = "warn"
+
+[lints.clippy]
+all = "warn"
+pedantic = "warn"
+nursery = "warn"
+cargo = "warn"
+unwrap_used = "warn"
+expect_used = "warn"
+panic = "warn"
+todo = "warn"
+unimplemented = "warn"
+dbg_macro = "warn"
+print_stdout = "warn"
+print_stderr = "warn"
+
+# ============================================================================
+# Example Configurations
+# ============================================================================
+
+[[example]]
+name = "material_validation"
+path = "examples/material_validation.rs"
+required-features = ["std", "alns"]
+
+[[example]]
+name = "substrate_registry"
+path = "examples/substrate_registry.rs"
+required-features = ["registry"]
+
+[[example]]
+name = "aln_shard_export"
+path = "examples/aln_shard_export.rs"
+required-features = ["alns", "crypto"]
+
+[[example]]
+name = "compliance_check"
+path = "examples/compliance_check.rs"
+required-features = ["compliance"]
+
+# ============================================================================
+# Binary Targets
+# ============================================================================
+
+[[bin]]
+name = "material-validator-cli"
+path = "src/bin/validator.rs"
+required-features = ["std", "alns"]
+
+[[bin]]
+name = "material-registry-cli"
+path = "src/bin/registry.rs"
+required-features = ["std", "registry"]
+
+# ============================================================================
+# Library Configuration
+# ============================================================================
+
+[lib]
+name = "econet_material_cybo"
+path = "src/lib.rs"
+crate-type = ["lib", "rlib", "cdylib"]
+doctest = true
+test = true
+doc = true
+
+# ============================================================================
+# Test Configuration
+# ============================================================================
+
+[[test]]
+name = "integration_tests"
+path = "tests/integration.rs"
+required-features = ["std", "alns"]
+
+[[test]]
+name = "material_kinetics"
+path = "tests/material_kinetics.rs"
+required-features = ["std"]
+
+[[test]]
+name = "corridor_validation"
+path = "tests/corridor_validation.rs"
+required-features = ["std"]
+
+[[test]]
+name = "pfas_free_validation"
+path = "tests/pfas_free_validation.rs"
+required-features = ["std", "crypto"]
+
+[[test]]
+name = "aln_shard_generation"
+path = "tests/aln_shard_generation.rs"
+required-features = ["alns"]
+
+[[test]]
+name = "lifecycle_tracking"
+path = "tests/lifecycle_tracking.rs"
+required-features = ["compliance"]
+
+# ============================================================================
+# Benchmark Configuration
+# ============================================================================
+
+[[bench]]
+name = "material_validation_perf"
+path = "benches/material_validation_perf.rs"
+harness = false
+required-features = ["std"]
+
+[[bench]]
+name = "kinetics_computation_bench"
+path = "benches/kinetics_computation_bench.rs"
+harness = false
+required-features = ["std"]
+
+[[bench]]
+name = "aln_export_bench"
+path = "benches/aln_export_bench.rs"
+harness = false
+required-features = ["alns"]
+
+# ============================================================================
+# Workspace Configuration
+# ============================================================================
+
+[workspace]
+members = [
+    ".",
+    "../cyboquatic-gateway",
+    "../cyboquatic-ecosafety-core",
+    "../cyboquatic-fog-router",
+    "../cyboquatic-kernel",
+]
+
+[workspace.package]
+version = "1.0.0"
+edition = "2021"
+rust-version = "1.75.0"
+authors = ["Cyboquatic Research Collective <research@cyboquatic.org>"]
+license = "Apache-2.0 OR MIT"
+repository = "https://github.com/cyboquatic/cyboquatic"
+homepage = "https://cyboquatic.org"
+
+[workspace.dependencies]
+# Shared workspace dependencies for consistency
+anyhow = "1.0"
+thiserror = "1.0"
+tracing = "0.1"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+chrono = { version = "0.4", features = ["serde"] }
+nalgebra = "0.32"
+hex = "0.4"
+
+# ============================================================================
+# Dependency Pinning for Long-Term Stability
+# ============================================================================
+
+# Note: For 20-50 year continuity, critical dependencies should be pinned
+# to specific versions to ensure reproducibility. Update only after
+# thorough testing and validation.
+
+[dependencies.serde]
+version = "=1.0.193"
+features = ["derive"]
+optional = true
+
+[dependencies.serde_json]
+version = "=1.0.108"
+optional = true
+
+[dependencies.hex]
+version = "=0.4.3"
+optional = true
+
+[dependencies.sha2]
+version = "=0.10.8"
+optional = true
+
+[dependencies.md5]
+version = "=0.7.0"
+optional = true
+
+[dependencies.hashbrown]
+version = "=0.14.3"
+optional = true
+
+[dependencies.chrono]
+version = "=0.4.31"
+features = ["serde"]
+optional = true
+
+# ============================================================================
+# Security Advisory Configuration
+# ============================================================================
+
+[package.metadata.security-advisories]
+# Critical security dependencies that require immediate attention
+critical = ["sha2", "md5", "serde", "serde_json"]
+
+# Regular security audit schedule (days)
+audit_interval_days = 30
+
+# Auto-update policy for security patches
+auto_update_security = true
+
+# ============================================================================
+# Documentation Configuration
+# ============================================================================
+
+[package.metadata.docs]
+# Documentation build configuration
+targets = [
+    "x86_64-unknown-linux-gnu",
+    "x86_64-pc-windows-msvc",
+    "x86_64-apple-darwin",
+    "aarch64-unknown-linux-gnu",
+]
+
+# Documentation features to build
+features = ["production"]
+
+# Include private items in docs
+document-private-items = false
+
+# ============================================================================
+# Continuous Integration Configuration
+# ============================================================================
+
+[package.metadata.ci]
+# CI platforms to test on
+platforms = ["linux", "windows", "macos"]
+
+# Minimum test coverage required
+min-coverage-percent = 85
+
+# Required CI checks before merge
+required-checks = [
+    "test",
+    "clippy",
+    "fmt",
+    "docs",
+    "security-audit",
+]
+
+# ============================================================================
+# Material Database Configuration
+# ============================================================================
+
+[package.metadata.materials]
+# Default material database path
+database_path = "data/materials.db"
+
+# Material certification authority
+certification_authority = "Cyboquatic Material Certification Board"
+
+# Required certifications for deployment
+required_certifications = [
+    "ISO_14851_biodegradability",
+    "OECD_202_toxicity",
+    "EPA_537_PFAS_analysis",
+    "ISO_IEC_17025_calibration",
+]
+
+# Default corridor bands
+default_corridors:
+  t90_max_days = 180.0
+  t90_gold_days = 120.0
+  r_pfas_max = 0.10
+  r_tox_gold_max = 0.10
+  r_micro_max = 0.05
+  r_leach_max = 0.10
+
+# ============================================================================
+# Compliance and Regulatory Mapping
+# ============================================================================
+
+[package.metadata.compliance]
+# International Standards
+iso_standards = [
+    "ISO 14851:2019",
+    "ISO 14852:2018",
+    "ISO 17556:2019",
+    "ISO/IEC 17025:2017",
+]
+
+# OECD Guidelines
+oecd_guidelines = [
+    "OECD 202",
+    "OECD 203",
+    "OECD 301",
+    "OECD 302",
+]
+
+# EPA Methods
+epa_methods = [
+    "EPA Method 537",
+    "EPA Method 537.1",
+    "EPA Method 1694",
+]
+
+# Regional Regulations
+eu_regulations = [
+    "REACH Regulation (EC) No 1907/2006",
+    "Biocidal Products Regulation (EU) No 528/2012",
+]
+
+us_regulations = [
+    "TSCA Section 5",
+    "Clean Water Act",
+]
+
+# ============================================================================
+# End of Manifest
+# ============================================================================
