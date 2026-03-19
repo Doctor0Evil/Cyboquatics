@@ -1,0 +1,595 @@
+# ============================================================================
+# Cyboquatic FOG Router - Rust Package Manifest
+# ============================================================================
+# Version: 1.0.0
+# License: Apache-2.0 OR MIT
+# Authors: Cyboquatic Research Collective
+#
+# This manifest defines the Cyboquatic FOG Router crate, which provides
+# Fog-of-Graffiti (FOG) routing logic for Cyboquatic workloads with energy
+# tailwind validation, hydraulic safety predicates, biosurface compatibility,
+# and Lyapunov stability enforcement.
+#
+# Continuity Guarantee: This crate is designed for 20-50 year operational
+# lifespan with stable API, semantic versioning, and long-term dependency
+# pinning for reproducibility. All routing decisions are cryptographically
+# hashed and linked to audit trails.
+# ============================================================================
+
+[package]
+name = "cyboquatic-fog-router"
+version = "1.0.0"
+edition = "2021"
+rust-version = "1.75.0"
+authors = ["Cyboquatic Research Collective <research@cyboquatic.org>"]
+description = "FOG routing engine for Cyboquatic workloads with energy tailwind, hydraulic safety, and Lyapunov stability enforcement"
+license = "Apache-2.0 OR MIT"
+repository = "https://github.com/cyboquatic/cyboquatic-fog-router"
+homepage = "https://cyboquatic.org/router"
+documentation = "https://docs.cyboquatic.org/router"
+readme = "README.md"
+keywords = ["routing", "fog-computing", "energy-efficiency", "safety", "lyapunov"]
+categories = ["embedded", "network-programming", "science", "simulation"]
+exclude = [
+    ".gitignore",
+    ".github/",
+    "tests/",
+    "benches/",
+    "*.md",
+    "docs/",
+    "config/"
+]
+
+# ============================================================================
+# Feature Flags
+# ============================================================================
+
+[features]
+default = ["std", "alns", "security"]
+
+# Standard library support (disable for no_std embedded)
+std = []
+
+# ALN shard export for routing audit trails
+alns = ["std", "serde", "serde_json", "hex"]
+
+# Security features (firmware verification, node authentication)
+security = ["std", "sha2", "ecdsa", "p256"]
+
+# Persistent routing history
+persistence = ["std", "tokio", "tokio-util", "sled"]
+
+# Prometheus metrics export
+metrics = ["std", "prometheus", "metrics"]
+
+# Adaptive routing (dynamic corridor bands)
+adaptive = ["std", "statrs"]
+
+# Full production feature set
+production = ["std", "alns", "security", "persistence", "metrics", "adaptive"]
+
+# Development and testing utilities
+dev-utils = ["std", "rand", "proptest", "criterion"]
+
+# ============================================================================
+# Core Dependencies
+# ============================================================================
+
+[dependencies]
+
+# Standard library extensions
+anyhow = { version = "1.0", features = ["backtrace"] }
+thiserror = "1.0"
+
+# Logging and tracing
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+log = "0.4"
+
+# Time handling
+chrono = { version = "0.4", features = ["serde"] }
+instant = "0.1"
+
+# Serialization (for ALN shards and routing logs)
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Cryptographic hashing (for routing integrity)
+hex = { version = "0.4", optional = true }
+sha2 = { version = "0.10", optional = true }
+
+# Digital signatures (for node authentication)
+ecdsa = { version = "0.16", features = ["signing", "verification"], optional = true }
+p256 = { version = "0.13", features = ["ecdsa"], optional = true }
+
+# Async runtime (for persistence and network I/O)
+tokio = { version = "1.0", features = ["full"], optional = true }
+tokio-util = { version = "0.7", features = ["codec"], optional = true }
+
+# Embedded database for routing history
+sled = { version = "0.34", optional = true }
+
+# Metrics and monitoring
+prometheus = { version = "0.13", optional = true }
+metrics = { version = "0.21", optional = true }
+metrics-exporter-prometheus = { version = "0.12", optional = true }
+
+# Numerical computing
+nalgebra = "0.32"
+
+# Statistics for adaptive routing
+statrs = { version = "0.16", optional = true }
+
+# Configuration management
+config = "0.14"
+
+# Random number generation
+rand = "0.8"
+
+# Hash maps for node registry
+hashbrown = "0.14"
+
+# ============================================================================
+# Platform-Specific Dependencies
+# ============================================================================
+
+[target.'cfg(target_os = "linux")'.dependencies]
+libc = "0.2"
+
+[target.'cfg(target_os = "windows")'.dependencies]
+winapi = { version = "0.3", features = ["winbase", "winerror"] }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+libc = "0.2"
+
+# ============================================================================
+# Embedded/No-Std Support
+# ============================================================================
+
+[target.'cfg(not(any(target_os = "linux", target_os = "windows", target_os = "macos")))'.dependencies]
+# For embedded targets without std
+core = { version = "1.0", package = "rustc-std-workspace-core" }
+alloc = { version = "1.0", package = "rustc-std-workspace-alloc" }
+
+# ============================================================================
+# Development Dependencies
+# ============================================================================
+
+[dev-dependencies]
+criterion = { version = "0.5", features = ["html_reports"] }
+tempfile = "3.0"
+mockall = "0.12"
+pretty_assertions = "1.4"
+tokio-test = "0.4"
+assert_matches = "1.5"
+proptest = "1.0"
+
+# ============================================================================
+# Build Dependencies
+# ============================================================================
+
+[build-dependencies]
+# Version information generation
+vergen = { version = "8.0", features = ["build", "cargo", "git", "rustc"] }
+
+# ============================================================================
+# Package Metadata
+# ============================================================================
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
+targets = ["x86_64-unknown-linux-gnu", "x86_64-pc-windows-msvc", "x86_64-apple-darwin"]
+
+[package.metadata.release]
+pre-release-replacements = [
+    { file = "CHANGELOG.md", search = "Unreleased", replace = "{{version}}" },
+    { file = "CHANGELOG.md", search = "\\.\\.\\.HEAD", replace = "...{{tag_name}}" },
+    { file = "CHANGELOG.md", search = "ReleaseDate", replace = "{{date}}" },
+    { file = "CHANGELOG.md", search = "<!-- next-header -->", replace = "<!-- next-header -->\n## [Unreleased] - ReleaseDate" },
+    { file = "CHANGELOG.md", search = "<!-- next-url -->", replace = "<!-- next-url -->\n[Unreleased]: https://github.com/cyboquatic/cyboquatic-fog-router/compare/{{tag_name}}...HEAD" },
+]
+
+# ============================================================================
+# Build Profiles
+# ============================================================================
+
+[profile.dev]
+opt-level = 0
+debug = true
+debug-assertions = true
+overflow-checks = true
+lto = false
+panic = "unwind"
+incremental = true
+codegen-units = 256
+
+[profile.dev.package."*"]
+opt-level = 3
+
+[profile.release]
+opt-level = 3
+debug = false
+debug-assertions = false
+overflow-checks = false
+lto = "thin"
+panic = "unwind"
+incremental = false
+codegen-units = 16
+strip = "symbols"
+
+[profile.release-lto]
+inherits = "release"
+lto = "fat"
+codegen-units = 1
+
+[profile.profiling]
+inherits = "release"
+debug = true
+strip = "none"
+
+[profile.bench]
+inherits = "release"
+debug = true
+
+# ============================================================================
+# Linting Configuration
+# ============================================================================
+
+[lints.rust]
+unsafe_code = "forbid"
+missing_docs = "deny"
+rust_2018_idioms = "warn"
+trivial_casts = "warn"
+trivial_numeric_casts = "warn"
+unused_import_braces = "warn"
+unused_qualifications = "warn"
+
+[lints.clippy]
+all = "warn"
+pedantic = "warn"
+nursery = "warn"
+cargo = "warn"
+unwrap_used = "warn"
+expect_used = "warn"
+panic = "warn"
+todo = "warn"
+unimplemented = "warn"
+dbg_macro = "warn"
+print_stdout = "warn"
+print_stderr = "warn"
+
+# ============================================================================
+# Example Configurations
+# ============================================================================
+
+[[example]]
+name = "router_basic"
+path = "examples/router_basic.rs"
+required-features = ["std", "alns"]
+
+[[example]]
+name = "router_security"
+path = "examples/router_security.rs"
+required-features = ["security"]
+
+[[example]]
+name = "router_persistence"
+path = "examples/router_persistence.rs"
+required-features = ["persistence"]
+
+[[example]]
+name = "router_adaptive"
+path = "examples/router_adaptive.rs"
+required-features = ["adaptive"]
+
+[[example]]
+name = "router_metrics"
+path = "examples/router_metrics.rs"
+required-features = ["metrics"]
+
+# ============================================================================
+# Binary Targets
+# ============================================================================
+
+[[bin]]
+name = "cyboquatic-fog-router-cli"
+path = "src/bin/cli.rs"
+required-features = ["std", "alns"]
+
+[[bin]]
+name = "cyboquatic-fog-router-daemon"
+path = "src/bin/daemon.rs"
+required-features = ["std", "persistence", "metrics"]
+
+[[bin]]
+name = "cyboquatic-fog-router-monitor"
+path = "src/bin/monitor.rs"
+required-features = ["std", "metrics"]
+
+# ============================================================================
+# Library Configuration
+# ============================================================================
+
+[lib]
+name = "cyboquatic_fog_router"
+path = "src/lib.rs"
+crate-type = ["lib", "rlib", "cdylib"]
+doctest = true
+test = true
+doc = true
+
+# ============================================================================
+# Test Configuration
+# ============================================================================
+
+[[test]]
+name = "integration_tests"
+path = "tests/integration.rs"
+required-features = ["std", "alns"]
+
+[[test]]
+name = "routing_decisions"
+path = "tests/routing_decisions.rs"
+required-features = ["std"]
+
+[[test]]
+name = "energy_tailwind"
+path = "tests/energy_tailwind.rs"
+required-features = ["std"]
+
+[[test]]
+name = "hydraulic_safety"
+path = "tests/hydraulic_safety.rs"
+required-features = ["std"]
+
+[[test]]
+name = "lyapunov_stability"
+path = "tests/lyapunov_stability.rs"
+required-features = ["std"]
+
+[[test]]
+name = "security_verification"
+path = "tests/security_verification.rs"
+required-features = ["security"]
+
+[[test]]
+name = "aln_shard_generation"
+path = "tests/aln_shard_generation.rs"
+required-features = ["alns"]
+
+# ============================================================================
+# Benchmark Configuration
+# ============================================================================
+
+[[bench]]
+name = "routing_performance"
+path = "benches/routing_performance.rs"
+harness = false
+required-features = ["std"]
+
+[[bench]]
+name = "node_evaluation_bench"
+path = "benches/node_evaluation_bench.rs"
+harness = false
+required-features = ["std"]
+
+[[bench]]
+name = "aln_export_bench"
+path = "benches/aln_export_bench.rs"
+harness = false
+required-features = ["alns"]
+
+[[bench]]
+name = "security_overhead_bench"
+path = "benches/security_overhead_bench.rs"
+harness = false
+required-features = ["security"]
+
+# ============================================================================
+# Workspace Configuration
+# ============================================================================
+
+[workspace]
+members = [
+    ".",
+    "../cyboquatic-gateway",
+    "../cyboquatic-ecosafety-core",
+    "../econet-material-cybo",
+    "../cyboquatic-kernel",
+]
+
+[workspace.package]
+version = "1.0.0"
+edition = "2021"
+rust-version = "1.75.0"
+authors = ["Cyboquatic Research Collective <research@cyboquatic.org>"]
+license = "Apache-2.0 OR MIT"
+repository = "https://github.com/cyboquatic/cyboquatic"
+homepage = "https://cyboquatic.org"
+
+[workspace.dependencies]
+# Shared workspace dependencies for consistency
+anyhow = "1.0"
+thiserror = "1.0"
+tracing = "0.1"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+chrono = { version = "0.4", features = ["serde"] }
+tokio = { version = "1.0", features = ["full"] }
+nalgebra = "0.32"
+hex = "0.4"
+
+# ============================================================================
+# Dependency Pinning for Long-Term Stability
+# ============================================================================
+
+# Note: For 20-50 year continuity, critical dependencies should be pinned
+# to specific versions to ensure reproducibility. Update only after
+# thorough testing and validation.
+
+[dependencies.serde]
+version = "=1.0.193"
+features = ["derive"]
+
+[dependencies.serde_json]
+version = "=1.0.108"
+
+[dependencies.hex]
+version = "=0.4.3"
+optional = true
+
+[dependencies.sha2]
+version = "=0.10.8"
+optional = true
+
+[dependencies.tokio]
+version = "=1.35.0"
+features = ["full"]
+optional = true
+
+[dependencies.ecdsa]
+version = "=0.16.9"
+features = ["signing", "verification"]
+optional = true
+
+[dependencies.p256]
+version = "=0.13.2"
+features = ["ecdsa"]
+optional = true
+
+[dependencies.sled]
+version = "=0.34.7"
+optional = true
+
+# ============================================================================
+# Security Advisory Configuration
+# ============================================================================
+
+[package.metadata.security-advisories]
+# Critical security dependencies that require immediate attention
+critical = ["sha2", "ecdsa", "p256", "tokio", "serde", "serde_json"]
+
+# Regular security audit schedule (days)
+audit_interval_days = 30
+
+# Auto-update policy for security patches
+auto_update_security = true
+
+# Vulnerability disclosure contact
+disclosure_email = "security@cyboquatic.org"
+
+# ============================================================================
+# Documentation Configuration
+# ============================================================================
+
+[package.metadata.docs]
+# Documentation build configuration
+targets = [
+    "x86_64-unknown-linux-gnu",
+    "x86_64-pc-windows-msvc",
+    "x86_64-apple-darwin",
+    "aarch64-unknown-linux-gnu",
+]
+
+# Documentation features to build
+features = ["production"]
+
+# Include private items in docs
+document-private-items = false
+
+# ============================================================================
+# Continuous Integration Configuration
+# ============================================================================
+
+[package.metadata.ci]
+# CI platforms to test on
+platforms = ["linux", "windows", "macos"]
+
+# Minimum test coverage required
+min-coverage-percent = 85
+
+# Required CI checks before merge
+required-checks = [
+    "test",
+    "clippy",
+    "fmt",
+    "docs",
+    "security-audit",
+]
+
+# ============================================================================
+# Routing Configuration
+# ============================================================================
+
+[package.metadata.routing]
+# Default routing parameters
+default_max_history_size = 10000
+default_acceptance_rate_threshold = 0.7
+default_latency_threshold_us = 1000
+
+# Node health thresholds
+min_health_score = 0.7
+min_energy_surplus_j = 1000.0
+min_ker_k_score = 0.90
+min_ker_e_score = 0.90
+max_ker_r_score = 0.13
+
+# Security requirements
+require_firmware_verification = true
+require_node_authentication = true
+certificate_rotation_days = 90
+
+# ============================================================================
+# Compliance and Regulatory Mapping
+# ============================================================================
+
+[package.metadata.compliance]
+# Functional Safety Standards
+safety_standards = [
+    "IEC 61508",
+    "ISO 13849",
+    "ISO 26262",
+]
+
+# Network Security Standards
+security_standards = [
+    "IEC 62443-3-2",
+    "NIST SP 800-82",
+    "ISO/IEC 27001",
+]
+
+# Environmental Standards
+environmental_standards = [
+    "ISO 14001",
+    "ISO 14851",
+    "OECD 202",
+]
+
+# ============================================================================
+# Deployment Configuration
+# ============================================================================
+
+[package.metadata.deployment]
+# Supported deployment environments
+environments = [
+    "freshwater",
+    "marine",
+    "wastewater",
+    "industrial",
+    "drinking_water",
+]
+
+# Resource requirements
+min_memory_mb = 256
+min_storage_mb = 512
+min_cpu_cores = 2
+
+# Scalability targets
+max_nodes_supported = 10000
+max_routing_decisions_per_second = 1000
+max_history_retention_days = 365
+
+# ============================================================================
+# End of Manifest
+# ============================================================================
