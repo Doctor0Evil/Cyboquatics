@@ -1,0 +1,662 @@
+// ============================================================================
+// ALN Shard Schema - EcoNet Material Cybo 2026
+// ============================================================================
+// Version: 1.0.0
+// Specification: EcoNetMaterialCybo2026
+// License: Apache-2.0 OR MIT
+// Authors: Cyboquatic Research Collective
+//
+// This schema defines the governance-grade specification for biodegradable
+// substrate validation in Cyboquatic machinery. All material specifications
+// must conform to this schema to be approved for deployment.
+//
+// Key Features:
+// - t90 biodegradation kinetics tracking
+// - PFAS residue monitoring and prevention
+// - Microplastic formation risk assessment
+// - Chemical leaching (CEC) corridor validation
+// - KER triad gating for deployment approval
+// - Cryptographic hash chains for audit integrity
+// - 20-50 year lifecycle tracking and replacement scheduling
+//
+// Continuity Guarantee: All material records are cryptographically signed
+// and linked to audit trails. Material degradation is tracked over the
+// operational lifespan with automatic replacement notifications.
+//
+// Compliance Standards:
+// - ISO 14851 (Biodegradability in aqueous medium)
+// - OECD 202 (Daphnia magna acute toxicity)
+// - EPA Method 537 (PFAS analysis)
+// - ISO/IEC 17025 (Laboratory calibration traceability)
+// ============================================================================
+
+spec EcoNetMaterialCybo2026 v1.0.0
+
+// ============================================================================
+// Path Configuration
+// ============================================================================
+
+path qpudatashards/particles/EcoNetMaterialCyboT90PFAS2026v1.csv
+path qpudatashards/evidence/EcoNetMaterialCyboAudit2026v1.json
+path qpudatashards/archives/EcoNetMaterialCyboHistory2026v1.tar.gz
+
+// ============================================================================
+// Role Definition
+// ============================================================================
+
+role MaterialNode
+role CertificationAuthority
+role AuditVerifier
+role DeploymentOperator
+role MaintenanceScheduler
+
+// ============================================================================
+// Field Definitions
+// ============================================================================
+
+fields
+  // Primary Identification
+  node_id                   : String      // Unique node identifier
+  material_id               : String      // Material specification ID
+  matrix_id                 : String      // Substrate matrix/batch ID
+  manufacturer              : String      // Material manufacturer name
+  manufacturer_cert_id      : String      // Manufacturer certificate ID
+  
+  // Physical Properties
+  mass_kg                   : F64         // Material mass in kilograms
+  volume_m3                 : F64         // Material volume in cubic meters
+  density_kg_per_m3         : F64         // Material density
+  surface_area_m2           : F64         // Exposed surface area
+  
+  // Environmental Conditions
+  temp_c                    : F64         // Operating temperature (°C)
+  ph                        : F64         // pH value (0-14)
+  do_mg_per_l               : F64         // Dissolved oxygen (mg/L)
+  salinity_ppt              : F64         // Salinity (parts per thousand)
+  
+  // Biodegradation Kinetics
+  t90_days                  : F64         // Time to 90% biodegradation
+  t50_days                  : F64         // Time to 50% biodegradation
+  t100_days                 : F64         // Time to 100% biodegradation
+  degradation_rate_per_day  : F64         // First-order degradation rate
+  
+  // Risk Coordinates (measured)
+  r_tox                     : F64         // Toxicity risk (0.0-1.0)
+  r_micro                   : F64         // Microplastic formation risk
+  r_leach_cec               : F64         // Chemical leaching risk
+  r_pfas_resid              : F64         // PFAS residue risk
+  r_t90                     : F64         // Biodegradation time risk
+  
+  // Computed Scores
+  k_score                   : F64         // Knowledge factor (0.0-1.0)
+  e_score                   : F64         // Eco-impact factor (0.0-1.0)
+  r_residual                : F64         // Maximum risk coordinate
+  ker_composite             : F64         // Composite KER score
+  
+  // Validation Status
+  ecoimpact_level           : String      // Low/Medium/High
+  criterion_pass            : Bool        // All gates passed
+  corridor_validation       : Bool        // Corridor bounds OK
+  node_compatibility        : Bool        // Node deployment OK
+  pfas_free_certified       : Bool        // PFAS-free certification
+  
+  // Lifecycle Tracking
+  installation_timestamp    : U64         // Installation time (UNIX epoch)
+  replacement_due_timestamp : U64         // Replacement due time
+  calibration_timestamp     : U64         // Last calibration time
+  last_inspection_timestamp : U64         // Last inspection time
+  remaining_lifetime_days   : F64         // Estimated remaining life
+  
+  // Audit and Integrity
+  hexstamp                  : Hex         // Cryptographic hash
+  previous_hexstamp         : Hex         // Previous entry hash (chain)
+  signature                 : Hex         // Digital signature
+  cert_authority_id         : String      // Certifying authority
+  audit_trail_id            : String      // Audit trail reference
+  
+  // Metadata
+  notes                     : String      // Human-readable notes
+  tags                      : String      // Comma-separated tags
+  version                   : String      // Schema version
+  created_timestamp         : U64         // Record creation time
+  modified_timestamp        : U64         // Last modification time
+
+// ============================================================================
+// Corridor Definitions (Safety Thresholds)
+// ============================================================================
+
+corridors
+  // Biodegradation Time Corridors (days)
+  t90_max_days              = 180.0
+  t90_gold_days             = 120.0
+  t90_safe_days             = 90.0
+  t50_max_days              = 90.0
+  t100_max_days             = 365.0
+  
+  // Toxicity Risk Corridors
+  r_tox_gold_max            = 0.10
+  r_tox_hard_max            = 0.50
+  r_tox_safe_max            = 0.05
+  
+  // Microplastic Risk Corridors
+  r_micro_max               = 0.05
+  r_micro_gold              = 0.02
+  r_micro_safe              = 0.01
+  
+  // Chemical Leaching Corridors
+  r_leach_max               = 0.10
+  r_leach_gold              = 0.05
+  r_leach_safe              = 0.02
+  
+  // PFAS Residue Corridors
+  r_pfas_max                = 0.10
+  r_pfas_gold               = 0.05
+  r_pfas_safe               = 0.01
+  
+  // Caloric Density Corridors (MJ/kg)
+  caloric_density_max       = 0.30
+  caloric_density_gold      = 0.20
+  caloric_density_safe      = 0.10
+  
+  // KER Thresholds for Deployment
+  k_min                     = 0.90
+  e_min                     = 0.90
+  r_max                     = 0.13
+  composite_min             = 0.85
+  
+  // Lifecycle Thresholds
+  min_remaining_life_days   = 365.0
+  inspection_interval_days  = 90.0
+  calibration_interval_days = 180.0
+
+// ============================================================================
+// Kernel Computations (Risk Coordinate Normalization)
+// ============================================================================
+
+kernels
+  // Risk Coordinate Computations
+  risk_coords:
+    // t90 biodegradation time risk (linear normalization)
+    rt90 = if t90_days <= t90_safe_days then 0.0
+           else if t90_days <= t90_gold_days then (t90_days - t90_safe_days) / (t90_gold_days - t90_safe_days) * 0.5
+           else if t90_days <= t90_max_days then 0.5 + (t90_days - t90_gold_days) / (t90_max_days - t90_gold_days) * 0.5
+           else 1.0
+    
+    // Toxicity risk (ratio normalization)
+    rtox = clamp01(r_tox / r_tox_gold_max)
+    
+    // Microplastic formation risk (ratio normalization)
+    rmicro = clamp01(r_micro / r_micro_max)
+    
+    // Chemical leaching risk (ratio normalization)
+    rleach = clamp01(r_leach_cec / r_leach_max)
+    
+    // PFAS residue risk (ratio normalization)
+    rpfas = clamp01(r_pfas_resid / r_pfas_max)
+  
+  // Utility Functions
+  utils:
+    clamp01(x) = if x < 0.0 then 0.0 else if x > 1.0 then 1.0 else x
+    max5(a, b, c, d, e) = max(a, max(b, max(c, max(d, e))))
+    
+  // KER Triad Computation
+  ker_triad:
+    // R (Risk of harm) = maximum risk coordinate
+    r_residual = max5(rt90, rtox, rmicro, rleach, rpfas)
+    
+    // K (Knowledge) = 1.0 for validated materials (reduced for unverified)
+    k_score = if pfas_free_certified and corridor_validation then 1.0
+              else if corridor_validation then 0.95
+              else 0.80
+    
+    // E (Eco-impact) = 1 - average risk (higher is better)
+    e_score = clamp01(1.0 - (rt90 + rtox + rmicro + rleach + rpfas) / 5.0)
+    
+    // Composite KER score
+    ker_composite = (k_score + e_score + (1.0 - r_residual)) / 3.0
+  
+  // Eco-Impact Level Classification
+  ecoimpact_classification:
+    ecoimpact_level = if e_score >= 0.95 and r_residual <= 0.05 then "Low"
+                      else if e_score >= 0.90 and r_residual <= 0.13 then "Medium"
+                      else "High"
+  
+  // Lifecycle Computations
+  lifecycle:
+    // Days since installation
+    age_days = (created_timestamp - installation_timestamp) / 86400
+    
+    // Remaining lifetime estimate (based on t90 and degradation rate)
+    remaining_lifetime_days = max(0.0, t100_days - age_days)
+    
+    // Replacement due timestamp
+    replacement_due_timestamp = installation_timestamp + (t100_days * 86400)
+    
+    // Inspection due flag
+    inspection_due = (created_timestamp - last_inspection_timestamp) > (inspection_interval_days * 86400)
+    
+    // Calibration due flag
+    calibration_due = (created_timestamp - calibration_timestamp) > (calibration_interval_days * 86400)
+
+// ============================================================================
+// Admissibility Criteria (Deployment Gates)
+// ============================================================================
+
+admissibility
+  // Corridor Validation (all parameters within bounds)
+  corridor_validation =
+    (t90_days <= t90_max_days) and
+    (t50_days <= t50_max_days) and
+    (t100_days <= t100_max_days) and
+    (r_tox <= r_tox_hard_max) and
+    (r_micro <= r_micro_max) and
+    (r_leach_cec <= r_leach_max) and
+    (r_pfas_resid <= r_pfas_max) and
+    (ph >= 0.0 and ph <= 14.0) and
+    (temp_c >= -10.0 and temp_c <= 60.0) and
+    (do_mg_per_l >= 0.0)
+  
+  // Node Compatibility (no contaminant introduction)
+  node_compatibility =
+    corridor_validation and
+    (r_pfas_resid <= r_pfas_safe) and
+    pfas_free_certified and
+    (r_leach_cec <= r_leach_gold)
+  
+  // KER Threshold Validation
+  ker_threshold_pass =
+    (k_score >= k_min) and
+    (e_score >= e_min) and
+    (r_residual <= r_max) and
+    (ker_composite >= composite_min)
+  
+  // Lifecycle Validation
+  lifecycle_valid =
+    (remaining_lifetime_days >= min_remaining_life_days) and
+    not inspection_due and
+    not calibration_due
+  
+  // Overall Deployment Approval
+  criterion_pass =
+    corridor_validation and
+    node_compatibility and
+    ker_threshold_pass and
+    lifecycle_valid and
+    pfas_free_certified
+  
+  // PFAS-Free Certification Gate
+  pfas_free_certified = (r_pfas_resid <= r_pfas_safe)
+
+// ============================================================================
+// Audit Chain Configuration
+// ============================================================================
+
+audit_chain
+  // Chain integrity verification
+  chain_type = "cryptographic_hash_chain"
+  hash_algorithm = "SHA-256"
+  signature_algorithm = "ECDSA-P256"
+  
+  // Chain validation rules
+  validate_previous_hash = true
+  validate_signature = true
+  validate_timestamp_order = true
+  allow_gaps = false
+  
+  // Audit retention
+  retention_years = 50
+  archive_compression = "gzip"
+  archive_encryption = "AES-256-GCM"
+  
+  // Verification requirements
+  min_verifiers = 3
+  cert_authority_required = true
+  timestamp_authority_required = true
+
+// ============================================================================
+// Evidence Requirements
+// ============================================================================
+
+evidence
+  // Required laboratory certifications
+  required_certs:
+    - "ISO_14851_biodegradability"
+    - "OECD_202_toxicity"
+    - "EPA_537_PFAS_analysis"
+    - "ISO_IEC_17025_calibration"
+  
+  // Required measurements
+  required_measurements:
+    - "t90_days"
+    - "r_tox"
+    - "r_micro"
+    - "r_leach_cec"
+    - "r_pfas_resid"
+    - "temp_c"
+    - "ph"
+  
+  // Required audit fields
+  required_audit_fields:
+    - "hexstamp"
+    - "previous_hexstamp"
+    - "signature"
+    - "cert_authority_id"
+    - "created_timestamp"
+  
+  // Evidence retention
+  evidence_retention_years = 50
+  evidence_format = "ALN_shard"
+  evidence_verification = "cryptographic"
+
+// ============================================================================
+// Deployment Environment Classifications
+// ============================================================================
+
+environments
+  // Freshwater deployment (rivers, lakes, municipal)
+  Freshwater:
+    t90_max_days = 180.0
+    r_pfas_max = 0.10
+    r_tox_gold_max = 0.10
+    r_micro_max = 0.05
+    do_min_mg_per_l = 5.0
+  
+  // Marine deployment (ocean, saltwater)
+  Marine:
+    t90_max_days = 120.0
+    r_pfas_max = 0.05
+    r_tox_gold_max = 0.05
+    r_micro_max = 0.02
+    salinity_min_ppt = 30.0
+  
+  // Wastewater deployment (treatment facilities)
+  Wastewater:
+    t90_max_days = 90.0
+    r_pfas_max = 0.15
+    r_tox_gold_max = 0.20
+    r_micro_max = 0.10
+    r_leach_max = 0.20
+  
+  // Drinking Water deployment (most stringent)
+  DrinkingWater:
+    t90_max_days = 60.0
+    r_pfas_max = 0.01
+    r_tox_gold_max = 0.02
+    r_micro_max = 0.01
+    r_leach_max = 0.02
+    do_min_mg_per_l = 7.0
+  
+  // Industrial deployment (process water)
+  Industrial:
+    t90_max_days = 365.0
+    r_pfas_max = 0.20
+    r_tox_gold_max = 0.30
+    r_micro_max = 0.15
+    r_leach_max = 0.25
+
+// ============================================================================
+// Replacement and Maintenance Scheduling
+// ============================================================================
+
+maintenance
+  // Inspection schedule
+  inspection_schedule:
+    frequency_days = 90
+    required_checks:
+      - "visual_inspection"
+      - "dimensional_measurement"
+      - "surface_degradation_assessment"
+      - "leaching_sample_collection"
+  
+  // Calibration schedule
+  calibration_schedule:
+    frequency_days = 180
+    required_calibrations:
+      - "sensor_zero_point"
+      - "sensor_span"
+      - "reference_standard_verification"
+  
+  // Replacement triggers
+  replacement_triggers:
+    - "remaining_lifetime_days < 30"
+    - "r_residual > 0.20"
+    - "criterion_pass = false"
+    - "visual_degradation > 20_percent"
+    - "leaching_exceeds_threshold"
+  
+  // Decommissioning requirements
+  decommissioning:
+    - "material_recovery_documentation"
+    - "waste_classification"
+    - "environmental_impact_assessment"
+    - "replacement_installation_verification"
+
+// ============================================================================
+// Export Formats
+// ============================================================================
+
+exports
+  // CSV format for spreadsheet analysis
+  csv_format:
+    delimiter = ","
+    quote_char = "\""
+    include_header = true
+    encoding = "UTF-8"
+    fields:
+      - "node_id"
+      - "material_id"
+      - "t90_days"
+      - "r_tox"
+      - "r_micro"
+      - "r_leach_cec"
+      - "r_pfas_resid"
+      - "k_score"
+      - "e_score"
+      - "r_residual"
+      - "criterion_pass"
+      - "hexstamp"
+      - "created_timestamp"
+  
+  // JSON format for API integration
+  json_format:
+    indent = 2
+    sort_keys = true
+    include_null = false
+    encoding = "UTF-8"
+  
+  // ALN shard format for audit trails
+  aln_shard_format:
+    include_chain_proof = true
+    include_signatures = true
+    include_metadata = true
+    compression = "gzip"
+
+// ============================================================================
+// Compliance and Regulatory Mapping
+// ============================================================================
+
+compliance
+  // International Standards
+  iso_standards:
+    - "ISO 14851:2019"
+    - "ISO 14852:2018"
+    - "ISO 17556:2019"
+    - "ISO/IEC 17025:2017"
+  
+  // OECD Guidelines
+  oecd_guidelines:
+    - "OECD 202"
+    - "OECD 203"
+    - "OECD 301"
+    - "OECD 302"
+  
+  // EPA Methods
+  epa_methods:
+    - "EPA Method 537"
+    - "EPA Method 537.1"
+    - "EPA Method 1694"
+  
+  // Regional Regulations
+  eu_regulations:
+    - "REACH Regulation (EC) No 1907/2006"
+    - "Biocidal Products Regulation (EU) No 528/2012"
+  
+  us_regulations:
+    - "TSCA Section 5"
+    - "Clean Water Act"
+  
+  // Functional Safety
+  safety_standards:
+    - "IEC 61508"
+    - "ISO 13849"
+
+// ============================================================================
+// Version History
+// ============================================================================
+
+version_history
+  v1.0.0:
+    date = "2026-01-01"
+    changes:
+      - "Initial specification release"
+      - "t90/PFAS corridor definitions"
+      - "KER triad gating implementation"
+      - "Cryptographic audit chain"
+      - "50-year lifecycle tracking"
+  
+  v0.9.0:
+    date = "2025-10-01"
+    changes:
+      - "Draft specification"
+      - "Community review period"
+
+// ============================================================================
+// Example Record
+// ============================================================================
+
+example_record
+  node_id = "MAT-2026-001"
+  material_id = "BIOPOLY-X-120"
+  matrix_id = "BATCH-2026-0042"
+  manufacturer = "EcoMaterials Inc"
+  manufacturer_cert_id = "EM-CERT-2026-001"
+  
+  mass_kg = 50.0
+  volume_m3 = 0.045
+  density_kg_per_m3 = 1111.0
+  surface_area_m2 = 2.5
+  
+  temp_c = 25.0
+  ph = 7.2
+  do_mg_per_l = 8.5
+  salinity_ppt = 0.5
+  
+  t90_days = 90.0
+  t50_days = 45.0
+  t100_days = 150.0
+  degradation_rate_per_day = 0.011
+  
+  r_tox = 0.05
+  r_micro = 0.02
+  r_leach_cec = 0.05
+  r_pfas_resid = 0.01
+  r_t90 = 0.25
+  
+  k_score = 1.0
+  e_score = 0.94
+  r_residual = 0.25
+  ker_composite = 0.897
+  
+  ecoimpact_level = "Medium"
+  criterion_pass = true
+  corridor_validation = true
+  node_compatibility = true
+  pfas_free_certified = true
+  
+  installation_timestamp = 1735689600
+  replacement_due_timestamp = 1748649600
+  calibration_timestamp = 1735689600
+  last_inspection_timestamp = 1735689600
+  remaining_lifetime_days = 150.0
+  
+  hexstamp = "a3f2b8c1d4e5f6789012345678901234567890abcdef1234567890abcdef1234"
+  previous_hexstamp = "0000000000000000000000000000000000000000000000000000000000000000"
+  signature = "b4c3d2e1f0987654321098765432109876543210fedcba0987654321fedcba09"
+  cert_authority_id = "CA-CYBO-2026-001"
+  audit_trail_id = "AUDIT-2026-MAT-001"
+  
+  notes = "Initial deployment - freshwater environment"
+  tags = "biodegradable,pfas-free,freshwater,casing"
+  version = "1.0.0"
+  created_timestamp = 1735689600
+  modified_timestamp = 1735689600
+
+// ============================================================================
+// Validation Rules
+// ============================================================================
+
+validation
+  // Field-level validation
+  field_rules:
+    node_id: "required, unique, alphanumeric"
+    material_id: "required, unique, alphanumeric"
+    t90_days: "required, positive, max=365"
+    r_tox: "required, range=[0.0, 1.0]"
+    r_micro: "required, range=[0.0, 1.0]"
+    r_leach_cec: "required, range=[0.0, 1.0]"
+    r_pfas_resid: "required, range=[0.0, 1.0]"
+    ph: "required, range=[0.0, 14.0]"
+    temp_c: "required, range=[-10.0, 60.0]"
+    hexstamp: "required, hex64"
+    signature: "required, hex128"
+  
+  // Cross-field validation
+  cross_field_rules:
+    - "t50_days < t90_days"
+    - "t90_days < t100_days"
+    - "installation_timestamp < created_timestamp"
+    - "calibration_timestamp <= created_timestamp"
+    - "last_inspection_timestamp <= created_timestamp"
+  
+  // Chain validation
+  chain_rules:
+    - "previous_hexstamp matches previous record hexstamp"
+    - "created_timestamp > previous created_timestamp"
+    - "signature verifies against cert_authority_id"
+
+// ============================================================================
+// Query Templates
+// ============================================================================
+
+queries
+  // Find all materials needing replacement
+  replacement_due:
+    filter = "remaining_lifetime_days < 30"
+    sort = "remaining_lifetime_days ASC"
+  
+  // Find all PFAS-free certified materials
+  pfas_free:
+    filter = "pfas_free_certified = true"
+    sort = "e_score DESC"
+  
+  // Find all materials failing deployment criteria
+  deployment_failures:
+    filter = "criterion_pass = false"
+    sort = "created_timestamp DESC"
+  
+  // Find materials by environment
+  by_environment:
+    filter = "environment = {param}"
+    sort = "k_score DESC"
+  
+  // Audit trail verification
+  audit_chain_verify:
+    filter = "node_id = {param}"
+    verify = "chain_integrity"
+    include = "all_historical_records"
+
+// ============================================================================
+// End of Specification
+// ============================================================================
+
+end_spec
