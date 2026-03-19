@@ -1,0 +1,474 @@
+# ============================================================================
+# Cyboquatic Gateway - Rust Package Manifest
+# ============================================================================
+# Version: 1.0.0
+# License: Apache-2.0 OR MIT
+# Authors: Cyboquatic Research Collective
+#
+# This manifest defines the Cyboquatic Gateway crate, which provides the
+# safety mediation layer between legacy hardware control systems and
+# physical actuators. All actuation commands pass through cryptographic
+# safety gates enforcing rx/Vt/KER invariants.
+#
+# Continuity Guarantee: This crate is designed for 20-50 year operational
+# lifespan with stable API, semantic versioning, and long-term dependency
+# pinning for reproducibility.
+# ============================================================================
+
+[package]
+name = "cyboquatic-gateway"
+version = "1.0.0"
+edition = "2021"
+rust-version = "1.75.0"
+authors = ["Cyboquatic Research Collective <research@cyboquatic.org>"]
+description = "Safety mediation gateway for Cyboquatic industrial machinery with rx/Vt/KER invariant enforcement"
+license = "Apache-2.0 OR MIT"
+repository = "https://github.com/cyboquatic/cyboquatic-gateway"
+homepage = "https://cyboquatic.org"
+documentation = "https://docs.cyboquatic.org/gateway"
+readme = "README.md"
+keywords = ["safety", "industrial", "ecology", "control-systems", "lyapunov"]
+categories = ["embedded", "science", "simulation", "hardware-support"]
+exclude = [
+    ".gitignore",
+    ".github/",
+    "tests/",
+    "benches/",
+    "*.md",
+    "docs/"
+]
+
+# ============================================================================
+# Feature Flags
+# ============================================================================
+
+[features]
+default = ["std", "audit", "calibration"]
+
+# Standard library support (disable for no_std embedded)
+std = []
+
+# Audit logging and ALN shard generation
+audit = ["hex", "serde", "serde_json"]
+
+# Sensor calibration and drift compensation
+calibration = ["std"]
+
+# OPC UA client support for legacy HCS integration
+opcua = ["std", "opcua-client"]
+
+# Persistent storage for audit logs
+persistence = ["std", "tokio", "tokio-util"]
+
+# Cryptographic signatures for audit integrity
+crypto = ["audit", "sha2", "ecdsa", "p256"]
+
+# Full production feature set
+production = ["std", "audit", "calibration", "persistence", "crypto"]
+
+# Development and testing utilities
+dev-utils = ["std", "rand", "proptest"]
+
+# ============================================================================
+# Core Dependencies
+# ============================================================================
+
+[dependencies]
+
+# Standard library extensions
+anyhow = { version = "1.0", features = ["backtrace"] }
+thiserror = "1.0"
+
+# Logging and tracing
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+log = "0.4"
+
+# Time handling
+chrono = { version = "0.4", features = ["serde"] }
+instant = "0.1"
+
+# Serialization (for ALN shards and audit logs)
+serde = { version = "1.0", features = ["derive"], optional = true }
+serde_json = { version = "1.0", optional = true }
+
+# Cryptographic hashing (for audit integrity)
+hex = { version = "0.4", optional = true }
+sha2 = { version = "0.10", optional = true }
+
+# Digital signatures (for audit verification)
+ecdsa = { version = "0.16", features = ["signing", "verification"], optional = true }
+p256 = { version = "0.13", features = ["ecdsa"], optional = true }
+
+# Async runtime (for persistence and OPC UA)
+tokio = { version = "1.0", features = ["full"], optional = true }
+tokio-util = { version = "0.7", features = ["codec"], optional = true }
+
+# OPC UA client (for legacy HCS integration)
+opcua-client = { version = "0.9", optional = true }
+
+# Random number generation (for testing and nonces)
+rand = { version = "0.8", optional = true }
+
+# Property-based testing
+proptest = { version = "1.0", optional = true }
+
+# Numerical computing
+nalgebra = "0.32"
+
+# Configuration management
+config = "0.14"
+
+# Metrics and monitoring
+metrics = "0.21"
+metrics-exporter-prometheus = { version = "0.12", optional = true }
+
+# ============================================================================
+# Platform-Specific Dependencies
+# ============================================================================
+
+[target.'cfg(target_os = "linux")'.dependencies]
+libc = "0.2"
+
+[target.'cfg(target_os = "windows")'.dependencies]
+winapi = { version = "0.3", features = ["winbase", "winerror"] }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+libc = "0.2"
+
+# ============================================================================
+# Embedded/No-Std Support
+# ============================================================================
+
+[target.'cfg(not(any(target_os = "linux", target_os = "windows", target_os = "macos")))'.dependencies]
+# For embedded targets without std
+core = { version = "1.0", package = "rustc-std-workspace-core" }
+alloc = { version = "1.0", package = "rustc-std-workspace-alloc" }
+
+# ============================================================================
+# Development Dependencies
+# ============================================================================
+
+[dev-dependencies]
+criterion = { version = "0.5", features = ["html_reports"] }
+tempfile = "3.0"
+mockall = "0.12"
+pretty_assertions = "1.4"
+tokio-test = "0.4"
+assert_matches = "1.5"
+
+# ============================================================================
+# Build Dependencies
+# ============================================================================
+
+[build-dependencies]
+# Version information generation
+vergen = { version = "8.0", features = ["build", "cargo", "git", "rustc"] }
+
+# ============================================================================
+# Package Metadata
+# ============================================================================
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
+targets = ["x86_64-unknown-linux-gnu", "x86_64-pc-windows-msvc", "x86_64-apple-darwin"]
+
+[package.metadata.release]
+pre-release-replacements = [
+    { file = "CHANGELOG.md", search = "Unreleased", replace = "{{version}}" },
+    { file = "CHANGELOG.md", search = "\\.\\.\\.HEAD", replace = "...{{tag_name}}" },
+    { file = "CHANGELOG.md", search = "ReleaseDate", replace = "{{date}}" },
+    { file = "CHANGELOG.md", search = "<!-- next-header -->", replace = "<!-- next-header -->\n## [Unreleased] - ReleaseDate" },
+    { file = "CHANGELOG.md", search = "<!-- next-url -->", replace = "<!-- next-url -->\n[Unreleased]: https://github.com/cyboquatic/cyboquatic-gateway/compare/{{tag_name}}...HEAD" },
+]
+
+# ============================================================================
+# Build Profiles
+# ============================================================================
+
+[profile.dev]
+opt-level = 0
+debug = true
+debug-assertions = true
+overflow-checks = true
+lto = false
+panic = "unwind"
+incremental = true
+codegen-units = 256
+
+[profile.dev.package."*"]
+opt-level = 3
+
+[profile.release]
+opt-level = 3
+debug = false
+debug-assertions = false
+overflow-checks = false
+lto = "thin"
+panic = "unwind"
+incremental = false
+codegen-units = 16
+strip = "symbols"
+
+[profile.release-lto]
+inherits = "release"
+lto = "fat"
+codegen-units = 1
+
+[profile.profiling]
+inherits = "release"
+debug = true
+strip = "none"
+
+[profile.bench]
+inherits = "release"
+debug = true
+
+# ============================================================================
+# Linting Configuration
+# ============================================================================
+
+[lints.rust]
+unsafe_code = "forbid"
+missing_docs = "deny"
+rust_2018_idioms = "warn"
+trivial_casts = "warn"
+trivial_numeric_casts = "warn"
+unused_import_braces = "warn"
+unused_qualifications = "warn"
+
+[lints.clippy]
+all = "warn"
+pedantic = "warn"
+nursery = "warn"
+cargo = "warn"
+unwrap_used = "warn"
+expect_used = "warn"
+panic = "warn"
+todo = "warn"
+unimplemented = "warn"
+dbg_macro = "warn"
+print_stdout = "warn"
+print_stderr = "warn"
+
+# ============================================================================
+# Example Configurations
+# ============================================================================
+
+[[example]]
+name = "gateway_basic"
+path = "examples/gateway_basic.rs"
+required-features = ["std", "audit"]
+
+[[example]]
+name = "gateway_opcua"
+path = "examples/gateway_opcua.rs"
+required-features = ["opcua"]
+
+[[example]]
+name = "gateway_persistence"
+path = "examples/gateway_persistence.rs"
+required-features = ["persistence"]
+
+[[example]]
+name = "gateway_crypto"
+path = "examples/gateway_crypto.rs"
+required-features = ["crypto"]
+
+# ============================================================================
+# Binary Targets
+# ============================================================================
+
+[[bin]]
+name = "cyboquatic-gateway-cli"
+path = "src/bin/cli.rs"
+required-features = ["std", "audit"]
+
+[[bin]]
+name = "cyboquatic-gateway-monitor"
+path = "src/bin/monitor.rs"
+required-features = ["std", "audit", "persistence"]
+
+# ============================================================================
+# Library Configuration
+# ============================================================================
+
+[lib]
+name = "cyboquatic_gateway"
+path = "src/lib.rs"
+crate-type = ["lib", "rlib", "cdylib"]
+doctest = true
+test = true
+doc = true
+
+# ============================================================================
+# Test Configuration
+# ============================================================================
+
+[[test]]
+name = "integration_tests"
+path = "tests/integration.rs"
+required-features = ["std", "audit"]
+
+[[test]]
+name = "gateway_mediation"
+path = "tests/gateway_mediation.rs"
+required-features = ["std"]
+
+[[test]]
+name = "invariants"
+path = "tests/invariants.rs"
+required-features = ["std"]
+
+[[test]]
+name = "calibration"
+path = "tests/calibration.rs"
+required-features = ["calibration"]
+
+[[test]]
+name = "audit_chain"
+path = "tests/audit_chain.rs"
+required-features = ["audit"]
+
+# ============================================================================
+# Benchmark Configuration
+# ============================================================================
+
+[[bench]]
+name = "gateway_performance"
+path = "benches/gateway_performance.rs"
+harness = false
+required-features = ["std"]
+
+[[bench]]
+name = "invariants_bench"
+path = "benches/invariants_bench.rs"
+harness = false
+required-features = ["std"]
+
+[[bench]]
+name = "audit_logging_bench"
+path = "benches/audit_logging_bench.rs"
+harness = false
+required-features = ["audit"]
+
+# ============================================================================
+# Workspace Configuration
+# ============================================================================
+
+[workspace]
+members = [
+    ".",
+    "../cyboquatic-ecosafety-core",
+    "../econet-material-cybo",
+    "../cyboquatic-fog-router",
+    "../cyboquatic-kernel",
+]
+
+[workspace.package]
+version = "1.0.0"
+edition = "2021"
+rust-version = "1.75.0"
+authors = ["Cyboquatic Research Collective <research@cyboquatic.org>"]
+license = "Apache-2.0 OR MIT"
+repository = "https://github.com/cyboquatic/cyboquatic"
+homepage = "https://cyboquatic.org"
+
+[workspace.dependencies]
+# Shared workspace dependencies for consistency
+anyhow = "1.0"
+thiserror = "1.0"
+tracing = "0.1"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+chrono = { version = "0.4", features = ["serde"] }
+tokio = { version = "1.0", features = ["full"] }
+nalgebra = "0.32"
+
+# ============================================================================
+# Dependency Pinning for Long-Term Stability
+# ============================================================================
+
+# Note: For 20-50 year continuity, critical dependencies should be pinned
+# to specific versions to ensure reproducibility. Update only after
+# thorough testing and validation.
+
+[dependencies.hex]
+version = "=0.4.3"
+optional = true
+
+[dependencies.serde]
+version = "=1.0.193"
+features = ["derive"]
+optional = true
+
+[dependencies.serde_json]
+version = "=1.0.108"
+optional = true
+
+[dependencies.sha2]
+version = "=0.10.8"
+optional = true
+
+[dependencies.tokio]
+version = "=1.35.0"
+features = ["full"]
+optional = true
+
+# ============================================================================
+# Security Advisory Configuration
+# ============================================================================
+
+[package.metadata.security-advisories]
+# Critical security dependencies that require immediate attention
+critical = ["sha2", "ecdsa", "p256", "tokio"]
+
+# Regular security audit schedule (days)
+audit_interval_days = 30
+
+# Auto-update policy for security patches
+auto_update_security = true
+
+# ============================================================================
+# Documentation Configuration
+# ============================================================================
+
+[package.metadata.docs]
+# Documentation build configuration
+targets = [
+    "x86_64-unknown-linux-gnu",
+    "x86_64-pc-windows-msvc",
+    "x86_64-apple-darwin",
+    "aarch64-unknown-linux-gnu",
+]
+
+# Documentation features to build
+features = ["production"]
+
+# Include private items in docs
+document-private-items = false
+
+# ============================================================================
+# Continuous Integration Configuration
+# ============================================================================
+
+[package.metadata.ci]
+# CI platforms to test on
+platforms = ["linux", "windows", "macos"]
+
+# Minimum test coverage required
+min-coverage-percent = 85
+
+# Required CI checks before merge
+required-checks = [
+    "test",
+    "clippy",
+    "fmt",
+    "docs",
+    "security-audit",
+]
+
+# ============================================================================
+# End of Manifest
+# ============================================================================
