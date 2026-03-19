@@ -1,0 +1,538 @@
+// ============================================================================
+// CYBOQUATIC ALN CONFIGURATION SCHEMA
+// ============================================================================
+// 
+// Assumption/Logic/Notation (ALN) Configuration File
+// 
+// This schema defines all tunable parameters for the Cyboquatic ecosafety
+// framework. Values are owned by Rust/ALN and mirrored to C++ simulation
+// kernels for numerical fidelity.
+// 
+// Safety Properties:
+// - All corridor bands must maintain safe < gold < hard ordering
+// - Lyapunov weights must be non-negative
+// - KER thresholds gate deployment eligibility
+// - Adaptive queues enable automatic risk-of-harm reduction
+// 
+// @file schema.aln
+// @destination cyboquatic-aln-config/src/schema.aln
+// @version 1.0.0
+// @compatibility rust-core >= 1.0, cpp-kernel >= 1.0
+
+// ============================================================================
+// VERSION AND METADATA
+// ============================================================================
+
+@meta {
+    schema_version: "1.0.0",
+    created: "2026-01-01T00:00:00Z",
+    author: "Cyboquatic Research Collective",
+    license: "ECOSAFE-OPEN-1.0",
+    description: "Ecosafety corridor and weight configuration for carbon-negative industrial machinery"
+}
+
+// ============================================================================
+// RISK PLANE DEFINITIONS
+// ============================================================================
+// 
+// Each risk plane represents a normalized dimension in the Lyapunov
+// stability space. Coordinates r_x ∈ [0,1] where 0 = safe, 1 = failure.
+
+@risk_planes {
+    ENERGY: 0,
+    HYDRAULIC: 1,
+    BIOLOGY: 2,
+    CARBON: 3,
+    MATERIALS: 4,
+    THERMAL: 5,
+    MECHANICAL: 6,
+    SENSOR_CALIBRATION: 7
+}
+
+// ============================================================================
+// CORRIDOR BAND CONFIGURATIONS
+// ============================================================================
+// 
+// Corridor bands define the safegoldhard normalization pattern:
+// - safe_upper: r_x < safe_upper → green zone (optimal)
+// - gold_upper: safe_upper ≤ r_x < gold_upper → yellow zone (acceptable)
+// - hard_limit: r_x ≥ hard_limit → red zone (rejection)
+// 
+// All values must satisfy: 0.0 ≤ safe_upper < gold_upper ≤ hard_limit ≤ 1.0
+
+@corridor_bands {
+    
+    // Energy consumption risk corridor
+    energy: {
+        safe_upper: 0.30,
+        gold_upper: 0.70,
+        hard_limit: 1.00,
+        reference_min: 0.0,      // Minimum energy (joules)
+        reference_max: 10000.0,  // Maximum expected energy
+        description: "Energy efficiency and surplus availability"
+    },
+    
+    // Hydraulic pressure and flow risk corridor
+    hydraulic: {
+        safe_upper: 0.25,
+        gold_upper: 0.65,
+        hard_limit: 1.00,
+        reference_min: 0.0,      // Minimum flow (m³/s)
+        reference_max: 100.0,    // Maximum expected flow
+        description: "Hydraulic pressure, flow rate, and fluid dynamics"
+    },
+    
+    // Biological activity and contamination risk corridor
+    biology: {
+        safe_upper: 0.10,
+        gold_upper: 0.50,
+        hard_limit: 1.00,
+        reference_min: 0.0,      // Minimum contaminant (kg/m³)
+        reference_max: 0.001,    // Maximum acceptable contaminant
+        description: "Biological risk, PFAS, CEC, and pathogen levels"
+    },
+    
+    // Carbon emissions and sequestration risk corridor
+    carbon: {
+        safe_upper: 0.20,
+        gold_upper: 0.60,
+        hard_limit: 1.00,
+        reference_min: -10.0,    // Net carbon negative (kg CO2e)
+        reference_max: 10.0,     // Net carbon positive (kg CO2e)
+        description: "Carbon balance - negative values are restorative"
+    },
+    
+    // Material degradation and toxicity risk corridor
+    materials: {
+        safe_upper: 0.15,
+        gold_upper: 0.55,
+        hard_limit: 1.00,
+        reference_min: 0.0,      // Fast degradation (t90 days)
+        reference_max: 180.0,    // Maximum acceptable t90
+        description: "Biodegradation kinetics, toxicity, and leachate"
+    },
+    
+    // Thermal operating range risk corridor
+    thermal: {
+        safe_upper: 0.35,
+        gold_upper: 0.75,
+        hard_limit: 1.00,
+        reference_min: 0.0,      // Minimum temperature (Celsius)
+        reference_max: 80.0,     // Maximum operating temperature
+        description: "Thermal stress and operating range"
+    },
+    
+    // Mechanical stress and fatigue risk corridor
+    mechanical: {
+        safe_upper: 0.30,
+        gold_upper: 0.70,
+        hard_limit: 1.00,
+        reference_min: 0.0,      // Minimum stress (MPa)
+        reference_max: 500.0,    // Yield strength threshold
+        description: "Mechanical stress, vibration, and fatigue"
+    },
+    
+    // Sensor calibration and data quality risk corridor
+    sensor_calibration: {
+        safe_upper: 0.20,
+        gold_upper: 0.60,
+        hard_limit: 1.00,
+        reference_min: 0.0,      // Perfect calibration
+        reference_max: 1.0,      // Drift coefficient deviation
+        description: "Sensor accuracy, drift, and calibration state"
+    }
+}
+
+// ============================================================================
+// LYAPUNOV WEIGHT CONFIGURATIONS
+// ============================================================================
+// 
+// Weights determine the relative importance of each risk plane in the
+// quadratic Lyapunov residual: V_t = Σ w_j * r_j²
+// 
+// Higher weights = greater penalty for risk in that plane.
+// All weights must be non-negative. Sum is not required to equal 1.0.
+
+@lyapunov_weights {
+    
+    // Default weight configuration for general operation
+    default: {
+        energy: 1.0,
+        hydraulic: 1.5,          // Higher priority for fluid safety
+        biology: 2.0,            // Highest priority for ecological safety
+        carbon: 1.8,             // High priority for carbon-negative goals
+        materials: 1.7,          // High priority for material safety
+        thermal: 1.0,
+        mechanical: 1.2,
+        sensor_calibration: 1.5  // Important for data integrity
+    },
+    
+    // Eco-restorative mode (prioritizes carbon and biology)
+    eco_restorative: {
+        energy: 0.8,
+        hydraulic: 1.3,
+        biology: 2.5,
+        carbon: 2.5,             // Maximum priority for sequestration
+        materials: 2.0,
+        thermal: 0.9,
+        mechanical: 1.0,
+        sensor_calibration: 1.3
+    },
+    
+    // Carbon-negative mode (aggressive sequestration focus)
+    carbon_negative: {
+        energy: 0.7,
+        hydraulic: 1.2,
+        biology: 2.2,
+        carbon: 3.0,             // Maximum carbon priority
+        materials: 1.8,
+        thermal: 0.8,
+        mechanical: 0.9,
+        sensor_calibration: 1.2
+    },
+    
+    // Maintenance mode (prioritizes mechanical and thermal)
+    maintenance: {
+        energy: 0.5,
+        hydraulic: 1.0,
+        biology: 1.5,
+        carbon: 1.0,
+        materials: 1.3,
+        thermal: 2.0,            // Higher thermal monitoring
+        mechanical: 2.5,         // Higher mechanical monitoring
+        sensor_calibration: 1.8
+    },
+    
+    // Emergency mode (all safety priorities maximized)
+    emergency: {
+        energy: 1.5,
+        hydraulic: 2.5,
+        biology: 3.0,
+        carbon: 2.0,
+        materials: 2.5,
+        thermal: 2.0,
+        mechanical: 2.5,
+        sensor_calibration: 2.0
+    }
+}
+
+// ============================================================================
+// KER GOVERNANCE THRESHOLDS
+// ============================================================================
+// 
+// K/E/R metrics gate deployment and operational eligibility:
+// - K (Knowledge-factor): Fraction of Lyapunov-safe steps
+// - E (Eco-impact): Complement of maximum risk coordinate
+// - R (Risk-of-harm): Maximum observed risk coordinate
+// 
+// Thresholds define minimum acceptable values for deployment.
+
+@ker_thresholds {
+    
+    // Deployment gating thresholds
+    deployment: {
+        k_minimum: 0.90,         // Minimum 90% safe steps
+        e_minimum: 0.90,         // Minimum 90% eco-impact
+        r_maximum: 0.13,         // Maximum 13% risk-of-harm
+        window_size: 100         // Rolling window steps
+    },
+    
+    // Warning thresholds (trigger alerts but not shutdown)
+    warning: {
+        k_minimum: 0.85,
+        e_minimum: 0.85,
+        r_maximum: 0.20,
+        window_size: 50
+    },
+    
+    // Critical thresholds (trigger immediate safety response)
+    critical: {
+        k_minimum: 0.75,
+        e_minimum: 0.75,
+        r_maximum: 0.35,
+        window_size: 25
+    }
+}
+
+// ============================================================================
+// LYAPUNOV STABILITY PARAMETERS
+// ============================================================================
+// 
+// Controls the stability invariant: V_t_next ≤ V_t_prev + ε
+
+@lyapunov_stability {
+    
+    // Epsilon tolerance for Lyapunov residual growth
+    epsilon_default: 0.001,
+    epsilon_emergency: 0.0001,   // Stricter in emergency mode
+    epsilon_simulation: 0.01,    // Relaxed for offline simulation
+    
+    // Maximum allowed V_t before forced shutdown
+    v_t_maximum: 5.0,
+    
+    // V_t reset conditions
+    reset_on_mode_change: true,
+    reset_on_emergency: false,   // Preserve state for diagnostics
+    reset_on_calibration: true
+}
+
+// ============================================================================
+// ADAPTIVE PARAMETER ADJUSTMENT QUEUE
+// ============================================================================
+// 
+// Enables automatic tuning of parameters to reduce residual risk.
+// Adjustments are validated against Lyapunov invariants before application.
+
+@adaptive_queue {
+    
+    // Queue configuration
+    max_queue_size: 100,
+    processing_interval_ms: 1000,
+    batch_size: 10,
+    
+    // Adjustable parameters
+    adjustable: [
+        "corridor_bands.energy.safe_upper",
+        "corridor_bands.energy.gold_upper",
+        "corridor_bands.hydraulic.safe_upper",
+        "corridor_bands.biology.safe_upper",
+        "corridor_bands.carbon.safe_upper",
+        "corridor_bands.materials.safe_upper",
+        "lyapunov_weights.default.energy",
+        "lyapunov_weights.default.hydraulic",
+        "lyapunov_weights.default.biology",
+        "lyapunov_weights.default.carbon",
+        "lyapunov_stability.epsilon_default"
+    ],
+    
+    // Adjustment constraints (bounds for automatic tuning)
+    constraints: {
+        corridor_safe_upper: { min: 0.10, max: 0.50 },
+        corridor_gold_upper: { min: 0.40, max: 0.80 },
+        lyapunov_weight: { min: 0.1, max: 5.0 },
+        epsilon: { min: 0.0001, max: 0.01 }
+    },
+    
+    // Validation requirements before applying adjustments
+    validation: {
+        require_lyapunov_stable: true,
+        require_ker_above_warning: true,
+        require_no_active_violations: true,
+        cooldown_period_ms: 5000
+    }
+}
+
+// ============================================================================
+// CALIBRATION ERROR SCENARIO GENERATION
+// ============================================================================
+// 
+// Defines scenarios for stress-testing sensor calibration robustness.
+// Used to generate synthetic error conditions for validation.
+
+@calibration_scenarios {
+    
+    // Sensor drift scenario (gradual bias accumulation)
+    sensor_drift: {
+        type: "linear",
+        magnitude: 0.05,         // Drift per sample
+        duration_samples: 100,
+        affected_planes: ["sensor_calibration", "hydraulic", "thermal"]
+    },
+    
+    // Noise spike scenario (sudden transient errors)
+    noise_spike: {
+        type: "impulse",
+        magnitude: 0.50,         // Spike magnitude
+        probability: 0.01,       // 1% chance per sample
+        affected_planes: ["all"]
+    },
+    
+    // Bias offset scenario (constant systematic error)
+    bias_offset: {
+        type: "constant",
+        magnitude: 0.10,         // Fixed offset
+        duration_samples: 500,
+        affected_planes: ["energy", "carbon", "materials"]
+    },
+    
+    // Complete sensor failure scenario
+    sensor_failure: {
+        type: "dropout",
+        probability: 0.001,      // 0.1% chance per sample
+        duration_samples: 10,
+        affected_planes: ["all"],
+        fallback_to_last_valid: true
+    }
+}
+
+// ============================================================================
+// MATERIAL KINETICS DEFAULTS
+// ============================================================================
+// 
+// Default values for material degradation modeling (econet_material_cybo).
+
+@material_defaults {
+    
+    // Biodegradation thresholds
+    t90_max_days: 180.0,
+    t90_optimal_days: 30.0,
+    toxicity_threshold: 0.10,
+    micro_residue_max: 0.01,     // Mass fraction per day
+    leachate_cec_max: 50.0,      // mmol/kg
+    
+    // PFAS policy (hard gate)
+    pfas_allowed: false,         // Never allowed in Cyboquatic nodes
+    
+    // Carbon sequestration defaults
+    sequestration_factor: 0.5,   // kg CO2e per kg material degraded
+    caloric_density_default: 15000.0  // kJ/kg for energy recovery
+}
+
+// ============================================================================
+// FOG ROUTING CONFIGURATION
+// ============================================================================
+// 
+// Configuration for distributed workload dispatch across Cyboquatic nodes.
+
+@fog_routing {
+    
+    // Predicate thresholds
+    min_energy_surplus_joules: 100.0,
+    max_lyapunov_delta: 0.001,
+    hydraulic_safety_margin: 0.85,
+    bio_risk_threshold: 0.13,
+    
+    // Carbon state preferences (scoring weights)
+    carbon_state_scores: {
+        negative: 1.0,
+        neutral: 0.7,
+        positive: 0.3
+    },
+    
+    // Routing behavior
+    prefer_carbon_negative: true,
+    allow_emergency_bypass: true,
+    emergency_bypass_predicates: ["governance_ok"],  // Never bypass Lyapunov
+    max_reroute_attempts: 3,
+    routing_timeout_ms: 500
+}
+
+// ============================================================================
+// DIAGNOSTIC FRAME CONFIGURATION
+// ============================================================================
+// 
+// Non-actuating background frames for diagnostics and monitoring.
+
+@diagnostic_frames {
+    
+    // Hydraulic decay frame
+    hydraulic_decay: {
+        enabled: true,
+        interval_ms: 5000,
+        actuator_access: false,
+        risk_level: "low"
+    },
+    
+    // Quality mixing frame
+    quality_mixing: {
+        enabled: true,
+        interval_ms: 10000,
+        actuator_access: false,
+        risk_level: "low"
+    },
+    
+    // Residual update frame
+    residual_update: {
+        enabled: true,
+        interval_ms: 1000,
+        actuator_access: false,
+        risk_level: "low"
+    },
+    
+    // Calibration check frame
+    calibration_check: {
+        enabled: true,
+        interval_ms: 60000,
+        actuator_access: false,
+        risk_level: "medium"
+    }
+}
+
+// ============================================================================
+// LOGGING AND AUDIT CONFIGURATION
+// ============================================================================
+
+@logging {
+    
+    // Log levels
+    level_default: "info",
+    level_safety_events: "error",
+    level_calibration: "debug",
+    
+    // Audit requirements
+    audit_all_rejections: true,
+    audit_lyapunov_violations: true,
+    audit_corridor_breaches: true,
+    audit_parameter_adjustments: true,
+    
+    // Retention policy
+    retention_days: 365,
+    compress_after_days: 30,
+    
+    // Privacy and security
+    encrypt_sensitive_data: true,
+    hash_node_identifiers: true
+}
+
+// ============================================================================
+// COMPATIBILITY AND MIGRATION
+// ============================================================================
+
+@compatibility {
+    
+    // Minimum required versions
+    rust_core_min: "1.0.0",
+    cpp_kernel_min: "1.0.0",
+    lua_router_min: "1.0.0",
+    
+    // Deprecated configurations (for migration warnings)
+    deprecated: [],
+    
+    // Migration notes
+    migration_notes: "Schema v1.0.0 is initial release. No migrations required."
+}
+
+// ============================================================================
+// VALIDATION RULES
+// ============================================================================
+// 
+// These rules are enforced at configuration load time.
+
+@validation_rules {
+    
+    // Corridor ordering must be maintained
+    rule_corridor_order: "safe_upper < gold_upper <= hard_limit",
+    
+    // All weights must be non-negative
+    rule_weights_positive: "weight >= 0.0 for all planes",
+    
+    // KER thresholds must be achievable
+    rule_ker_achievable: "k_min <= 1.0, e_min <= 1.0, r_max >= 0.0",
+    
+    // Epsilon must be positive
+    rule_epsilon_positive: "epsilon > 0.0",
+    
+    // Queue size must be positive
+    rule_queue_positive: "max_queue_size > 0"
+}
+
+// ============================================================================
+// END OF SCHEMA
+// ============================================================================
+
+@end {
+    schema_complete: true,
+    total_configurable_parameters: 147,
+    safety_critical_parameters: 89,
+    ecologically_weighted_parameters: 52
+}
