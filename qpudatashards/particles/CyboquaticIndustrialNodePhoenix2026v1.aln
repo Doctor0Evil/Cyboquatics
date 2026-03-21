@@ -1,0 +1,103 @@
+# filename: qpudatashards/particles/CyboquaticIndustrialNodePhoenix2026v1.aln
+
+particle.meta:
+  shard_id: "cybo-node-phx-001"
+  module_type: "CyboquaticIndustrialMARFlowVac"
+  region: "US-AZ-Phoenix"
+  sim_or_live: "live"
+  timestamp_utc: "2026-03-20T23:34:00Z"
+  did_signature: "bostrom18sd2ujv24ual9c9pshtxys6j8knh6xaead9ye7"
+
+corridors:
+  - var_id: "ENERGY_SPEC"
+    units: "kWh/m3"
+    safe: 0.15
+    gold: 0.20
+    hard: 0.25
+    w: 1.0
+    lyap_channel: "energy"
+    mandatory: true
+    description: "Specific energy per treated volume"
+    citations: ["EcoNetPhoenixEnergy2026"]
+
+  - var_id: "CARBON_CYCLE"
+    units: "kgCO2e/cycle"
+    safe: 0.0
+    gold: 0.2
+    hard: 0.5
+    w: 1.5
+    lyap_channel: "carbon"
+    mandatory: true
+    description: "Net CO2e per industrial cycle; net-negative near 0"
+    citations: ["CyboquaticCarbonPlane2026"]
+
+  - var_id: "MATERIAL_T90"
+    units: "days"
+    safe: 90
+    gold: 180
+    hard: 365
+    w: 1.2
+    lyap_channel: "materials"
+    mandatory: true
+    description: "Time to 90% biodegradation of casings/substrates"
+    citations: ["econet_material_cybo_t90"]
+
+  - var_id: "MATERIAL_TOX"
+    units: "r"
+    safe: 0.2
+    gold: 0.4
+    hard: 0.7
+    w: 1.4
+    lyap_channel: "materials"
+    mandatory: true
+    description: "Normalized ecotoxicity of degradation products"
+    citations: ["ISO14851_OECD201_LCMS"]
+
+  - var_id: "PFAS_PROXY"
+    units: "index"
+    safe: 0.1
+    gold: 0.3
+    hard: 0.6
+    w: 1.5
+    lyap_channel: "biology"
+    mandatory: true
+    description: "PFAS-equivalent proxy in effluent"
+    citations: ["PhoenixPFAS2026"]
+
+  - var_id: "HYDRAULIC_SAT"
+    units: "r"
+    safe: 0.3
+    gold: 0.6
+    hard: 0.9
+    w: 1.0
+    lyap_channel: "hydraulics"
+    mandatory: true
+    description: "Subsurface aquifer treatment saturation"
+    citations: ["MAR_SAT_Phoenix2026"]
+
+risk_state:
+  rx:
+    ENERGY_SPEC: 0.18
+    CARBON_CYCLE: 0.15
+    MATERIAL_T90: 0.25
+    MATERIAL_TOX: 0.30
+    PFAS_PROXY: 0.22
+    HYDRAULIC_SAT: 0.40
+  vt: 0.31
+
+residual.summary:
+  v_residual: 0.31
+  knowledge_factor: 0.94
+  eco_impact_value: 0.89
+  risk_of_harm: 0.40
+
+control.profile:
+  eps: 0.001
+  lane: "RESEARCH-INDUSTRIAL-2026"
+  ker_target:
+    k_min: 0.90
+    e_min: 0.90
+    r_max: 0.13
+
+evidence_hex: "50726f6a6563743a204379626f717561746963496e64757374727950686f656e6978..."
+signing_hex:  "c9a7b3..."
