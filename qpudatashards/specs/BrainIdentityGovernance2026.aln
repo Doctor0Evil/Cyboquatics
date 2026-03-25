@@ -1,0 +1,163 @@
+spec BrainIdentityGovernance2026 v1.0.0
+  shardschema path qpudatashards/particles/BrainIdentityGovernanceVotes2026v1.csv
+  role BrainIdentityGovernanceNode
+
+  fields
+    proposal_id
+    proposer_brainidentityid
+    proposal_type
+    proposal_title
+    proposal_description
+    proposal_hexstamp
+    vote_start_unix
+    vote_end_unix
+    voter_brainidentityid
+    voter_karma_floor
+    voter_ker_k
+    voter_ker_e
+    voter_ker_r
+    vote_direction
+    vote_weight
+    vote_hexstamp
+    vote_timestamp_unix
+    proposal_status
+    votes_for
+    votes_against
+    votes_abstain
+    quorum_required
+    quorum_met
+    proposal_passed
+    execution_hexstamp
+    execution_timestamp_unix
+    veto_triggered
+    veto_reason
+    safety_review_required
+    safety_review_passed
+    vt_impact_assessed
+    vt_impact_delta
+    neurorights_impact_assessed
+    karma_impact_assessed
+    notes
+
+  corridors
+    quorum_minimum_percent    0.51
+    pass_threshold_percent    0.67
+    veto_karma_floor_min      200.0
+    veto_ker_k_min            0.95
+    veto_ker_e_min            0.95
+    veto_ker_r_max            0.08
+    safety_review_k_min       0.90
+    safety_review_e_min       0.90
+    safety_review_r_max       0.13
+    vt_impact_epsilon         0.01
+    vote_weight_karma_base    1.0
+    vote_weight_ker_bonus     0.5
+    vote_weight_max           10.0
+    vote_weight_min           0.1
+
+  kernels
+    voter_eligible = (voter_karma_floor >= 10.0) && 
+                     (voter_ker_k >= 0.90) && 
+                     (voter_ker_e >= 0.90) && 
+                     (voter_ker_r <= 0.13)
+
+    vote_weight_raw = vote_weight_karma_base + 
+                      (vote_weight_ker_bonus * voter_ker_k) +
+                      (voter_karma_floor / 100.0)
+
+    vote_weight = clamp(vote_weight_raw, vote_weight_min, vote_weight_max)
+
+    votes_for_weighted = sum(vote_weight where vote_direction = 1)
+    votes_against_weighted = sum(vote_weight where vote_direction = -1)
+    votes_abstain_weighted = sum(vote_weight where vote_direction = 0)
+
+    total_votes_weighted = votes_for_weighted + votes_against_weighted + votes_abstain_weighted
+
+    quorum_met = total_votes_weighted >= (quorum_required * eligible_voter_count)
+
+    pass_threshold_met = (votes_for_weighted / total_votes_weighted) >= pass_threshold_percent
+
+    proposal_passed = quorum_met && pass_threshold_met && safety_review_passed
+
+    veto_eligible = (voter_karma_floor >= veto_karma_floor_min) &&
+                    (voter_ker_k >= veto_ker_k_min) &&
+                    (voter_ker_e >= veto_ker_e_min) &&
+                    (voter_ker_r <= veto_ker_r_max)
+
+    safety_review_pass = (safety_review_k >= safety_review_k_min) &&
+                         (safety_review_e >= safety_review_e_min) &&
+                         (safety_review_r <= safety_review_r_max)
+
+    vt_impact_safe = abs(vt_impact_delta) <= vt_impact_epsilon
+
+    karma_impact_nonnegative = karma_impact_assessed >= 0.0
+
+    neurorights_impact_safe = neurorights_impact_assessed in [0, 1]
+
+  admissibility
+    gate_voter_eligibility  = voter_eligible == true
+    gate_vote_weight_bounds = vote_weight >= vote_weight_min && vote_weight <= vote_weight_max
+    gate_vote_timing        = vote_timestamp_unix >= vote_start_unix && vote_timestamp_unix <= vote_end_unix
+    gate_vote_uniqueness    = unique(voter_brainidentityid, proposal_id)
+    gate_hexstamp_valid     = valid_sha256_hex(vote_hexstamp)
+    gate_safety_review      = safety_review_required == false || safety_review_passed == true
+    gate_vt_stability       = vt_impact_safe == true
+    gate_karma_protection   = karma_impact_nonnegative == true
+    gate_neurorights_protect = neurorights_impact_safe == true
+    gate_veto_valid         = veto_triggered == false || veto_eligible == true
+
+    vote_admissible = gate_voter_eligibility && gate_vote_weight_bounds &&
+                      gate_vote_timing && gate_vote_uniqueness &&
+                      gate_hexstamp_valid && gate_safety_review &&
+                      gate_vt_stability && gate_karma_protection &&
+                      gate_neurorights_protect && gate_veto_valid
+
+    proposal_executable = proposal_passed && 
+                          execution_hexstamp != null &&
+                          veto_triggered == false
+
+  invariants
+    invariant_karma_nonslash = karma_impact_assessed >= 0.0 for all voters
+    invariant_vt_nonincrease = vt_impact_delta <= vt_impact_epsilon for system
+    invariant_neurorights = neurorights_impact_assessed != 2 for any voter
+    invariant_vote_immutability = vote_hexstamp cannot change after submission
+    invariant_quorum_once_met = quorum_met cannot become false after true
+    veto_requires_fulltrace = veto_triggered requires evidence_mode = 2
+
+  governance
+    proposal_creation_requires = (proposer_karma_floor >= 50.0) && (proposer_ker_k >= 0.90)
+    constitutional_change_requires = (pass_threshold_percent = 0.75) && (quorum_minimum_percent = 0.67)
+    corridor_modification_requires = safety_review_required = true
+    karma_weight_modification_requires = veto_eligible_count >= 3
+    emergency_veto_requires = (veto_eligible == true) && (safety_review_passed == false)
+    proposal_execution_delay_min_hours = 24
+    audit_trail_mandatory = true
+    all_votes_hexstamped = true
+
+  proposal_types
+    CORRIDOR_ADJUSTMENT
+    WEIGHT_MODIFICATION
+    KARMA_THRESHOLD_CHANGE
+    NEURORIGHTS_POLICY
+    SAFETY_PROTOCOL_UPDATE
+    TOKENOMICS_ADJUSTMENT
+    GOVERNANCE_STRUCTURE
+    EMERGENCY_ACTION
+    AUDIT_REQUEST
+    SHARD_SCHEMA_UPDATE
+
+  vote_directions
+    FOR = 1
+    AGAINST = -1
+    ABSTAIN = 0
+
+  proposal_statuses
+    DRAFT = 0
+    ACTIVE = 1
+    VOTING = 2
+    CLOSED = 3
+    PASSED = 4
+    FAILED = 5
+    EXECUTED = 6
+    VETOED = 7
+    UNDER_REVIEW = 8
