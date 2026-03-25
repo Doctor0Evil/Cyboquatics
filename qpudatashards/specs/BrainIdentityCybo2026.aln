@@ -1,0 +1,96 @@
+spec BrainIdentityCybo2026 v1.0.0
+  shardschema path qpudatashards/particles/BrainIdentityKERSoul2026v1.csv
+  role BrainIdentityValidationNode
+
+  fields
+    node_id
+    brainidentityid
+    hexstamp
+    ecoimpactscore
+    neurorights_status
+    karma_floor
+    data_sensitivity_level
+    evidence_mode
+    rsoul_residual
+    social_exposure_coord
+    R_residual
+    K_score
+    E_score
+    Vt_current
+    Vt_previous
+    vt_delta
+    ker_deployable
+    karma_nonslash_verified
+    timestamp_unix
+    notes
+
+  corridors
+    ecoimpact_max           1.0
+    neurorights_hard_max    2
+    karma_floor_min         0.0
+    data_sensitivity_max    5
+    rsoul_max               1.0
+    social_exposure_max     1.0
+    R_max                   0.13
+    K_min                   0.90
+    E_min                   0.90
+    vt_epsilon              0.001
+    karma_nonslash_enforced true
+
+  kernels
+    r_neurorights = select(neurorights_status,
+      0 -> 0.0,
+      1 -> 0.5,
+      2 -> 1.0,
+      _ -> 1.0)
+
+    r_soul = clamp(rsoul_residual / rsoul_max, 0.0, 1.0)
+    r_social = clamp(social_exposure_coord / social_exposure_max, 0.0, 1.0)
+    r_ecoimpact = clamp(ecoimpactscore / ecoimpact_max, 0.0, 1.0)
+
+    R_residual = 0.15*r_neurorights +
+                 0.10*r_soul +
+                 0.08*r_social +
+                 0.07*r_ecoimpact +
+                 0.15*r_energy +
+                 0.10*r_hydraulic +
+                 0.10*r_biology +
+                 0.15*r_carbon +
+                 0.10*r_materials
+
+    Vt_current = 0.15*r_neurorights^2 +
+                 0.10*r_soul^2 +
+                 0.08*r_social^2 +
+                 0.07*r_ecoimpact^2 +
+                 0.15*r_energy^2 +
+                 0.10*r_hydraulic^2 +
+                 0.10*r_biology^2 +
+                 0.15*r_carbon^2 +
+                 0.10*r_materials^2
+
+    vt_delta = Vt_current - Vt_previous
+
+  admissibility
+    gate_neurorights    = neurorights_status <= neurorights_hard_max
+    gate_rsoul          = rsoul_residual <= rsoul_max
+    gate_social         = social_exposure_coord <= social_exposure_max
+    gate_ecoimpact      = ecoimpactscore <= ecoimpact_max
+    gate_data_sens      = data_sensitivity_level >= 1 && data_sensitivity_level <= data_sensitivity_max
+    gate_vt_stable      = vt_delta <= vt_epsilon
+    gate_KER            = (K_score >= K_min) && (E_score >= E_min) && (R_residual <= R_max)
+    gate_karma_nonslash = karma_nonslash_verified == karma_nonslash_enforced
+
+    ker_deployable = gate_neurorights && gate_rsoul && gate_social &&
+                     gate_ecoimpact && gate_data_sens && gate_vt_stable &&
+                     gate_KER && gate_karma_nonslash
+
+  invariants
+    invariant_karma_floor = karma_floor(t+1) >= karma_floor(t)
+    invariant_vt = Vt_current <= Vt_previous + vt_epsilon
+    invariant_neurorights = neurorights_status in [0, 1, 2]
+    invariant_evidence = evidence_mode in [0, 1, 2]
+
+  governance
+    karma_floor_change_requires = (K_score >= 0.95) && (E_score >= 0.95) && (evidence_mode == 2)
+    neurorights_suspend_requires = (R_residual >= 0.50) && (evidence_mode == 2)
+    shard_update_requires_hexstamp = true
