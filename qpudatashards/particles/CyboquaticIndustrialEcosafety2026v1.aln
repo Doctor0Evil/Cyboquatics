@@ -1,0 +1,86 @@
+aln Cyboquatic Industrial Machinery Ecosafety Spine
+shard CyboquaticIndustrialEcosafety2026v1
+
+row CyboNode
+  nodeid             String
+  nodetype           Enum(MARMODULE,FOGDESICCATOR,AIRGLOBE,CAIN,CANALPURIFIER,OTHER)
+  medium             Enum(WATER,AIR,FOG,MIXED)
+  region             String
+  site               String
+  lat                Float
+  lon                Float
+  twindowstart       DateTime
+  twindowend         DateTime
+
+  # CEIM/CPVM eco-benefit
+  mcapturedkg        Float
+  membodiedkg        Float
+  mpowerkgco2        Float
+  mrefkg             Float
+  ecobraw            Float   # (mcaptured - membodied - mpower)/mref
+
+  # KER governance
+  kknowledge         Float   # 0..1
+  eecoimpact         Float   # 0..1
+  rriskofharm        Float   # 0..1
+
+  # Normalized risk coordinates (planes)
+  renergy            Float
+  rhydraulics        Float
+  rbiology           Float
+  rcarbon            Float
+  rmaterials         Float
+
+  # Expanded b/material coords (optional)
+  rpfas              Float
+  recoli             Float
+  rnutrient          Float
+  rtds               Float
+  rsat               Float
+  rt90soil           Float
+  rtoxsoil           Float
+  rmicrosoil         Float
+  rt90aquatic        Float
+  rtoxaquatic        Float
+  rmicroaquatic      Float
+
+  # Lyapunov residual
+  wenergy            Float
+  whydraulics        Float
+  wbiology           Float
+  wcarbon            Float
+  wmaterials         Float
+  vresidual          Float
+  vresidualmax       Float
+
+  # Sensor trust (Multonry Dt)
+  dttrust            Float
+  badj               Float
+  kadj               Float
+  eadj               Float
+
+  # Safety contracts and lane governance
+  corridorpresent    Bool
+  safestepok         Bool
+  lane               Enum(RESEARCH,EXPERIMENTAL,PRODUCTION)
+
+  # Kernel and corridor provenance
+  riskkernelversion  String
+  corridortableid    String
+  ceimkernelversion  String
+  cpvmkernelversion  String
+
+  # Evidence and signatures
+  evidencehex        Hex
+  signinghex         Hex
+  researchhex        Hex
+
+admissibility
+  assert corridorpresent = true
+  assert vresidual <= vresidualmax
+  assert rriskofharm <= 0.13
+  if lane = "PRODUCTION" then
+    assert kknowledge >= 0.90
+    assert eecoimpact >= 0.90
+  end
+end
