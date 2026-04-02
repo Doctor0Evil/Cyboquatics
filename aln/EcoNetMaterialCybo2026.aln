@@ -1,0 +1,42 @@
+spec EcoNetMaterialCybo2026 v1.0.0
+
+shardschema
+  path qpudatashards/EcoNetMaterialCyboT90PFAS2026v1.csv
+  role MaterialEvidence
+  fields
+    nodeid, materialid, matrixid,
+    tempC, pH,
+    t90days,
+    rtox, rmicro, rleachcec, rpfasresid,
+    Rresidual, Kscore, Escore,
+    criterionpass, ecoimpactlevel,
+    hexstamp, notes
+
+corridors
+  t90maxdays   180.0
+  rtoxmax      0.10
+  rmicromax    0.05
+  rleachcecmax 0.10
+  rpfasmax     0.10
+  Rmax         0.13
+  Kmin         0.90
+  Emin         0.90
+
+kernels
+  // ERLK residual over material coordinates.[file:19]
+  Rresidual = wt90 * rt90 + wtox * rtox + wmicro * rmicro
+            + wleach * rleachcec + wpfas * rpfasresid
+
+  Kscore = K_from_corridors()
+  Escore = 1.0 - max(rtox, rmicro, rleachcec, rpfasresid)
+
+admissibilitygates
+  gate1_kinetics   t90days    <= t90maxdays
+  gate2_toxicity   rtox       <= rtoxmax
+  gate3_micro      rmicro     <= rmicromax
+  gate4_leach      rleachcec  <= rleachcecmax
+  gate5_pfas       rpfasresid <= rpfasmax
+  gate6_KER        Kscore >= Kmin && Escore >= Emin && Rresidual <= Rmax
+
+writepolicy
+  only if all admissibilitygates
