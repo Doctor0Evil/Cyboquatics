@@ -1,0 +1,27 @@
+schema AntCyboMaterialLinkPhoenix2026v1 {
+  field material_id        : string;
+  field stack_recipe       : string;     # e.g. "bagasse:0.6;starch:0.3;mineral:0.1"
+  field t90_days           : float;
+  field r_tox              : float;
+  field r_micro            : float;
+  field r_leach_cec        : float;
+  field r_pfas_resid       : float;
+  field caloric_density    : float;
+  field r_carbon           : float;
+  field r_biodiversity     : float;
+  field ecoimpact_score    : float;
+  field k_score            : float;
+  field e_score            : float;
+  field r_score            : float;
+  field hexstamp           : hex;       # cryptographic signature
+  admissibility {
+    require t90_days <= 180.0;
+    require r_tox <= 0.10;
+    require r_micro <= 0.05;
+    require caloric_density <= 0.30;
+    require 0.0 <= ecoimpact_score <= 1.0;
+    require 0.0 <= k_score <= 1.0;
+    require 0.0 <= e_score <= 1.0;
+    require 0.0 <= r_score <= 1.0;
+  }
+}
