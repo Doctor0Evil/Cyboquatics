@@ -10,33 +10,35 @@
 
 use cyboquatic_ecosafety_core::{
     CorridorBands, KerTriad, RiskCoord, RiskPlane, RiskVector, Residual, SafeStepDecision,
-    Weight, lyapunov_residual, safestep_decision, RISK_DIM,
+    Weight, lyapunov_residual, safestep_decision, ker_from_window, RISK_DIM,
 };
-use econetmaterialcybo::{AntSafeSubstrate, CyboNodeCompatible, MaterialKinetics, material_risks_to_vector};
+use econetmaterialcybo::{
+    AntSafeSubstrate, CyboNodeCompatible, MaterialKinetics, material_risks_to_vector,
+};
 
 /// Minimal abstract command from a legacy controller.
 #[derive(Copy, Clone)]
 pub struct LegacyCommand {
     pub valve_open_pct: f32,
-    pub pump_rpm: f32,
+    pub pump_rpm:       f32,
 }
 
 /// Derated command returned when ecosafety requires softening.
 #[derive(Copy, Clone)]
 pub struct DeratedCommand {
     pub valve_open_pct: f32,
-    pub pump_rpm: f32,
+    pub pump_rpm:       f32,
 }
 
 /// State snapshot of the gateway’s ecosafety view.
 pub struct GatewayState<S> {
-    pub inner_state: S,
-    pub residual_v: Residual,
-    pub last_rv: RiskVector,
-    pub ker_window: KerTriad,
-    pub safe_steps: u64,
-    pub total_steps: u64,
-    pub max_risk_coord: RiskCoord,
+    pub inner_state:     S,
+    pub residual_v:      Residual,
+    pub last_rv:         RiskVector,
+    pub ker_window:      KerTriad,
+    pub safe_steps:      u64,
+    pub total_steps:     u64,
+    pub max_risk_coord:  RiskCoord,
 }
 
 /// Legacy hardware control system (PLC / HCS).
@@ -68,11 +70,11 @@ pub trait Derater {
 
 /// Ecosafety kernel used by the gateway to gate legacy commands.
 pub struct EcoSafetyKernel<'a, F: StateFold, D: Derater> {
-    pub weights: [Weight; RISK_DIM],
+    pub weights:   [Weight; RISK_DIM],
     pub corridors: [CorridorBands; RISK_DIM],
-    pub eps_vt: Residual,
+    pub eps_vt:    Residual,
     pub state_fold: &'a F,
-    pub derater: &'a D,
+    pub derater:    &'a D,
 }
 
 impl<'a, F: StateFold, D: Derater> EcoSafetyKernel<'a, F, D> {
@@ -81,8 +83,7 @@ impl<'a, F: StateFold, D: Derater> EcoSafetyKernel<'a, F, D> {
         prev_v: Residual,
         cmd: &LegacyCommand,
     ) -> (SafeStepDecision, Residual, Option<DeratedCommand>, RiskVector) {
-        let mut r_next = self.state_fold.fold_to_risk(cmd);
-        // r_next may already carry material risk; if not, callers can patch it.
+        let r_next = self.state_fold.fold_to_risk(cmd);
         let next_v = lyapunov_residual(&r_next, &self.weights);
         let decision = safestep_decision(prev_v, next_v, self.eps_vt, &r_next, &self.corridors);
 
@@ -106,10 +107,10 @@ where
     F: StateFold,
     D: Derater,
 {
-    pub controller: C,
-    pub ecosafety: EcoSafetyKernel<'static, F, D>,
-    pub hcs: H,
-    pub substrate: Sub,
+    pub controller:        C,
+    pub ecosafety:         EcoSafetyKernel<'static, F, D>,
+    pub hcs:               H,
+    pub substrate:         Sub,
     pub material_kinetics: MaterialKinetics,
 }
 
@@ -134,7 +135,7 @@ where
         // Inject material risk into materials plane of RiskVector.
         rv_next = material_risks_to_vector(&self.material_kinetics, rv_next);
 
-        // Evaluate ecosafety decision.
+        // Evaluate ecosafety decision using folded risk (may reuse rv_next inside F).
         let (decision, v_next, maybe_derate, r_eval) =
             self.ecosafety.evaluate(state.residual_v, &cmd);
 
@@ -146,11 +147,11 @@ where
             SafeStepDecision::Derate => {
                 let dcmd = maybe_derate.unwrap_or(DeratedCommand {
                     valve_open_pct: cmd.valve_open_pct,
-                    pump_rpm: cmd.pump_rpm,
+                    pump_rpm:       cmd.pump_rpm,
                 });
                 self.hcs.apply_command(&LegacyCommand {
                     valve_open_pct: dcmd.valve_open_pct,
-                    pump_rpm: dcmd.pump_rpm,
+                    pump_rpm:       dcmd.pump_rpm,
                 });
             }
             SafeStepDecision::Stop => {
@@ -160,16 +161,18 @@ where
 
         // Update Lyapunov residual and KER window.
         state.residual_v = v_next;
-        state.last_rv = r_eval;
+        state.last_rv    = r_eval;
         state.total_steps += 1;
         if matches!(decision, SafeStepDecision::Accept | SafeStepDecision::Derate) {
             state.safe_steps += 1;
         }
+
         let max_r = r_eval.max_coord();
-        if max_r > state.max_risk_coord {
+        if max_r.value() > state.max_risk_coord.value() {
             state.max_risk_coord = max_r;
         }
-        state.ker_window = cyboquatic_ecosafety_core::ker_from_window(
+
+        state.ker_window = ker_from_window(
             state.safe_steps,
             state.total_steps,
             state.max_risk_coord,
