@@ -1,0 +1,60 @@
+# File: shards/specs/EcoNetMaterialCybo2026.aln
+
+spec EcoNetMaterialCybo2026 v1.0.0
+  shardschema path qpudatashards/EcoNetMaterialCyboT90PFAS2026v1.csv
+  role MaterialStack
+
+  fields
+    node_id, material_id, batch_id,
+    matrix_id, temp_C, pH,
+    t90_days,
+    r_tox, r_micro, r_leach_cec, r_pfas_resid,
+    R_residual, K_score, E_score,
+    ecoimpact_level,
+    hexstamp
+
+  corridors
+    t90_gold_days   120.0
+    t90_hard_days   180.0
+    r_tox_max       0.10
+    r_micro_max     0.05
+    r_leach_max     0.10
+    r_pfas_max      0.10
+    R_max           0.13
+    K_min           0.90
+    E_min           0.90
+
+  kernels
+    # Residual R = Σ w_j r_j
+    weights
+      w_t90   0.25
+      w_tox   0.25
+      w_micro 0.20
+      w_leach 0.15
+      w_pfas  0.15
+
+    compute R_residual =
+      w_t90   * risk_from_t90(t90_days, t90_gold_days, t90_hard_days)
+    + w_tox   * r_tox
+    + w_micro * r_micro
+    + w_leach * r_leach_cec
+    + w_pfas  * r_pfas_resid
+
+    compute K_score = K_from_trials()
+    compute E_score = 1.0 - max(r_tox, r_micro, r_leach_cec, r_pfas_resid)
+
+  admissibility
+    gate1_t90       t90_days    <= t90_hard_days
+    gate2_tox       r_tox       <= r_tox_max
+    gate3_micro     r_micro     <= r_micro_max
+    gate4_leach     r_leach_cec <= r_leach_max
+    gate5_pfas      r_pfas_resid<= r_pfas_max
+    gate6_R         R_residual  <= R_max
+    gate7_K         K_score     >= K_min
+    gate8_E         E_score     >= E_min
+
+  writepolicy
+    only_rows_where all(gate1_t90, gate2_tox, gate3_micro,
+                        gate4_leach, gate5_pfas,
+                        gate6_R, gate7_K, gate8_E)
+    writer EcoNetMaterialCyboKernelsCxx
