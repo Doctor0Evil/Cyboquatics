@@ -1,0 +1,76 @@
+spec CyboquaticPhoenixEcosafety2026 v2.0.0
+
+purpose
+  Phoenix-specific ecosafety shard with rcalib as 6th risk plane.
+  Extends v1 by adding r_calib, dt_data columns and updating
+  Vt and KER computation to include ingest quality.
+
+requires
+  EcoNetSchemaShard2026 v1.0.0
+  invariant kerdeployable v2.0.0
+
+shardschema
+  path qpudatashards/phoenix/CyboquaticPhoenixEcosafety2026v2.csv
+  role EcosafetyNode
+  fields
+    node_id
+    timestamp
+    r_energy
+    r_hydraulic
+    r_biology
+    r_carbon
+    r_materials
+    r_calib          ;; NEW: ingest/schema quality risk coordinate
+    vt               ;; now includes w_calib * r_calib^2
+    kscore
+    escore
+    rscore
+    dt_sensor
+    dt_data          ;; NEW: 1.0 - r_calib
+    k_adj            ;; NEW: kscore * dt_sensor * dt_data
+    e_adj            ;; NEW: escore * dt_sensor * dt_data
+    deploy_decision  ;; NEW: Deploy | ResearchOnly | BlockedByCalib | BlockedByRisk | BlockedByKER
+    lane
+    evidence_hex
+    signing_hex
+
+corridors
+  r_energy_hard       0.13
+  r_hydraulic_hard    0.13
+  r_biology_hard      0.13
+  r_carbon_hard       0.13
+  r_materials_hard    0.13
+  r_calib_hard        0.13
+  r_calib_gold        0.04
+  r_calib_safe        0.00
+  k_min               0.90
+  e_min               0.90
+  r_max               0.13
+
+kernels
+  residual
+    Vt = 1.0*r_energy^2 + 1.0*r_hydraulic^2 + 1.2*r_biology^2
+       + 1.3*r_carbon^2 + 1.1*r_materials^2 + 0.8*r_calib^2
+  ker
+    kscore = K_from_window()
+    rscore = max(r_energy, r_hydraulic, r_biology, r_carbon, r_materials, r_calib)
+    escore = 1.0 - rscore
+  trust
+    dt_data = 1.0 - r_calib
+    k_adj = kscore * dt_sensor * dt_data
+    e_adj = escore * dt_sensor * dt_data
+
+admissibility
+  gate1_corridors
+    condition  all r_* <= corresponding _hard threshold
+  gate2_safestep
+    condition  Vt_next <= Vt_prev + epsilon
+  gate3_ker
+    condition  k_adj >= k_min && e_adj >= e_min && rscore <= r_max
+  gate4_rcalib_independent
+    condition  r_calib <= r_calib_hard
+    ;; rcalib can block deployment even if all physical planes pass
+
+writepolicy
+  only if all gates satisfied
+  writer qpudata_shard_writer
