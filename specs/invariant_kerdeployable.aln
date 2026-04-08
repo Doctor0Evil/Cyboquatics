@@ -1,0 +1,53 @@
+invariant kerdeployable v2.0.0
+
+purpose
+  Extends kerdeployable to include rcalib as a first-class
+  risk coordinate that participates in R, Vt, and can
+  independently block deployment.
+
+requires
+  EcoNetSchemaShard2026 v1.0.0
+  CyboquaticEcosafetyCoreV2
+
+riskvector_channels
+  ch0  r_energy      w=1.0   hard=0.13
+  ch1  r_hydraulic   w=1.0   hard=0.13
+  ch2  r_biology     w=1.2   hard=0.13
+  ch3  r_carbon      w=1.3   hard=0.13
+  ch4  r_materials   w=1.1   hard=0.13
+  ch5  r_calib       w=0.8   hard=0.13   ;; NEW channel
+
+residual
+  Vt = sum_j(w_j * r_j^2)  for j in {ch0..ch5}
+  ;; rcalib contributes 0.8 * r_calib^2 to Vt
+
+safestep
+  condition  Vt_next <= Vt_prev + epsilon
+  condition  max(r_j for j in ch0..ch5) <= 0.13
+  ;; rcalib participates in both conditions
+
+ker_gates
+  K_min  0.90
+  E_min  0.90
+  R_max  0.13
+
+  K_adj = K_raw * Dt_sensor * Dt_data
+  E_adj = E_raw * Dt_sensor * Dt_data
+  ;; Dt_data = 1.0 - r_calib
+  ;; K and E are down-scaled by poor ingest quality
+  ;; R is NEVER reduced by Dt (conservative)
+
+deploy_decision
+  if r_calib > rcalib_hard  -> BlockedByCalib
+  if R > R_max              -> BlockedByRisk
+  if K_adj < K_min          -> BlockedByKER
+  if E_adj < E_min          -> BlockedByKER
+  else                      -> Deploy
+
+kerupgradeok
+  ;; When updating corridors or schemas:
+  condition  K_new >= K_old
+  condition  E_new >= E_old
+  condition  R_new <= R_old
+  ;; Replayed on historical data before promoting any migration
+7. Extended Phoenix Ecosafety Shard Schema
