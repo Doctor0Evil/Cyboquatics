@@ -1,24 +1,46 @@
 //! crates/cyboquatic_ecosafety_core/src/lib.rs  (v2 — rcalib extension)
 //!
 //! Extended ecosafety spine with r_calib as a 6th risk plane.
-//! All original rx/Vt/KER semantics preserved; rcalib is additive.
+//! All original rx/Vt/KER semantics preserved; r_calib is additive.
 //! Belonging-to: Cyboquatic / ecosafety
 //! Non-actuating. #![forbid(unsafe_code)]
 
 #![forbid(unsafe_code)]
 #![no_std]
 
-pub type RiskCoord = f32;
-pub type Residual = f32;
+pub type RiskCoord = f32;   // r_x in [0,1]
+pub type Residual  = f32;   // V(t)
 
+/// Corridor bands for a single coordinate.
 #[derive(Clone, Copy, Debug)]
 pub struct CorridorBands {
-    pub safe_max: RiskCoord,
-    pub gold_max: RiskCoord,
-    pub hard_max: RiskCoord,
+    pub safe_max: RiskCoord,   // upper bound of safe band
+    pub gold_max: RiskCoord,   // upper bound of gold band
+    pub hard_max: RiskCoord,   // must be ≤ 1.0, any exceed = violation
 }
 
 impl CorridorBands {
+    pub fn is_defined(&self) -> bool {
+        self.safe_max >= 0.0
+            && self.safe_max <= self.gold_max
+            && self.gold_max <= self.hard_max
+            && self.hard_max <= 1.0
+    }
+
+    pub fn classify(&self, r: RiskCoord) -> CorridorClass {
+        let r = if r < 0.0 { 0.0 } else if r > 1.0 { 1.0 } else { r };
+        if r <= self.safe_max {
+            CorridorClass::Safe
+        } else if r <= self.gold_max {
+            CorridorClass::Gold
+        } else if r <= self.hard_max {
+            CorridorClass::Hard
+        } else {
+            CorridorClass::Violation
+        }
+    }
+
+    /// Normalize a raw scalar into [0,1] against safe / hard bounds.
     pub fn normalize(&self, raw: f32, raw_safe_max: f32, raw_hard_max: f32) -> RiskCoord {
         if raw_hard_max <= raw_safe_max {
             return 1.0;
@@ -39,15 +61,23 @@ impl CorridorBands {
     }
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum CorridorClass {
+    Safe,
+    Gold,
+    Hard,
+    Violation,
+}
+
 /// v2: RiskVector now includes r_calib as the 6th plane.
 #[derive(Clone, Copy, Debug, Default)]
 pub struct RiskVector {
-    pub r_energy: RiskCoord,
-    pub r_hydraulic: RiskCoord,
-    pub r_biology: RiskCoord,
-    pub r_carbon: RiskCoord,
-    pub r_materials: RiskCoord,
-    pub r_calib: RiskCoord,   // NEW: ingest/schema quality risk
+    pub r_energy:     RiskCoord,
+    pub r_hydraulic:  RiskCoord,
+    pub r_biology:    RiskCoord,
+    pub r_carbon:     RiskCoord,
+    pub r_materials:  RiskCoord,
+    pub r_calib:      RiskCoord,   // ingest/schema/telemetry quality risk
 }
 
 impl RiskVector {
@@ -79,37 +109,39 @@ impl RiskVector {
 /// v2: LyapunovWeights now includes w_calib.
 #[derive(Clone, Copy, Debug)]
 pub struct LyapunovWeights {
-    pub w_energy: f32,
+    pub w_energy:    f32,
     pub w_hydraulic: f32,
-    pub w_biology: f32,
-    pub w_carbon: f32,
+    pub w_biology:   f32,
+    pub w_carbon:    f32,
     pub w_materials: f32,
-    pub w_calib: f32,   // NEW: weight for ingest/schema risk
+    pub w_calib:     f32,   // weight for ingest/schema risk
 }
 
 impl LyapunovWeights {
+    /// Research-band default; physical planes weighted higher than r_calib.
     pub fn normalized() -> Self {
         Self {
-            w_energy: 1.0,
+            w_energy:    1.0,
             w_hydraulic: 1.0,
-            w_biology: 1.2,
-            w_carbon: 1.3,
+            w_biology:   1.2,
+            w_carbon:    1.3,
             w_materials: 1.1,
-            w_calib: 0.8,   // lower than physical planes, but non-zero
+            w_calib:     0.8,
         }
     }
 }
 
-/// v2: Vt now includes w_calib * r_calib^2.
+/// v2: V(t) now includes w_calib * r_calib^2 (additive; original semantics preserved).
 pub fn compute_residual(r: &RiskVector, w: &LyapunovWeights) -> Residual {
-    w.w_energy * r.r_energy * r.r_energy
+    w.w_energy    * r.r_energy    * r.r_energy
         + w.w_hydraulic * r.r_hydraulic * r.r_hydraulic
-        + w.w_biology * r.r_biology * r.r_biology
-        + w.w_carbon * r.r_carbon * r.r_carbon
+        + w.w_biology   * r.r_biology   * r.r_biology
+        + w.w_carbon    * r.r_carbon    * r.r_carbon
         + w.w_materials * r.r_materials * r.r_materials
-        + w.w_calib * r.r_calib * r.r_calib   // NEW term
+        + w.w_calib     * r.r_calib     * r.r_calib
 }
 
+/// Decision for ecosafety gate on a proposed actuation.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum SafeStepDecision {
     Accept,
@@ -117,16 +149,17 @@ pub enum SafeStepDecision {
     Stop,
 }
 
+/// v2: SafeStep gate configuration.
 #[derive(Clone, Copy, Debug)]
 pub struct SafeStepGateConfig {
-    pub epsilon: f32,
-    pub max_risk_allowed: RiskCoord,
+    pub epsilon:          f32,       // allowed Lyapunov slack
+    pub max_risk_allowed: RiskCoord, // R band (includes r_calib via max_coord)
 }
 
 impl SafeStepGateConfig {
     pub fn default_research_band() -> Self {
         Self {
-            epsilon: 1.0e-4,
+            epsilon:          1.0e-4,
             max_risk_allowed: 0.13,
         }
     }
@@ -152,13 +185,13 @@ pub fn eval_safestep(
     }
 }
 
-/// v2: KerWindow tracks rcalib-aware risk.
+/// v2: KerWindow tracks r_calib-aware risk.
 #[derive(Clone, Copy, Debug, Default)]
 pub struct KerWindow {
-    pub steps: u32,
+    pub steps:               u32,
     pub lyapunov_safe_steps: u32,
-    pub max_risk_observed: RiskCoord,
-    pub max_rcalib_observed: RiskCoord,  // NEW: track rcalib peak separately
+    pub max_risk_observed:   RiskCoord,
+    pub max_rcalib_observed: RiskCoord,  // track r_calib peak separately
 }
 
 impl KerWindow {
@@ -192,59 +225,61 @@ impl KerWindow {
         self.max_risk_observed
     }
 
-    /// NEW: Can rcalib alone block kerdeployable?
+    /// Risk-of-harm contributed by r_calib alone.
     pub fn calib_risk_of_harm(&self) -> f32 {
         self.max_rcalib_observed
     }
 }
 
-// ─── kerdeployable gate (v2) ───────────────────────────────────
-
-/// v2: KerDeployable configuration with rcalib thresholds.
+/// v2: Deployment KER config with r_calib thresholds.
 #[derive(Clone, Copy, Debug)]
 pub struct KerDeployableConfig {
-    pub k_min: f32,
-    pub e_min: f32,
-    pub r_max: f32,
-    pub rcalib_hard: f32,  // NEW: independent rcalib hard gate
+    pub k_min:       f32,
+    pub e_min:       f32,
+    pub r_max:       f32,
+    pub rcalib_hard: f32, // independent r_calib hard gate
 }
 
 impl KerDeployableConfig {
     pub fn production() -> Self {
         Self {
-            k_min: 0.90,
-            e_min: 0.90,
-            r_max: 0.13,
+            k_min:       0.90,
+            e_min:       0.90,
+            r_max:       0.13,
             rcalib_hard: 0.13,
         }
     }
 }
 
-/// v2: Deployment decision with explicit rcalib blocking.
+/// v2: Deployment decision with explicit r_calib blocking.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum DeployDecision {
     Deploy,
     ResearchOnly,
-    BlockedByCalib,   // NEW: rcalib alone caused rejection
+    BlockedByCalib,
     BlockedByRisk,
     BlockedByKER,
 }
 
-/// v2: Evaluate kerdeployable with rcalib participation.
+/// v2: Evaluate kerdeployable with r_calib participation.
+///
+/// dt_data encodes data quality / coverage (0–1); it scales K and E downward
+/// when calibration coverage is weak, while R is unscaled.
 pub fn eval_kerdeployable(
     window: &KerWindow,
     config: &KerDeployableConfig,
     dt_data: f32,
 ) -> DeployDecision {
-    // rcalib can independently block deployment
+    let dt = dt_data.clamp(0.0, 1.0);
+
+    // r_calib can independently block deployment
     if window.calib_risk_of_harm() > config.rcalib_hard {
         return DeployDecision::BlockedByCalib;
     }
 
-    // Apply Dt_data scaling to K and E
-    let k_adj = window.knowledge_factor() * dt_data;
-    let e_adj = window.eco_impact() * dt_data;
-    let r = window.risk_of_harm(); // R is NOT scaled down by Dt
+    let k_adj = window.knowledge_factor() * dt;
+    let e_adj = window.eco_impact() * dt;
+    let r     = window.risk_of_harm();
 
     if r > config.r_max {
         return DeployDecision::BlockedByRisk;
@@ -255,4 +290,9 @@ pub fn eval_kerdeployable(
     }
 
     DeployDecision::Deploy
+}
+
+// Trait: any controller must propose actuation + RiskVector (type-level "no action without risk").
+pub trait SafeController<State, Command> {
+    fn propose_step(&self, state: &State) -> (Command, RiskVector);
 }
