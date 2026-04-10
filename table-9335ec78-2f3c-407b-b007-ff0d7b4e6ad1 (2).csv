@@ -1,0 +1,6 @@
+﻿Component,Description,Source Data / Parameters,Calibration Method
+Diagnostic Counts,Row-level event counters for data integrity issues.,qpudatashard" diagnostics (e.g., "Nmissing", "Nschema", "Ncorridor", "Nunit).,Not applicable; these are direct measurements.
+Ingest Error Weights,"Scalar multipliers for diagnostic counts, ordered by hazard.","m, s, c, u" or "wmiss, wrfc, wtype, wvarid".,Regression on historical ingest logs to correlate with downstream K/E/R degradation.
+Corridor Bands,Thresholds "(Isafe, Igold, Ihard)" for mapping scalar I to risk.,safemin/max", "goldmin/max", "hardmin/max in ecosafety.corridors.v2.,Fitting band positions to place empirical I" distributions of labeled ""clean"", ""moderate"", and ""chronic"" windows into target "rcalib" bands (0-0.1, 0.1-0.3, >0.3)."
+Normalization Kernel,Piecewise affine function mapping I to rcalib" ∈ [0,1].",Defined by corridor bands and rgold.,Regression to choose slopes and rgold so that typical clean operation sits near rcalib" ≈ 0–0.1, moderate problems in 0.1–0.3, and chronic failures near 1."
+Final Output (rcalib),Normalized ingest quality risk score.,Computed from I and the normalization kernel.,Verified via CI replay jobs that test monotonicity under synthetic ingest faults.
