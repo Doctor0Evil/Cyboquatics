@@ -1,0 +1,23 @@
+alnversion 1.0
+schema ecosafety.material_risks.v1
+
+particle ecosafety.material_risks.v1
+  field material_id string
+  field spec_id string
+  field spec_hash string
+  field hexstamp string
+
+  -- Normalized sub-risks
+  field r_t90 f64
+  field r_tox f64
+  field r_micro f64
+  field r_leach_cec f64
+  field r_pfas f64
+  field r_caloric f64
+
+  -- Composite materials-plane coordinate
+  field r_materials f64
+
+  -- Corridor gate
+  field corridor_ok bool
+end
