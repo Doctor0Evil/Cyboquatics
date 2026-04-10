@@ -1,0 +1,21 @@
+alnversion 1.0
+schema ecosafety.riskvector.v2
+
+particle ecosafety.riskvector.v2
+  field node_id string
+  field timestamp string
+  field r_energy f64
+  field r_hydraulics f64
+  field r_biology f64
+  field r_carbon f64
+  field r_materials f64
+  field r_biodiversity f64
+  field r_sigma f64
+  field vt f64
+  field k_metric f64
+  field e_metric f64
+  field r_metric f64
+  field spec_id string
+  field spec_hash string
+  field hexstamp string
+end
