@@ -1,0 +1,11 @@
+nodeid,site,region,lat,lon,medium,twindow_start,twindow_end,
+contaminant,raw_stream_id,ingest_pipeline_id,
+I_raw,I_norm,rcalib,
+m_weight,s_weight,c_weight,u_weight,
+rsigma_drift,rsigma_noise,rsigma_bias,rsigma_loss,
+rsigma_composite,rsigma_band,
+safe_band_min,safe_band_max,gold_band_max,hard_band,
+Dt_sensor,D_combined,
+K_raw,E_raw,K_adj,E_adj,
+R_rcalib,R_rsigma,R_other_max,R_global,
+lane,kerdeployable,evidencehex,signinghex
