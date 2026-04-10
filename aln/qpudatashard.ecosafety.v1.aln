@@ -1,0 +1,38 @@
+alnversion 1.0
+schema qpudatashard.ecosafety.v1
+
+particle qpudatashard.ecosafety.v1
+  field node_id string
+  field region string
+  field lat f64
+  field lon f64
+  field timestamp string
+
+  -- Raw physical telemetry (examples, extend per deployment)
+  field q_m3s f64
+  field head_m f64
+  field temp_c f64
+  field contaminant_in_mgL f64
+  field contaminant_out_mgL f64
+  field energy_kwh f64
+
+  -- Normalized risk vector and residual
+  field r_energy f64
+  field r_hydraulics f64
+  field r_biology f64
+  field r_carbon f64
+  field r_materials f64
+  field r_biodiversity f64
+  field r_sigma f64
+  field vt f64
+
+  -- KER window metrics
+  field k_metric f64
+  field e_metric f64
+  field r_metric f64
+
+  -- Governance bindings
+  field spec_id string
+  field spec_hash string
+  field hexstamp string
+end
