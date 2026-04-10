@@ -31,6 +31,9 @@ particle qpudatashard.ecosafety.v1
   field e_metric f64
   field r_metric f64
 
+  -- Materials linkage
+  field material_id string
+
   -- Governance bindings
   field spec_id string
   field spec_hash string
