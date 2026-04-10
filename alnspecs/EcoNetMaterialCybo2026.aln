@@ -1,0 +1,59 @@
+# File: alnspecs/EcoNetMaterialCybo2026.aln
+
+spec EcoNetMaterialCybo2026 v1.0.0
+
+shardschema path qpudatashards/EcoNetMaterialCyboT90PFAS2026v1.csv
+  role MaterialEvidence
+  fields
+    nodeid
+    materialid
+    matrixid
+    tempC
+    pH
+    t90days
+    rtox
+    rmicro
+    rleach_cec
+    rpfas_resid
+    caloric_density
+    ecoimpact_score
+    Kscore
+    Escore
+    Rresidual
+    criterion_pass
+    ecoimpact_level
+    hexstamp
+    notes
+
+corridors
+  t90_max_days    180.0
+  rtox_gold_max   0.10
+  rmicro_max      0.05
+  rleach_cec_max  0.10
+  rpfas_resid_max 0.10
+  caloric_max     0.30
+  R_max           0.13
+  K_min           0.90
+  E_min           0.90
+
+kernels
+  rt90      = normalize_t90(t90days, t90_max_days)
+  Rresidual = eco_residual(rt90, rtox, rmicro, rleach_cec, rpfas_resid)
+  ecoimpact_score = eco_impact(rt90, rtox, rmicro, rleach_cec, rpfas_resid, caloric_density)
+  Kscore    = ker_K(rt90, rtox, rmicro, rleach_cec, rpfas_resid)
+  Escore    = 1.0 - Rresidual
+
+admissibility
+  gate_kinetics    : t90days <= t90_max_days
+  gate_toxicity    : rtox <= rtox_gold_max
+  gate_micro       : rmicro <= rmicro_max
+  gate_leach_cec   : rleach_cec <= rleach_cec_max
+  gate_pfas        : rpfas_resid <= rpfas_resid_max
+  gate_caloric     : caloric_density <= caloric_max
+  gate_KER         : Kscore >= K_min && Escore >= E_min && Rresidual <= R_max
+
+  criterion_pass = gate_kinetics && gate_toxicity && gate_micro &&
+                   gate_leach_cec && gate_pfas && gate_caloric && gate_KER
+
+writepolicy
+  on_row if criterion_pass then write_row_with_hexstamp()
