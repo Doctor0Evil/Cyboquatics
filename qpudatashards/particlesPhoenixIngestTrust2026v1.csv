@@ -1,11 +1,2 @@
-nodeid,site,region,lat,lon,medium,twindow_start,twindow_end,
-contaminant,raw_stream_id,ingest_pipeline_id,
-I_raw,I_norm,rcalib,
-m_weight,s_weight,c_weight,u_weight,
-rsigma_drift,rsigma_noise,rsigma_bias,rsigma_loss,
-rsigma_composite,rsigma_band,
-safe_band_min,safe_band_max,gold_band_max,hard_band,
-Dt_sensor,D_combined,
-K_raw,E_raw,K_adj,E_adj,
-R_rcalib,R_rsigma,R_other_max,R_global,
-lane,kerdeployable,evidencehex,signinghex
+nodeid,site,region,lat,lon,medium,twindow_start,twindow_end,contaminant,raw_stream_id,ingest_pipeline_id,I_raw,I_norm,rcalib,m_weight,s_weight,c_weight,u_weight,rsigma_drift,rsigma_noise,rsigma_bias,rsigma_loss,rsigma_composite,rsigma_band,safe_band_min,safe_band_max,gold_band_max,hard_band,Dt_sensor,D_combined,K_raw,E_raw,K_adj,E_adj,R_rcalib,R_rsigma,R_other_max,R_global,lane,kerdeployable,evidencehex,signinghex
+PHX-N12,DeerValley,Maricopa,33.683,-112.142,water,2026-04-10T00:00:00Z,2026-04-10T01:00:00Z,NO3-N,stream_az_n12_ph,pipe_v3_nitrate,0.023,0.17,0.17,0.32,0.08,0.41,0.19,0.012,0.041,0.009,0.033,0.057,SAFE,0.0,0.20,0.45,0.85,0.94,0.7802,0.87,0.22,0.85,0.19,0.17,0.19,0.22,0.22,PROD,TRUE,0x2a3b4c5d6e7f8091,0x9e8d7c6b5a493827
