@@ -1,0 +1,23 @@
+alnversion 1.0
+schema ecosafety.material_kinetics.v1
+
+particle ecosafety.material_kinetics.v1
+  field material_id string
+  field spec_id string
+  field spec_hash string
+  field hexstamp string
+
+  field kinetic_model string
+  field k_rate f64
+  field t90_days f64
+
+  field env_temp_c f64
+  field env_ph f64
+  field env_moisture f64
+
+  field tox_index f64
+  field micro_residue_mgkg f64
+  field leach_cec_meq100g f64
+  field pfas_residue_ugL f64
+  field caloric_density_mjkg f64
+end
