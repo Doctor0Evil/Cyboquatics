@@ -1,0 +1,94 @@
+alnversion 1.0
+schema ecosafety.riskvector.2026.v1
+
+particle ecosafety.riskvector.2026.v1
+  -- Identity and context
+  field nodeid            string
+  field segmentid         string
+  field region            string
+  field lat               f64
+  field lon               f64
+  field window_start_utc  datetime
+  field window_end_utc    datetime
+  field shardid           string     -- ALNSHARDID / qpudatashard row id
+  field evidencehex       string     -- hex-stamped provenance
+
+  -- Normalized risk coordinates r_x ∈ [0,1]
+  field renergy           f64
+  field rhydraulic        f64
+  field rbio              f64
+  field rcarbon           f64
+  field rmaterials        f64
+  field rcalib            f64        -- ingest/schema quality risk
+
+  -- Lyapunov residual and KER
+  field vt                f64
+  field kmetric           f64
+  field emetric           f64
+  field rmetric           f64
+
+  -- Plane-specific flags
+  field biosurfaceok      bool
+  field hydraulicok       bool
+  field lyapunovok        bool
+  field tailwindvalid     bool
+
+  -- Governance lane
+  field lane              string     -- RESEARCH, PILOT, PROD
+end
+
+-- Risk normalization kernel (conceptual; raw → r_x)
+kernel ecosafety.normalize_risk
+  expr renergy_norm      clamp((raw_energy   - SAFE_E_MIN)   / (HARD_E_MAX   - SAFE_E_MIN),   0.0, 1.0)
+  expr rhydraulic_norm   clamp((raw_hydraul  - SAFE_H_MIN)   / (HARD_H_MAX   - SAFE_H_MIN),   0.0, 1.0)
+  expr rbio_norm         clamp((raw_bio      - SAFE_B_MIN)   / (HARD_B_MAX   - SAFE_B_MIN),   0.0, 1.0)
+  expr rcarbon_norm      clamp((raw_carbon   - SAFE_C_MIN)   / (HARD_C_MAX   - SAFE_C_MIN),   0.0, 1.0)
+  expr rmaterials_norm   clamp((raw_mat      - SAFE_M_MIN)   / (HARD_M_MAX   - SAFE_M_MIN),   0.0, 1.0)
+  expr rcalib_norm       clamp((raw_calib    - SAFE_Q_MIN)   / (HARD_Q_MAX   - SAFE_Q_MIN),   0.0, 1.0)
+end
+
+-- Lyapunov residual V_t = Σ w_j r_j^2 over 6 planes. [file:7][file:18]
+kernel ecosafety.lyapunov_residual
+  param wenergy     f64
+  param whydraulic  f64
+  param wbio        f64
+  param wcarbon     f64
+  param wmaterials  f64
+  param wcalib      f64
+
+  expr vt :=
+      wenergy    * (renergy   * renergy)   +
+      whydraulic * (rhydraulic * rhydraulic) +
+      wbio       * (rbio      * rbio)      +
+      wcarbon    * (rcarbon   * rcarbon)   +
+      wmaterials * (rmaterials * rmaterials) +
+      wcalib     * (rcalib    * rcalib)
+end
+
+-- KER window metrics over a shard family. [file:7][file:18]
+kernel ecosafety.ker_window
+  expr kmetric := safe_steps / total_steps
+  expr rmetric := max(renergy, rhydraulic, rbio, rcarbon, rmaterials, rcalib)
+  expr emetric := 1.0 - rmetric
+end
+
+-- Deployment gate: K ≥ 0.90, E ≥ 0.90, R ≤ 0.13 and Lyapunov non-increase. [file:7][file:18]
+contract invariant.ecosafety.kerdeployable
+  input prev ecosafety.riskvector.2026.v1
+  input next ecosafety.riskvector.2026.v1
+
+  let k_ok  := next.kmetric >= 0.90
+  let e_ok  := next.emetric >= 0.90
+  let r_ok  := next.rmetric <= 0.13
+  let v_ok  := next.vt <= prev.vt + 1.0e-6
+
+  let all_corridors_ok :=
+        next.renergy    <= 1.0 &&
+        next.rhydraulic <= 1.0 &&
+        next.rbio       <= 1.0 &&
+        next.rcarbon    <= 1.0 &&
+        next.rmaterials <= 1.0 &&
+        next.rcalib     <= 1.0
+
+  result := k_ok && e_ok && r_ok && v_ok && all_corridors_ok
+end
