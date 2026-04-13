@@ -1,0 +1,29 @@
+schemashardid,targetshardfamily,targetversion,colindex,colname,coltype,alnvarid,units,mandatory,isriskcoord,safeband,goldband,hardband,lyapweight,lyapchannel,rustsymbol,csymbol,description,citations
+EBM2026V1-SCHEMA-001,EnergyBankModuleEcosafety2026v1,1.0.0,0,nodeid,String,,dimensionless,true,false,,,,,,nodeid,nodeid,Unique Cyboquatic node identifier,ecosafety-core-v2
+EBM2026V1-SCHEMA-001,EnergyBankModuleEcosafety2026v1,1.0.0,1,moduleid,String,,dimensionless,true,false,,,,,,moduleid,moduleid,Unique energy-bank module identifier within node,ecosafety-core-v2
+EBM2026V1-SCHEMA-001,EnergyBankModuleEcosafety2026v1,1.0.0,2,region,String,,dimensionless,true,false,,,,,,region,region,Region or basin identifier e.g. Phoenix-AZ,ecosafety-core-v2
+EBM2026V1-SCHEMA-001,EnergyBankModuleEcosafety2026v1,1.0.0,3,timestamp,DateTime,,UTC,true,false,,,,,,timestamp,timestamp,ISO 8601 UTC observation window timestamp,ecosafety-core-v2
+EBM2026V1-SCHEMA-001,EnergyBankModuleEcosafety2026v1,1.0.0,4,technology,String,,dimensionless,true,false,,,,,,technology,technology,Energy-bank technology class e.g. LiFePO4 Na-ion flywheel,ceim-energy-mass
+EBM2026V1-SCHEMA-001,EnergyBankModuleEcosafety2026v1,1.0.0,5,capacity_kwh,Float,,kWh,true,false,,,,,,capacity_kwh,capacity_kwh,Installed energy capacity of the module,ceim-energy-mass
+EBM2026V1-SCHEMA-001,EnergyBankModuleEcosafety2026v1,1.0.0,6,state_of_charge,Float,,fraction,true,false,,,,,,state_of_charge,state_of_charge,State of charge fraction 0-1 at window start,ceim-energy-mass
+EBM2026V1-SCHEMA-001,EnergyBankModuleEcosafety2026v1,1.0.0,7,cycles_count,Int,,cycles,true,false,,,,,,cycles_count,cycles_count,Total equivalent full cycles since commissioning,ceim-energy-mass
+EBM2026V1-SCHEMA-001,EnergyBankModuleEcosafety2026v1,1.0.0,8,ambient_temp_c,Float,,degC,true,false,,,,,,ambient_temp_c,ambient_temp_c,Ambient temperature during window degrees C,ecosafety-core-v2
+EBM2026V1-SCHEMA-001,EnergyBankModuleEcosafety2026v1,1.0.0,9,throughput_kwh_window,Float,,kWh,true,false,,,,,,throughput_kwh_window,throughput_kwh_window,Energy throughput over window in kWh,ceim-energy-mass
+EBM2026V1-SCHEMA-001,EnergyBankModuleEcosafety2026v1,1.0.0,10,roundtrip_efficiency,Float,,fraction,true,false,,,,,,roundtrip_efficiency,roundtrip_efficiency,Measured round-trip efficiency over window,ceim-energy-mass
+EBM2026V1-SCHEMA-001,EnergyBankModuleEcosafety2026v1,1.0.0,11,renergy,RiskCoord,renergy,dimensionless,true,true,0.0,0.10,0.13,1.0,0,renergy,renergy,Normalized energy-plane risk coordinate 0-1,ecosafety-core-v2
+EBM2026V1-SCHEMA-001,EnergyBankModuleEcosafety2026v1,1.0.0,12,rcarbon_energy,RiskCoord,rcarbon_energy,dimensionless,true,true,0.0,0.08,0.13,1.3,3,rcarbon_energy,rcarbon_energy,Net carbon-intensity risk for energy bank operation,ceim-energy-mass
+EBM2026V1-SCHEMA-001,EnergyBankModuleEcosafety2026v1,1.0.0,13,rmaterials_battery,RiskCoord,rmaterials_battery,dimensionless,true,true,0.0,0.10,0.13,1.1,4,rmaterials_battery,rmaterials_battery,Composite materials risk for module chemistry,econet-material-cybo
+EBM2026V1-SCHEMA-001,EnergyBankModuleEcosafety2026v1,1.0.0,14,rsigma_energy,RiskCoord,rsigma_energy,dimensionless,true,true,0.0,0.10,0.30,0.9,5,rsigma_energy,rsigma_energy,Sensor uncertainty risk for energy-bank telemetry,ecosafety-core-v2
+EBM2026V1-SCHEMA-001,EnergyBankModuleEcosafety2026v1,1.0.0,15,rcalib,RiskCoord,rcalib,dimensionless,true,true,0.0,0.04,0.13,0.8,6,rcalib,rcalib,Ingest-schema quality risk coordinate 0-1,ecosafety-schema-rcalib
+EBM2026V1-SCHEMA-001,EnergyBankModuleEcosafety2026v1,1.0.0,16,vt,Residual,,dimensionless,true,false,,,,,,vt,vt,Lyapunov residual including wcalib term,ecosafety-core-v2
+EBM2026V1-SCHEMA-001,EnergyBankModuleEcosafety2026v1,1.0.0,17,kscore,Float,,dimensionless,true,false,,,,,,kscore,kscore,Knowledge factor K over the ecosafety window,ecosafety-core-v2
+EBM2026V1-SCHEMA-001,EnergyBankModuleEcosafety2026v1,1.0.0,18,escore,Float,,dimensionless,true,false,,,,,,escore,escore,Eco-impact factor E over the ecosafety window,ecosafety-core-v2
+EBM2026V1-SCHEMA-001,EnergyBankModuleEcosafety2026v1,1.0.0,19,rscore,Float,,dimensionless,true,false,,,,,,rscore,rscore,Risk-of-harm factor R max across all coordinates,ecosafety-core-v2
+EBM2026V1-SCHEMA-001,EnergyBankModuleEcosafety2026v1,1.0.0,20,dtsensor,Float,,dimensionless,true,false,,,,,,dtsensor,dtsensor,Sensor trust scalar Dt from rsigma plane,ecosafety-core-v2
+EBM2026V1-SCHEMA-001,EnergyBankModuleEcosafety2026v1,1.0.0,21,dtdata,Float,,dimensionless,true,false,,,,,,dtdata,dtdata,Data trust discount 1.0 - rcalib,schema-shard-v1
+EBM2026V1-SCHEMA-001,EnergyBankModuleEcosafety2026v1,1.0.0,22,kadj,Float,,dimensionless,true,false,,,,,,kadj,kadj,Trust-adjusted knowledge factor K * Dsensor * Dtdata,ecosafety-core-v2
+EBM2026V1-SCHEMA-001,EnergyBankModuleEcosafety2026v1,1.0.0,23,eadj,Float,,dimensionless,true,false,,,,,,eadj,eadj,Trust-adjusted eco-impact factor E * Dsensor * Dtdata,ecosafety-core-v2
+EBM2026V1-SCHEMA-001,EnergyBankModuleEcosafety2026v1,1.0.0,24,deploydecision,String,,dimensionless,true,false,,,,,,deploydecision,deploydecision,Deployment decision Deploy ResearchOnly BlockedByCalib BlockedByRisk BlockedByKER,ecosafety-core-v2
+EBM2026V1-SCHEMA-001,EnergyBankModuleEcosafety2026v1,1.0.0,25,lane,String,,dimensionless,true,false,,,,,,lane,lane,Governance lane tag RESEARCH or PRODUCTION,ecosafety-core-v2
+EBM2026V1-SCHEMA-001,EnergyBankModuleEcosafety2026v1,1.0.0,26,evidencehex,Hex64,,hex,true,false,,,,,,evidencehex,evidencehex,64-char hex evidence hash for this shard instance,ecosafety-core-v2
+EBM2026V1-SCHEMA-001,EnergyBankModuleEcosafety2026v1,1.0.0,27,signinghex,Hex64,,hex,true,false,,,,,,signinghex,signinghex,64-char hex signing hash Bostrom-linked identity,ecosafety-core-v2
