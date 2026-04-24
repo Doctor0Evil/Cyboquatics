@@ -1,8 +1,11 @@
 [workspace]
 members = [
-    "ecosafety-core",
-    "qpudatashard-schema",
-    "cyboquatic-drain-node",
+    "crates/ecosafety-core",
+    "crates/qpudatashard-schema",
+    "crates/cyboquatic-drain-node",
+    "crates/cyboquatic-industrial-ecosafety-core",
+    "crates/cyboquatic-industrial-shards",
+    "crates/cyboquatic-industrial-sim",
 ]
 
 [profile.release]

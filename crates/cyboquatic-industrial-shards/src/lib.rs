@@ -25,4 +25,7 @@ pub use industrial_node::{
     CyboNodeShard, ShardHeader,
 };
 pub use conversion::{ToRiskVector, ToLyapunovWeights, ToResidualInput};
-pub use validation::{validate_admissibility, AdmissibilityError};
+pub use validation::{
+    validate_admissibility, lane_permits_actuation, lane_ker_thresholds,
+    AdmissibilityError, LaneKerThresholds,
+};

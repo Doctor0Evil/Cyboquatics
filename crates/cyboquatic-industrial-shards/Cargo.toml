@@ -18,3 +18,4 @@ path = "../ecosafety-core"
 path = "../cyboquatic-industrial-ecosafety-core"
 
 [dev-dependencies]
+serde_json = "1"
