@@ -1,0 +1,20 @@
+[package]
+name = "cyboquatic-industrial-shards"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "ALN-backed shard IO for Cyboquatic industrial ecosafety nodes (CyboquaticIndustrialEcosafety2026v1)."
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1"
+thiserror = "1.0"
+chrono = { version = "0.4", features = ["serde"] }
+
+[dependencies.ecosafety-core]
+path = "../ecosafety-core"
+
+[dependencies.cyboquatic-ecosafety-core]
+path = "../cyboquatic-industrial-ecosafety-core"
+
+[dev-dependencies]
