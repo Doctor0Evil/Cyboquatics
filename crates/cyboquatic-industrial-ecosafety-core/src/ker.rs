@@ -1,7 +1,5 @@
 //! KER triads and rolling windows for governance.
 
-use ecosafety_grammar::{KerMetrics};
-
 /// Knowledge-factor, Eco-impact, Risk-of-harm triad.
 #[derive(Clone, Copy, Debug)]
 pub struct KerTriad {
