@@ -1,0 +1,69 @@
+schema CyboquaticIndustrialNode2026v1 {
+  node_id: Text;        // unique machine or vault identifier
+  region: Text;         // e.g. "Phoenix-AZ"
+  lat: F64;
+  lon: F64;
+
+  // Energy & hydraulics plane (summarized).
+  esurplus_j: F64;      // energy surplus per routing horizon. [file:21]
+  qm3s: F64;            // flow
+  rsurcharge: F64;      // normalized surcharge risk 0..1. [file:21]
+
+  // Biology plane.
+  r_pathogen: F64;      // 0..1
+  r_fouling: F64;       // 0..1
+  r_cec_bio: F64;       // 0..1
+
+  // Carbon plane.
+  kg_co2e_per_cycle: F64;
+  r_carbon: F64;        // 0..1, from carbon_to_risk. [file:23]
+
+  // Materials plane.
+  substrate_id: Text;
+  t90_days: F64;
+  t90_max_days: F64;
+  r_tox: F64;
+  r_micro: F64;
+  r_cec_mat: F64;
+  r_materials: F64;     // 0..1, from materials_to_risk. [file:22][file:23]
+
+  // Aggregated risk vector (for quick routing decisions).
+  r_energy: F64;
+  r_hydraulics: F64;
+  r_biology: F64;
+  r_ker_max: F64;       // max(r_energy, r_hydraulics, r_biology, r_carbon, r_materials). [file:23]
+  vt: F64;              // Lyapunov residual V_t. [file:23]
+
+  // Rolling KER window for this node. [file:23][file:24]
+  k_knowledge: F64;
+  e_eco_impact: F64;
+  r_risk_of_harm: F64;
+}
+constraints {
+  // Normalization and corridor presence.
+  assert 0.0 <= r_carbon <= 1.0;
+  assert 0.0 <= r_materials <= 1.0;
+  assert 0.0 <= r_ker_max <= 1.0;
+  assert 0.0 <= r_risk_of_harm <= 1.0;
+  assert 0.0 <= k_knowledge <= 1.0;
+  assert 0.0 <= e_eco_impact <= 1.0;
+
+  // Eco‑industrial corridor: carbon‑negative or at least neutral.
+  // Gold band: r_carbon <= 0.3; hard limit: r_carbon < 1.0. [file:23]
+  assert r_carbon <= 1.0;
+  // CI / FOG routing can require r_carbon <= 0.3 for actuation lanes.
+
+  // Materials corridor: biodegradable and non‑toxic.
+  assert t90_days <= t90_max_days;
+  assert r_tox <= 0.10;        // 10× safety margin vs toxicity corridor. [file:22]
+  assert r_micro <= 0.05;      // micro‑residue kept in a tight band. [file:22]
+  assert 0.0 <= r_cec_mat <= 1.0;
+
+  // Production‑grade gate on KER (per your 2026 thresholds). [file:23][file:24]
+  // This is checked for deployment lanes; research lanes can relax it.
+  // if lane == "production" then
+  //   assert k_knowledge >= 0.90;
+  //   assert e_eco_impact >= 0.90;
+  //   assert r_risk_of_harm <= 0.13;
+  // end
+}
