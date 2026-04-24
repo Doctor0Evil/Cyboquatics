@@ -67,3 +67,11 @@ Within this repository:
 2. `.envrc`, CI YAML, and editor tasks **MUST** rely on `CARGO_HOME` and **MUST NOT** introduce a conflicting `RUSTROOT` or similar variable pointing elsewhere. Legacy `RUSTROOT` entries **MUST** either be removed or set to the same directory as `CARGO_HOME` with a “deprecated – do not use” comment. [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/collection_1d7dde59-b474-475b-a731-2469d14a3632/ae4448b9-cf07-4dff-a363-481213e834aa/this-document-provides-exactly-3WKgRVZ9Tv.H44433auPkQ.md)
 
 3. Any new tooling added to this workspace that needs Rust (e.g., `cargo-ecosafety`, `cargo-ecosafety-watch`) **MUST** assume the canonical `mnt/oss` toolchain and **MUST NOT** attempt self-installation. [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/collection_1d7dde59-b474-475b-a731-2469d14a3632/2bbd9d7b-5f6e-41e4-b374-308a1c94fb4f/100-answers-for-research-conti-wwGKbDBjT2uH0JS.NVLzeQ.md)
+
+***
+
+### 5. KER scoring for this policy
+
+- **Knowledge-factor:** K ≈ 0.96 — the spec is directly grounded in the existing “Rust-on‑mnt/oss” environment design and CI wiring described in your ecosafety corpus. [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/collection_1d7dde59-b474-475b-a731-2469d14a3632/ae4448b9-cf07-4dff-a363-481213e834aa/this-document-provides-exactly-3WKgRVZ9Tv.H44433auPkQ.md)
+- **Eco-impact:** E ≈ 0.92 — centralizing a single, shared toolchain on `mnt/oss` reduces duplicated installs, avoids rootfs thrash, and keeps builds reproducible and shard‑governed. [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/collection_1d7dde59-b474-475b-a731-2469d14a3632/2bbd9d7b-5f6e-41e4-b374-308a1c94fb4f/100-answers-for-research-conti-wwGKbDBjT2uH0JS.NVLzeQ.md)
+- **Risk-of-harm:** R ≈ 0.12 — residual risk is limited to misconfigured paths or missing toolchains, which degrade productivity but not ecological safety, and are surfaced early via clear errors. [ppl-ai-file-upload.s3.amazonaws](https://ppl-ai-file-upload.s3.amazonaws.com/web/direct-files/collection_1d7dde59-b474-475b-a731-2469d14a3632/ae4448b9-cf07-4dff-a363-481213e834aa/this-document-provides-exactly-3WKgRVZ9Tv.H44433auPkQ.md)
