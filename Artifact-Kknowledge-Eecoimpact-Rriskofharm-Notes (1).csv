@@ -1,0 +1,6 @@
+"Artifact","K (knowledge)","E (eco‑impact)","R (risk‑of‑harm)","Notes"
+"Ecosafety spine slice (RiskVector, Vt, KER)","≈0.95","≈0.91","≈0.12","Direct reuse of multiplane Lyapunov and KER governance documented for Cyboquatic ecosafety. this-research-focuses-on-the-c-ZWoO1V.iTimS1VJapTpELw.md"
+"Controller trait + safestep gate","≈0.94","≈0.91","≈0.12","Enforces “no action without risk estimate” as a type rule, plus Vtₜ₊₁ ≤ Vt invariant. this-research-focuses-on-the-c-ZWoO1V.iTimS1VJapTpELw.md"
+"Carbon & materials risk kernels","≈0.93","≈0.95","≈0.12","Aligns with carbon‑negative and biodegradable substrate planes and AntSafe/ISO‑style corridors. ant-recyclying-concept-what-if-L7qOcs4iQRWXQm425ah57w.md+1"
+"CyboquaticIndustrialNode2026v1 ALN schema","≈0.93","≈0.92","≈0.13","Mirrors existing qpudatashards, adds hard eco‑corridors and production KER gates. cyboquatic-workloads-can-be-sa-SEqTKV8ySwCJRyJKXHarXQ.md+2"
+"Eco‑industrial FOG routing predicates","≈0.93","≈0.90","≈0.14","Extends your FOG routing layer with carbon/materials gating for industrial workloads. cyboquatic-workloads-can-be-sa-SEqTKV8ySwCJRyJKXHarXQ.md+1"
