@@ -7,6 +7,7 @@
 //! related Cyboquatic industrial nodes.
 
 #![no_std]
+#![forbid(unsafe_code)]
 
 pub mod planes;
 pub mod node;
@@ -22,3 +23,6 @@ pub use node::{NodeClass, MediumClass, Lane, NodeState, CommandEnvelope};
 pub use ker::{KerTriad, KerWindow};
 pub use controller::{IndustrialSafeController, SafeStepKernel};
 pub use decisions::{CorridorDecision, StepVerdict};
+
+// Re-export core ecosafety types from the shared grammar
+pub use ecosafety_core::{RiskCoord, RiskVector as BaseRiskVector, Residual, CorridorDecision as CoreCorridorDecision};

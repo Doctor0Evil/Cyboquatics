@@ -1,0 +1,14 @@
+[package]
+name = "cyboquatic-industrial-sim"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "C-facing simulation kernel mirroring Cyboquatic industrial ecosafety logic."
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+cyboquatic-industrial-ecosafety-core = { path = "../cyboquatic-industrial-ecosafety-core" }
+ecosafety-core = { path = "../ecosafety-core" }
+serde = { version = "1.0", features = ["derive"] }
