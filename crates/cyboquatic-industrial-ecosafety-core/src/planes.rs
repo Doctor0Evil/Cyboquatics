@@ -1,7 +1,7 @@
 //! Risk planes specialized for Cyboquatic industrial machinery,
 //! expressed as newtypes around the shared RiskCoord 0..=1.
 
-use ecosafety_grammar::{RiskCoord, RiskVector};
+use ecosafety_core::RiskCoord;
 
 /// Energy plane (kWh/kg removed, pump duty, grid intensity).
 #[derive(Clone, Copy, Debug)]
@@ -28,22 +28,28 @@ pub struct MaterialsRisk(pub RiskCoord);
 /// Order is fixed and must align with corridor and weight tables.
 #[derive(Clone, Copy, Debug)]
 pub struct IndustrialRiskVector {
-    pub energy: EnergyRisk,
-    pub hydraulics: HydraulicsRisk,
-    pub biology: BiologyRisk,
-    pub carbon: CarbonRisk,
-    pub materials: MaterialsRisk,
+    pub energy: RiskCoord,
+    pub hydraulics: RiskCoord,
+    pub biology: RiskCoord,
+    pub carbon: RiskCoord,
+    pub materials: RiskCoord,
 }
 
 impl IndustrialRiskVector {
-    /// Convert to the shared RiskVector used by the Lyapunov kernel.
-    pub fn as_universal(&self) -> RiskVector {
-        RiskVector::from_array(&[
-            (self.energy.0).into_inner(),
-            (self.hydraulics.0).into_inner(),
-            (self.biology.0).into_inner(),
-            (self.carbon.0).into_inner(),
-            (self.materials.0).into_inner(),
-        ])
+    /// Create a new industrial risk vector from raw coordinates.
+    pub fn new(
+        energy: f64,
+        hydraulics: f64,
+        biology: f64,
+        carbon: f64,
+        materials: f64,
+    ) -> Self {
+        Self {
+            energy: RiskCoord::new_clamped(energy),
+            hydraulics: RiskCoord::new_clamped(hydraulics),
+            biology: RiskCoord::new_clamped(biology),
+            carbon: RiskCoord::new_clamped(carbon),
+            materials: RiskCoord::new_clamped(materials),
+        }
     }
 }

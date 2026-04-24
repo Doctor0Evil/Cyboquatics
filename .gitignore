@@ -1,0 +1,13 @@
+```
+# Dependencies
+target/
+Cargo.lock
+
+# Editors
+.vscode/
+
+# Environment
+.env
+.env.local
+*.env.*
+```
