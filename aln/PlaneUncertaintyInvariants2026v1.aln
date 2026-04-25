@@ -1,0 +1,83 @@
+aln particle ecosafety.plane_uncertainty.v1
+
+import ecosafety.plane_weights.v1 as PlaneWeights
+
+title Per-plane uncertainty gating for K and E
+
+description """
+Separates distance-to-corridor from epistemic uncertainty via *_unc
+coordinates and enforces that high uncertainty caps K and E.
+"""
+
+field contract_id string
+field region_id string
+field node_id string
+field lane string          # RESEARCH | EXP_PROD | PROD
+
+field r_carbon_unc float
+field r_materials_unc float
+field r_biodiversity_unc float
+field r_hydraulics_unc float
+field r_data_quality_unc float
+
+field K float
+field E float
+field R float
+
+field active_version_major int
+field active_version_minor int
+field timestamp_utc string
+field signing_hex string
+
+predicate has_plane_weights
+  input contract_id string, region_id string, vmaj int, vmin int
+  exists w in PlaneWeights:
+    w.contract_id   = contract_id and
+    w.region_id     = region_id and
+    w.version_major = vmaj and
+    w.version_minor = vmin
+endpredicate
+
+clause uncertainty_caps_K_and_E_in_PROD
+  forall row in ecosafety.plane_uncertainty.v1:
+    if row.lane = "PROD" and
+       has_plane_weights(row.contract_id,
+                         row.region_id,
+                         row.active_version_major,
+                         row.active_version_minor)
+    then
+      let w = select * from PlaneWeights
+               where w.contract_id   = row.contract_id and
+                     w.region_id     = row.region_id and
+                     w.version_major = row.active_version_major and
+                     w.version_minor = row.active_version_minor
+      in
+        (row.r_carbon_unc      <= w.rcarbon_unc_max_prod)      and
+        (row.r_biodiversity_unc<= w.rbio_unc_max_prod)         and
+        (row.r_materials_unc   <= w.rmat_unc_max_prod)         and
+        (row.r_hydraulics_unc  <= w.rhyd_unc_max_prod)         and
+        (row.r_data_quality_unc<= w.rdata_unc_max_prod)
+    else
+      true
+    end
+endclause
+
+clause high_uncertainty_caps_K_and_E
+  forall row in ecosafety.plane_uncertainty.v1:
+    let max_unc =
+      max(row.r_carbon_unc,
+          row.r_biodiversity_unc,
+          row.r_materials_unc,
+          row.r_hydraulics_unc,
+          row.r_data_quality_unc)
+    in
+      if max_unc >= 0.7
+      then
+        (row.K <= 0.85) and
+        (row.E <= 0.85)
+      else
+        true
+      end
+endclause
+
+endparticle
