@@ -1,0 +1,22 @@
+aln
+alnversion 1.0
+schema ecosafety.riskvector.v2
+
+particle ecosafety.riskvector.v2
+  field nodeid        string
+  field timestamp     string
+  field renergy       f64
+  field rhydraulics   f64
+  field rbiology      f64
+  field rcarbon       f64
+  field rmaterials    f64
+  field rbiodiversity f64
+  field rcalib        f64
+  field vt            f64
+  field kscore        f64
+  field escore        f64
+  field rscore        f64
+  field dtdata        f64
+  field evidencehex   string
+  field signinghex    string
+end
