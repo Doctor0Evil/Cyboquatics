@@ -1,10 +1,2 @@
-contract_id,region_id,version_major,version_minor,
-w_carbon,w_materials,w_biodiversity,w_hydraulics,w_data_quality,
-carbon_non_offsettable,biodiversity_non_offsettable,
-rcarbon_unc_max_prod,rbio_unc_max_prod,rmat_unc_max_prod,rhyd_unc_max_prod,rdata_unc_max_prod,
-updated_at_utc,author_did,evidence_hex,signing_hex
-ecosafety-core-v2,PHX-BASELINE,2,0,
-1.0,0.8,1.2,0.9,0.7,
-true,true,
-0.30,0.30,0.40,0.40,0.25,
-2026-04-25T07:39:00Z,did:bostrom:ecosafety-core,0xa1b2c3d4e5f67890,0x9f8e7d6c5b4a3210
+contract_id,region_id,version_major,version_minor,w_carbon,w_materials,w_biodiversity,w_hydraulics,w_data_quality,carbon_non_offsettable,biodiversity_non_offsettable,rcarbon_unc_max_prod,rbio_unc_max_prod,rmat_unc_max_prod,rhyd_unc_max_prod,rdata_unc_max_prod,updated_at_utc,author_did,evidence_hex,signing_hex
+ecosafety-core-v2,PHX-BASELINE,2,0,1.0,0.8,1.2,0.9,0.7,true,true,0.30,0.30,0.40,0.40,0.25,2026-04-25T07:39:00Z,did:bostrom:ecosafety-core,0xa1b2c3d4e5f67890,0x9f8e7d6c5b4a3210
