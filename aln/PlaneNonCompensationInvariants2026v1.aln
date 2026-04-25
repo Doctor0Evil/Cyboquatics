@@ -1,0 +1,102 @@
+aln particle ecosafety.ker_non_compensation.v1
+
+import ecosafety.plane_weights.v1 as PlaneWeights
+
+title KER non-compensation invariants for carbon and biodiversity
+
+description """
+Enforces that increases in r_carbon or r_biodiversity beyond thresholds
+cannot be compensated in KER scoring by improvements in other planes.
+"""
+
+field contract_id string
+field region_id string
+field node_id string
+
+field lane string        # RESEARCH | EXP_PROD | PROD
+field r_carbon_prev float
+field r_carbon_next float
+field r_biodiversity_prev float
+field r_biodiversity_next float
+
+field K_prev float
+field K_next float
+field E_prev float
+field E_next float
+field R_prev float
+field R_next float
+
+field r_carbon_soft float
+field r_biodiversity_soft float
+
+field timestamp_utc string
+field signing_hex string
+
+predicate plane_weights_row_exists
+  input contract_id string, region_id string, vmaj int, vmin int
+  exists w in PlaneWeights:
+    w.contract_id    = contract_id and
+    w.region_id      = region_id and
+    w.version_major  = vmaj and
+    w.version_minor  = vmin
+endpredicate
+
+# This context is typically bound at CI/runtime based on the active contract.
+field active_version_major int
+field active_version_minor int
+
+clause non_compensation_carbon
+  forall row in ecosafety.ker_non_compensation.v1:
+    if plane_weights_row_exists(row.contract_id,
+                                row.region_id,
+                                row.active_version_major,
+                                row.active_version_minor)
+    then
+      let w = select * from PlaneWeights
+               where w.contract_id   = row.contract_id and
+                     w.region_id     = row.region_id and
+                     w.version_major = row.active_version_major and
+                     w.version_minor = row.active_version_minor
+      in
+        if w.carbon_non_offsettable and
+           row.r_carbon_prev >= row.r_carbon_soft and
+           row.r_carbon_next >  row.r_carbon_prev
+        then
+          (row.R_next >= row.R_prev) and
+          (row.E_next <= row.E_prev)
+        else
+          true
+        end
+    else
+      false
+    end
+endclause
+
+clause non_compensation_biodiversity
+  forall row in ecosafety.ker_non_compensation.v1:
+    if plane_weights_row_exists(row.contract_id,
+                                row.region_id,
+                                row.active_version_major,
+                                row.active_version_minor)
+    then
+      let w = select * from PlaneWeights
+               where w.contract_id   = row.contract_id and
+                     w.region_id     = row.region_id and
+                     w.version_major = row.active_version_major and
+                     w.version_minor = row.active_version_minor
+      in
+        if w.biodiversity_non_offsettable and
+           row.r_biodiversity_prev >= row.r_biodiversity_soft and
+           row.r_biodiversity_next >  row.r_biodiversity_prev
+        then
+          (row.R_next >= row.R_prev) and
+          (row.E_next <= row.E_prev)
+        else
+          true
+        end
+    else
+      false
+    end
+endclause
+
+endparticle
