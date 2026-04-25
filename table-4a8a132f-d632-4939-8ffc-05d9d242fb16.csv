@@ -1,7 +1,0 @@
-﻿Component,Description,Role in Safety Contract
-RiskCoord,"A clamped floating-point number in the range [0, 1].","Provides a standardized, dimensionless measure of risk for any single variable."
-RiskVector,A composite struct containing one RiskCoord" for each relevant plane (e.g., "renergy", "rcarbon", "rbiodiversity).,"Acts as a unified state representation, aggregating risk across all domains into a single object for processing."
-Lyapunov Weights,A struct containing positive floating-point weights (w_j) for each plane in the RiskVector.,Determines the relative importance of each risk plane in the calculation of the global stability metric.
-Lyapunov Residual ($V_t$),A scalar value calculated as V_t = \sum_j w_j r_j^2.,Serves as a global stability metric; its non-increasing nature ensures the system's long-term safety and prevents runaway risk accumulation.
-safestep Kernel,"A function that takes the previous residual, next residual, and next "RiskVector as inputs.,"Acts as the primary gatekeeper, rejecting any action that violates the hard-band or Lyapunov-stability invariants."
-Production Thresholds ("K, E, R"),A set of rules for deployment gates: K \ge 0.90", "E \ge 0.90", "R \le 0.13.,"Defines the minimum acceptable performance for a system to be considered ""production-ready,"" based on historical pilot data."
