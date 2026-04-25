@@ -1,0 +1,58 @@
+aln particle ecosafety.plane_weights.v1
+
+title Plane weights and non-compensation flags for ecosafety planes
+
+description """
+Defines per-plane weights, non-compensation flags, and uncertainty gating
+for the ecosafety rx–Vt–KER grammar. Each row applies to a specific
+ecosafety contract version and region.
+"""
+
+field contract_id string
+field region_id string
+field version_major int
+field version_minor int
+
+field w_carbon float
+field w_materials float
+field w_biodiversity float
+field w_hydraulics float
+field w_data_quality float
+
+field carbon_non_offsettable bool
+field biodiversity_non_offsettable bool
+
+field rcarbon_unc_max_prod float
+field rbio_unc_max_prod float
+field rmat_unc_max_prod float
+field rhyd_unc_max_prod float
+field rdata_unc_max_prod float
+
+field updated_at_utc string
+field author_did string
+field evidence_hex string
+field signing_hex string
+
+index primary_key contract_id, region_id, version_major, version_minor
+
+constraint weights_non_negative
+  forall row in ecosafety.plane_weights.v1:
+    row.w_carbon      >= 0.0 and
+    row.w_materials   >= 0.0 and
+    row.w_biodiversity>= 0.0 and
+    row.w_hydraulics  >= 0.0 and
+    row.w_data_quality>= 0.0
+endconstraint
+
+constraint at_least_one_ecological_plane_weighted
+  forall row in ecosafety.plane_weights.v1:
+    (row.w_carbon + row.w_biodiversity) > 0.0
+endconstraint
+
+constraint non_offsettable_flags_consistent
+  forall row in ecosafety.plane_weights.v1:
+    (not row.carbon_non_offsettable or row.w_carbon > 0.0) and
+    (not row.biodiversity_non_offsettable or row.w_biodiversity > 0.0)
+endconstraint
+
+endparticle
