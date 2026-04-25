@@ -1,0 +1,60 @@
+aln particle ecosafety.data_quality_invariants.v1
+
+title Data-quality invariants linking rcalib, rsigma to K and E
+
+description """
+Ensures that increases in r_calib or r_sigma can never increase K or E.
+"""
+
+field contract_id string
+field region_id string
+field node_id string
+field tick_id string
+
+field lane string
+
+field r_calib_prev float
+field r_calib_next float
+field r_sigma_prev float
+field r_sigma_next float
+
+field K_prev float
+field K_next float
+field E_prev float
+field E_next float
+field R_prev float
+field R_next float
+
+field timestamp_utc string
+field signing_hex string
+
+clause data_quality_never_boosts_K_or_E
+  forall row in ecosafety.data_quality_invariants.v1:
+    let dq_worsened =
+      (row.r_calib_next > row.r_calib_prev) or
+      (row.r_sigma_next > row.r_sigma_prev)
+    in
+      if dq_worsened
+      then
+        (row.K_next <= row.K_prev) and
+        (row.E_next <= row.E_prev)
+      else
+        true
+      end
+endclause
+
+clause data_quality_worsening_does_not_hide_R
+  forall row in ecosafety.data_quality_invariants.v1:
+    let dq_worsened =
+      (row.r_calib_next > row.r_calib_prev) or
+      (row.r_sigma_next > row.r_sigma_prev)
+    in
+      if dq_worsened
+      then
+        row.R_next >= row.R_prev
+      else
+        true
+      end
+endclause
+
+endparticle
