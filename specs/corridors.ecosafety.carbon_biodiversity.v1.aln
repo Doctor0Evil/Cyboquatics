@@ -1,0 +1,57 @@
+aln
+alnversion 1.0
+schema ecosafety.corridors.v2
+
+particle corridors.ecosafety.v2
+  field varid       string
+  field safe        f64
+  field gold        f64
+  field hard        f64
+  field weight      f64
+  field lyapchannel string
+  field mandatory   bool
+end
+
+-- Carbon net‑intensity corridor (kgCO2e/kWh).
+corridors.ecosafety.v2
+  varid       "CARBON.NETINTENSITY"
+  safe        -0.30
+  gold        -0.05
+  hard        0.05
+  weight      1.3
+  lyapchannel "carbon"
+  mandatory   true
+end
+
+-- Biodiversity connectivity (0–1).
+corridors.ecosafety.v2
+  varid       "BIODIV.CONNECTIVITY"
+  safe        0.80
+  gold        0.60
+  hard        0.40
+  weight      0.10
+  lyapchannel "biodiversity"
+  mandatory   true
+end
+
+-- Biodiversity structural complexity (e.g. fractal dim 1–3).
+corridors.ecosafety.v2
+  varid       "BIODIV.STRUCTCOMPLEX"
+  safe        1.9
+  gold        1.7
+  hard        1.4
+  weight      0.10
+  lyapchannel "biodiversity"
+  mandatory   true
+end
+
+-- Biodiversity colonization (0–1).
+corridors.ecosafety.v2
+  varid       "BIODIV.COLONIZATION"
+  safe        0.80
+  gold        0.60
+  hard        0.40
+  weight      0.10
+  lyapchannel "biodiversity"
+  mandatory   true
+end
