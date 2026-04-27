@@ -1,0 +1,65 @@
+schema CyboquaticEcosafetyNode 1.0.0 {
+  /// Bostrom-linked identity of the asset.
+  field node_did : Did = "bostrom18sd2ujv24ual9c9pshtxys6j8knh6xaead9ye7";
+
+  /// Logical asset type (e.g., "CanalTrayPlant", "CyboquaticNode").
+  field asset_type : Text;
+
+  /// Geographical reference.
+  field region     : Text;
+  field lat_deg    : Float;
+  field lon_deg    : Float;
+
+  /// Telemetry corridor parameters (gold and hard bands).
+  group corridors {
+    field q_gold_min_m3s        : Float;
+    field q_gold_max_m3s        : Float;
+    field head_gold_max_m       : Float;
+    field c_pathogen_gold_mpn   : Float;
+    field c_pfas_gold_ngl       : Float;
+    field co2e_neutral_kg       : Float;
+    field co2e_sequestration_kg : Float;
+    field t90_gold_max_days     : Float;
+    field t90_hard_max_days     : Float;
+    field rtox_gold_max         : Float;
+    field micro_residue_gold_max: Float;
+  }
+
+  /// Latest risk coordinates (normalized 0..1).
+  group risk {
+    field r_energy     : Float;
+    field r_hydraulics : Float;
+    field r_biology    : Float;
+    field r_carbon     : Float;
+    field r_materials  : Float;
+    field vt           : Float;  // Lyapunov residual
+  }
+
+  /// Rolling KER metrics over a governance window.
+  group ker {
+    field k_knowledge   : Float; // fraction of Lyapunov-safe steps
+    field e_eco_impact  : Float; // 1 - max(rx)
+    field r_risk_of_harm: Float; // max(rx)
+  }
+
+  /// Hex-stamped provenance of corridor calibration and physics.
+  group provenance {
+    field corridor_version_hex : Hex;
+    field physics_anchor_hex   : Hex;
+    field last_update_unix_ms  : Int;
+  }
+
+  /// Invariant: nocorridor_no_build — corridors must be present.
+  invariant nocorridor_no_build {
+    require corridors.q_gold_max_m3s > 0.0;
+    require corridors.t90_hard_max_days > 0.0;
+    require corridors.rtox_gold_max > 0.0;
+  }
+
+  /// Invariant: KER thresholds for production lanes.
+  invariant ker_production_window {
+    require ker.k_knowledge   >= 0.90;
+    require ker.e_eco_impact  >= 0.90;
+    require ker.r_risk_of_harm <= 0.13;
+  }
+}
