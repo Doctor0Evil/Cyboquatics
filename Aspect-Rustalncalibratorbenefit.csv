@@ -1,0 +1,6 @@
+"Aspect","Rust + .aln calibrator benefit"
+"Pre‑processing ingest quality","rcalib enforces RFC‑4180 + schema fidelity and propagates any CSV error into a visible 0–1 risk coordinate.this-research-focuses-on-empir-V74CETA4Rwim8mOXcjGVDg.md"
+"Sensor uncertainty quantification","rsigma bundles drift/noise/bias/loss into a convex, Lipschitz 0–1 score integrated into Vt.this-research-focuses-on-empir-V74CETA4Rwim8mOXcjGVDg.md+1"
+"Governance and reproducibility",".aln corridors and shards bind kernels, bands, and weights to DID‑signed, replayable artifacts.7e4f04fa-a969-4591-a0bd-e42927f79f45.md+1"
+"Industrial integration with Cyboquatics","Non‑actuating Rust workloads expose calibrator outputs (rcalib, rsigma, KER) to OEMs without any actuator control.3e82a8a0-1495-40cf-9552-9742e25c4300.md"
+"Eco‑risk traceability","K, E, R and Vt with data‑quality planes make calibration errors impossible to hide in post‑analysis.7e4f04fa-a969-4591-a0bd-e42927f79f45.md+1"
