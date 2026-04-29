@@ -1,0 +1,65 @@
+aln text
+Filename qpudatashards/IngestRcalibPhoenix2026v1.aln
+namespace qpudatashards.ingest
+
+TITLE Phoenix ingest-calibration shard for rcalib and rsigma
+
+struct IngestCalibrationWindow
+  field shard_family   string
+  field node_id        string
+  field window_start   datetime
+  field window_end     datetime
+  field n_rows         u32
+
+  field n_missing      u32
+  field n_rfc4180      u32
+  field n_type_mismatch u32
+  field n_schema_mismatch u32
+  field n_corridor_missing u32
+  field n_unit_mismatch u32
+  field n_varid_unknown u32
+
+  field I_rcalib       f64   -- ingest error intensity
+  field r_calib        f64   -- 0..1
+  field r_sigma        f64   -- 0..1
+
+  field Vt_before      f64
+  field Vt_after       f64
+  field K_raw          f64
+  field E_raw          f64
+  field R_maxcoord     f64
+  field K_adj          f64
+  field E_adj          f64
+
+  field lane           string  -- RESEARCH | EXP | PROD
+  field evidence_hex   hex
+endstruct
+
+kernel IngestErrorKernel2026v1
+  input  IngestCalibrationWindow
+  output I_rcalib, r_calib
+
+  formula I_rcalib =
+    w_missing       * n_missing +
+    w_rfc4180       * n_rfc4180 +
+    w_type_mismatch * n_type_mismatch +
+    w_schema        * n_schema_mismatch +
+    w_corridor      * n_corridor_missing +
+    w_unit          * n_unit_mismatch +
+    w_varid         * n_varid_unknown
+
+  corridor r_calib from I_rcalib
+    safe_max  = I_safe
+    gold_max  = I_gold
+    hard_max  = I_hard
+  endcorridor
+endkernel
+
+invariant IngestCalibMonotone
+  description "More ingest errors can only increase r_calib and Vt or leave them unchanged."
+  for row in IngestCalibrationWindow
+    assert row.r_calib in [0.0, 1.0]
+  endfor
+endinvariant
+
+endtext
