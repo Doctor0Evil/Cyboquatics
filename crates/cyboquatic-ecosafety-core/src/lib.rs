@@ -1,24 +1,24 @@
 //! Cyboquatic Ecosafety Core Library
 //!
 //! Provides the foundational Lyapunov-based risk framework for energy-efficient,
-//! carbon-negative, and ecologically-restorative industrial machinery.[file:18][file:21]
+//! carbon-negative, and ecologically-restorative industrial machinery.
 //!
 //! # Architecture
 //!
 //! Each operational domain (energy, hydraulics, biology, carbon, materials, etc.)
 //! is normalized to a risk coordinate r_x ∈ [0,1]. These coordinates are
 //! aggregated into a quadratic Lyapunov residual V_t = Σ w_j r_j² that
-//! governs all actuation decisions.[file:18][file:21]
+//! governs all actuation decisions.
 //!
 //! # Safety Guarantees
 //!
-//! - No action without a risk estimate (enforced at type level)[file:18][file:23]
-//! - Lyapunov stability invariant: V_{t+1} ≤ V_t + ε[file:18]
-//! - Hard corridor gates prevent instantiation of unsafe configurations[file:21]
+//! - No action without a risk estimate (enforced at type level)
+//! - Lyapunov stability invariant: V_{t+1} ≤ V_t + ε
+//! - Hard corridor gates prevent instantiation of unsafe configurations
 //!
 //! # Governance Metrics
 //!
-//! K/E/R triad provides rolling-window assessment:[file:18]
+//! K/E/R triad provides rolling-window assessment:
 //! - K (Knowledge-factor): Fraction of Lyapunov-safe steps
 //! - E (Eco-impact): Complement of maximum risk coordinate
 //! - R (Risk-of-harm): Maximum observed risk coordinate
@@ -32,32 +32,20 @@ use alloc::string::String;
 use core::fmt;
 
 // ============================================================================
-// CORE CONSTANTS AND TYPES
+// CORE CONSTANTS
 // ============================================================================
 
-/// Maximum number of risk planes supported in the Lyapunov residual.[file:18]
 pub const MAX_RISK_PLANES: usize = 8;
-
-/// Default Lyapunov tolerance epsilon for stability invariant.[file:18]
 pub const DEFAULT_LYAPUNOV_EPSILON: f64 = 0.001;
-
-/// Minimum acceptable Knowledge-factor for deployment gating.[file:18]
 pub const K_THRESHOLD_DEPLOY: f64 = 0.90;
-
-/// Minimum acceptable Eco-impact for deployment gating.[file:18]
 pub const E_THRESHOLD_DEPLOY: f64 = 0.90;
-
-/// Maximum acceptable Risk-of-harm for deployment gating.[file:18]
 pub const R_THRESHOLD_DEPLOY: f64 = 0.13;
-
-/// Rolling window size for KER metric calculation (number of steps).[file:18]
 pub const KER_WINDOW_SIZE: usize = 100;
 
 // ============================================================================
-// INNER KERNEL: FIXED MULTI-PLANE RISK COORDS & LYAPUNOV
+// INNER KERNEL: FIXED MULTI-PLANE RISK COORDS & LYAPUNOV (CORE, F32)
 // ============================================================================
 
-/// Normalized risk coordinate r_x ∈ [0, 1] in the inner Lyapunov kernel.[file:18]
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct RiskCoordCore(pub f32);
 
@@ -80,14 +68,12 @@ impl RiskCoordCore {
     }
 }
 
-/// Fixed set of multi-plane risk coordinates for Cyboquatic machinery
-/// (inner kernel view).[file:18][file:21]
 #[derive(Copy, Clone, Debug)]
 pub struct RiskVectorCore {
-    pub r_energy:    RiskCoordCore,
+    pub r_energy: RiskCoordCore,
     pub r_hydraulic: RiskCoordCore,
-    pub r_biology:   RiskCoordCore,
-    pub r_carbon:    RiskCoordCore,
+    pub r_biology: RiskCoordCore,
+    pub r_carbon: RiskCoordCore,
     pub r_materials: RiskCoordCore,
 }
 
@@ -103,7 +89,6 @@ impl RiskVectorCore {
     }
 }
 
-/// Lyapunov residual V(t) = Σ_j w_j * r_j^2 (inner kernel).[file:18]
 #[derive(Copy, Clone, Debug)]
 pub struct LyapunovResidualCore {
     pub value: f32,
@@ -111,20 +96,20 @@ pub struct LyapunovResidualCore {
 
 #[derive(Copy, Clone, Debug)]
 pub struct ResidualWeights {
-    pub w_energy:    f32,
+    pub w_energy: f32,
     pub w_hydraulic: f32,
-    pub w_biology:   f32,
-    pub w_carbon:    f32,
+    pub w_biology: f32,
+    pub w_carbon: f32,
     pub w_materials: f32,
 }
 
 impl ResidualWeights {
     pub const fn default() -> Self {
         Self {
-            w_energy:    1.0,
+            w_energy: 1.0,
             w_hydraulic: 1.2,
-            w_biology:   1.5,
-            w_carbon:    1.3,
+            w_biology: 1.5,
+            w_carbon: 1.3,
             w_materials: 1.4,
         }
     }
@@ -145,19 +130,50 @@ pub fn compute_residual_core(r: &RiskVectorCore, w: &ResidualWeights) -> Lyapuno
     LyapunovResidualCore { value: v }
 }
 
-/// Decision of the ecosafety kernel for one proposed step (inner view).[file:18]
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
-pub enum SafeStepDecision {
+pub enum SafeStepDecisionCore {
     Accept,
     Derate,
     Stop,
 }
 
-// ============================================================================
-// INNER KERNEL KER WINDOW
-// ============================================================================
+pub trait SafeControllerCore<State, Command> {
+    fn propose_step(&self, state: &State) -> (Command, RiskVectorCore);
+}
 
-/// KER triad over a rolling window (inner kernel view).[file:18]
+pub struct EcoSafetyKernelCore {
+    pub eps_vt: f32,
+    pub weights: ResidualWeights,
+}
+
+impl EcoSafetyKernelCore {
+    pub const fn new(eps_vt: f32, weights: ResidualWeights) -> Self {
+        Self { eps_vt, weights }
+    }
+
+    pub fn check_step(
+        &self,
+        v_prev: LyapunovResidualCore,
+        r_next: &RiskVectorCore,
+    ) -> (LyapunovResidualCore, SafeStepDecisionCore) {
+        let r_max = r_next.max_coord();
+        if r_max.value() >= 1.0 {
+            let v = compute_residual_core(r_next, &self.weights);
+            return (v, SafeStepDecisionCore::Stop);
+        }
+
+        let v_next = compute_residual_core(r_next, &self.weights);
+
+        if v_next.value <= v_prev.value {
+            (v_next, SafeStepDecisionCore::Accept)
+        } else if v_next.value <= v_prev.value + self.eps_vt {
+            (v_next, SafeStepDecisionCore::Derate)
+        } else {
+            (v_next, SafeStepDecisionCore::Stop)
+        }
+    }
+}
+
 #[derive(Copy, Clone, Debug)]
 pub struct KerTriadCore {
     pub k_knowledge: f32,
@@ -165,7 +181,6 @@ pub struct KerTriadCore {
     pub r_risk_of_harm: f32,
 }
 
-/// Sliding window accumulator for KER in the inner kernel.[file:18]
 pub struct KerWindowCore<const N: usize> {
     steps_total: u32,
     steps_safe: u32,
@@ -218,50 +233,10 @@ impl<const N: usize> KerWindowCore<N> {
     }
 }
 
-/// Trait implemented by all inner-kernel controllers: must propose action + RiskVectorCore.[file:18]
-pub trait SafeControllerCore<State, Command> {
-    fn propose_step(&self, state: &State) -> (Command, RiskVectorCore);
-}
-
-/// Ecosafety kernel enforcing Lyapunov and hard bands (inner layer).[file:18][file:21]
-pub struct EcoSafetyKernelCore {
-    pub eps_vt: f32,
-    pub weights: ResidualWeights,
-}
-
-impl EcoSafetyKernelCore {
-    pub const fn new(eps_vt: f32, weights: ResidualWeights) -> Self {
-        Self { eps_vt, weights }
-    }
-
-    pub fn check_step(
-        &self,
-        v_prev: LyapunovResidualCore,
-        r_next: &RiskVectorCore,
-    ) -> (LyapunovResidualCore, SafeStepDecision) {
-        let r_max = r_next.max_coord();
-        if r_max.value() >= 1.0 {
-            let v = compute_residual_core(r_next, &self.weights);
-            return (v, SafeStepDecision::Stop);
-        }
-
-        let v_next = compute_residual_core(r_next, &self.weights);
-
-        if v_next.value <= v_prev.value {
-            (v_next, SafeStepDecision::Accept)
-        } else if v_next.value <= v_prev.value + self.eps_vt {
-            (v_next, SafeStepDecision::Derate)
-        } else {
-            (v_next, SafeStepDecision::Stop)
-        }
-    }
-}
-
 // ============================================================================
-// GOVERNANCE-LAYER RISK PLANES & CORRIDORS
+// GOVERNANCE-LAYER RISK PLANES & CORRIDORS (F64)
 // ============================================================================
 
-/// Identifies each normalized risk plane in the multi-dimensional safety space.[file:18][file:21]
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 #[repr(u8)]
 pub enum RiskPlane {
@@ -307,7 +282,6 @@ impl RiskPlane {
     }
 }
 
-/// Corridor bands shared across all planes (safe/gold/hard pattern).[file:21]
 #[derive(Debug, Clone, Copy)]
 pub struct CorridorBands {
     pub var_id: &'static str,
@@ -333,7 +307,6 @@ impl CorridorBands {
     }
 }
 
-/// Status of a risk coordinate relative to corridor bands.[file:21]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum CorridorStatus {
     Safe,
@@ -342,7 +315,6 @@ pub enum CorridorStatus {
     Violation,
 }
 
-/// Errors that can occur during corridor configuration.[file:21]
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum CorridorError {
     InvalidBandOrder,
@@ -366,7 +338,6 @@ impl fmt::Display for CorridorError {
     }
 }
 
-/// Governance-layer risk coordinate r ∈ [0,1] with corridor metadata.[file:18][file:21]
 #[derive(Clone, Copy, Debug)]
 pub struct RiskCoordGov {
     pub r: f64,
@@ -392,13 +363,7 @@ impl RiskCoordGov {
     }
 }
 
-/// Piecewise-linear corridor normalization into r ∈ [0,1].[file:21]
-pub fn normalize_to_r(
-    raw: f64,
-    min: f64,
-    max: f64,
-    bands: CorridorBands,
-) -> RiskCoordGov {
+pub fn normalize_to_r(raw: f64, min: f64, max: f64, bands: CorridorBands) -> RiskCoordGov {
     if max <= min {
         return RiskCoordGov {
             r: 1.0,
@@ -426,10 +391,9 @@ pub fn normalize_to_r(
 }
 
 // ============================================================================
-// RESIDUAL STATE & KER (GOVERNANCE VIEW)
+// RESIDUAL STATE & KER (GOVERNANCE VIEW, F64)
 // ============================================================================
 
-/// Residual state: Lyapunov scalar + fixed-plane coordinates.[file:18]
 #[derive(Clone, Copy, Debug)]
 pub struct ResidualState {
     pub vt: f64,
@@ -458,7 +422,6 @@ impl ResidualState {
     }
 }
 
-/// Rolling-window KER metrics over a controller trajectory (governance view).[file:18]
 #[derive(Clone, Copy, Debug)]
 pub struct KerTriad {
     pub k_knowledge: f64,
@@ -467,13 +430,13 @@ pub struct KerTriad {
 }
 
 #[derive(Clone, Copy, Debug)]
-pub struct KerWindow {
+pub struct KerWindowGov {
     pub steps_total: u64,
     pub steps_lyap_safe: u64,
     pub max_r_seen: f64,
 }
 
-impl KerWindow {
+impl KerWindowGov {
     pub const fn new() -> Self {
         Self {
             steps_total: 0,
@@ -513,7 +476,6 @@ impl KerWindow {
     }
 }
 
-/// Recompute V_t = Σ w_j r_j² over all configured planes.[file:18][file:21]
 pub fn recompute_vt(state: &mut ResidualState) {
     let coords = state.coords();
     let mut vt = 0.0;
@@ -523,7 +485,6 @@ pub fn recompute_vt(state: &mut ResidualState) {
     state.vt = vt;
 }
 
-/// Corridor / Lyapunov decision used by controllers and routers.[file:18][file:21]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum CorridorDecision {
     Ok,
@@ -531,7 +492,6 @@ pub enum CorridorDecision {
     Stop,
 }
 
-/// Enforce non-increasing V_t (within ε) with hard-band stop.[file:18][file:21]
 pub fn safe_step(prev: &ResidualState, next: &ResidualState, eps_vt: f64) -> CorridorDecision {
     let any_hard = next.coords().iter().any(|c| c.r >= 1.0);
     if any_hard {
@@ -545,10 +505,22 @@ pub fn safe_step(prev: &ResidualState, next: &ResidualState, eps_vt: f64) -> Cor
 }
 
 // ============================================================================
-// PLANE-INDEXED RISK VECTOR & SYSTEM STATE (HIGH-LEVEL)
+// HIGH-LEVEL RISK VECTOR & SYSTEM STATE (PLANE-INDEXED, F64)
 // ============================================================================
 
-/// Complete risk assessment vector containing all normalized risk coordinates.[file:18]
+#[derive(Clone, Copy, Debug)]
+pub struct RiskCoord {
+    pub value: f64,
+}
+
+impl RiskCoord {
+    pub fn new(raw: f64) -> Self {
+        Self {
+            value: raw.clamp(0.0, 1.0),
+        }
+    }
+}
+
 #[derive(Debug, Clone)]
 pub struct RiskVector {
     coordinates: [f64; MAX_RISK_PLANES],
@@ -599,7 +571,16 @@ impl RiskVector {
     }
 }
 
-/// Complete system state snapshot for controller decision-making.[file:18]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum OperatingMode {
+    Idle,
+    Normal,
+    EcoRestorative,
+    CarbonNegative,
+    Maintenance,
+    Emergency,
+}
+
 #[derive(Debug, Clone)]
 pub struct SystemState {
     pub current_v_t: f64,
@@ -627,25 +608,10 @@ impl SystemState {
     }
 }
 
-/// Operating modes for Cyboquatic machinery.[file:18]
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum OperatingMode {
-    Idle,
-    Normal,
-    EcoRestorative,
-    CarbonNegative,
-    Maintenance,
-    Emergency,
-}
-
 // ============================================================================
 // TYPE-LEVEL "NO ACTION WITHOUT RISK" CONTROLLER TRAIT (HIGH-LEVEL)
 // ============================================================================
 
-/// Trait that all high-level Cyboquatic controllers must implement.[file:18]
-///
-/// Any controller that proposes an actuation must simultaneously provide a
-/// complete risk assessment vector.
 pub trait LyapunovController {
     type Actuation;
 
@@ -664,7 +630,6 @@ pub trait LyapunovController {
 // KER GOVERNANCE METRICS (ROLLING WINDOW, HIGH-LEVEL)
 // ============================================================================
 
-/// Rolling-window governance metrics (Knowledge/Eco-impact/Risk).[file:18]
 #[derive(Debug, Clone)]
 pub struct KERMetrics {
     safe_steps: [bool; KER_WINDOW_SIZE],
@@ -750,10 +715,9 @@ impl Default for KERMetrics {
 }
 
 // ============================================================================
-// ECOSAFETY ENFORCER
+// ECOSAFETY ENFORCER (NON-ACTUATING GATE)
 // ============================================================================
 
-/// Central enforcer of Lyapunov stability contracts (non-actuating).[file:18][file:21]
 pub struct EcosafetyEnforcer {
     pub weights: [f64; MAX_RISK_PLANES],
     pub epsilon: f64,
@@ -783,7 +747,6 @@ impl EcosafetyEnforcer {
         self.corridors[plane as usize] = corridor;
     }
 
-    /// Enforce corridors and Lyapunov invariant on a proposed actuation.[file:18][file:21]
     pub fn enforce<A>(
         &mut self,
         actuation: A,
@@ -811,6 +774,8 @@ impl EcosafetyEnforcer {
                 bands,
             };
             if !rc.corridor_ok() {
+                self.metrics
+                    .record_step(false, risk_vector.max_coordinate());
                 return Err(EnforcementError::CorridorViolation(plane));
             }
         }
@@ -852,7 +817,6 @@ impl Default for EcosafetyEnforcer {
     }
 }
 
-/// Errors that can occur during ecosafety enforcement.[file:18][file:21]
 #[derive(Debug, Clone, PartialEq)]
 pub enum EnforcementError {
     InvalidRiskVector,
@@ -884,7 +848,6 @@ impl fmt::Display for EnforcementError {
 // UTILITIES
 // ============================================================================
 
-/// Computes a weighted aggregate risk from multiple planes.[file:21]
 pub fn aggregate_risk(risk_vector: &RiskVector, weights: &[f64; MAX_RISK_PLANES]) -> f64 {
     let mut aggregate = 0.0;
     let mut w_sum = 0.0;
@@ -900,7 +863,6 @@ pub fn aggregate_risk(risk_vector: &RiskVector, weights: &[f64; MAX_RISK_PLANES]
     }
 }
 
-/// Generates a diagnostic report for the current system state.[file:18]
 pub fn generate_diagnostics(enforcer: &EcosafetyEnforcer) -> String {
     alloc::format!(
         "=== Cyboquatic Ecosafety Diagnostics ===\n\
