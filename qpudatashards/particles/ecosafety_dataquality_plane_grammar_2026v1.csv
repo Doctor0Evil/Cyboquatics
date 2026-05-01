@@ -1,15 +1,15 @@
-Field / Invariant,Type / Description,Rationale
-plane_id,Utf8Id32,"Unique identifier for this data quality plane configuration (e.g., DQ-PHX-2026-01).","Core lookup key; allows multiple plane versions and auditability."
-rsigma,RiskCoord01,"Normalized sensor uncertainty risk coordinate (0.0 to 1.0).","Captures drift, noise, bias, and loss into a single uncertainty coordinate."
-rcalib,RiskCoord01,"Normalized ingest/schema quality risk coordinate (0.0 to 1.0).","Tracks chronic CSV, schema, unit, and corridor errors that degrade data trust."
-lyap_channel,EnumLyapChannel,"Must be dataquality, binding the plane to a dedicated Lyapunov channel.","Separates data-quality dynamics from physical planes while sharing Vt."
-corridor_table_id,Utf8Id64,"Foreign key to the master corridor table (e.g., ecosafety.corridors.v2).","Ensures bands and weights come from a DID-signed corridor registry."
-rsigma_corridor_row,Utf8Id32,"VarID of the corridor row for rsigma bands within the corridor table.","Pins rsigma bands to a single, auditable row."
-rcalib_corridor_row,Utf8Id32,"VarID of the corridor row for rcalib bands within the corridor table.","Pins rcalib bands to a single, auditable row."
-lyap_weight_rsigma,Float64,"Non-negative weight for rsigma in the Lyapunov residual Vt.","Controls how strongly sensor uncertainty influences Vt and KER."
-lyap_weight_rcalib,Float64,"Non-negative weight for rcalib in the Lyapunov residual Vt.","Controls how strongly ingest quality influences Vt and KER."
-lane,EnumLane,"Governing lane (RESEARCH, PILOT, PROD) for this plane's rules.","Aligns plane usage with deployment maturity and allowable KER envelopes."
-admissible_for_blockchain,Bool,"True if this plane config passes all proofs and monotonicity checks for on-chain commitment.","Prevents unproven or unsafe planes from being written to ALN-Blockchain."
-invariant.dq1.range,Constraint,"Enforces 0.0 <= rsigma <= 1.0 and 0.0 <= rcalib <= 1.0.","Prevents invalid or out-of-range risk values in any shard or kernel."
-invariant.dq5.weights_nonneg,Constraint,"Enforces lyap_weight_rsigma >= 0.0 and lyap_weight_rcalib >= 0.0.","Guarantees data-quality coordinates can only down-credit K and E, never up-credit."
-invariant.dq7.proof_req,Constraint,"Requires an entry in ker_proofs.v1 for monotonicity whenever admissible_for_blockchain is true.","Ties on-chain admissibility to the existence of hex-stamped, machine-checkable proofs."
+Field / Invariant,Type / Description,Rationale,Notes
+plane_id,Utf8Id32,"Unique identifier for this data quality plane configuration (e.g., DQ-PHX-2026-01).","Core lookup key; allows multiple plane versions and auditability.",
+rsigma,RiskCoord01,"Normalized sensor uncertainty risk coordinate (0.0 to 1.0).","Captures drift, noise, bias, and loss into a single uncertainty coordinate.",
+rcalib,RiskCoord01,"Normalized ingest/schema quality risk coordinate (0.0 to 1.0).","Tracks chronic CSV, schema, unit, and corridor errors that degrade data trust.",
+lyap_channel,EnumLyapChannel,"Must be dataquality, binding the plane to a dedicated Lyapunov channel.","Separates data-quality dynamics from physical planes while sharing Vt.",
+corridor_table_id,Utf8Id64,"Foreign key to the master corridor table (e.g., ecosafety.corridors.v2).","Ensures bands and weights come from a DID-signed corridor registry.",
+rsigma_corridor_row,Utf8Id32,"VarID of the corridor row for rsigma bands within the corridor table.","Pins rsigma bands to a single, auditable row.",
+rcalib_corridor_row,Utf8Id32,"VarID of the corridor row for rcalib bands within the corridor table.","Pins rcalib bands to a single, auditable row.",
+lyap_weight_rsigma,Float64,"Non-negative weight for rsigma in the Lyapunov residual Vt.","Controls how strongly sensor uncertainty influences Vt and KER.",
+lyap_weight_rcalib,Float64,"Non-negative weight for rcalib in the Lyapunov residual Vt.","Controls how strongly ingest quality influences Vt and KER.",
+lane,EnumLane,"Governing lane (RESEARCH, PILOT, PROD) for this plane's rules.","Aligns plane usage with deployment maturity and allowable KER envelopes.",
+admissible_for_blockchain,Bool,"True if this plane config passes all proofs and monotonicity checks for on-chain commitment.","Prevents unproven or unsafe planes from being written to ALN-Blockchain.",
+invariant.dq1.range,Constraint,"Enforces 0.0 <= rsigma <= 1.0 and 0.0 <= rcalib <= 1.0.","Prevents invalid or out-of-range risk values in any shard or kernel.",
+invariant.dq5.weights_nonneg,Constraint,"Enforces lyap_weight_rsigma >= 0.0 and lyap_weight_rcalib >= 0.0.","Guarantees data-quality coordinates can only down-credit K and E, never up-credit.",
+invariant.dq7.proof_req,Constraint,"Requires an entry in ker_proofs.v1 for monotonicity whenever admissible_for_blockchain is true.","Ties on-chain admissibility to the existence of hex-stamped, machine-checkable proofs.",
