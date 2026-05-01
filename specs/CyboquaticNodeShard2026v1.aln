@@ -1,0 +1,86 @@
+; File: specs/CyboquaticNodeShard2026v1.aln
+
+schema CyboquaticNodeShard2026v1 {
+  field shard_id        : String;   ; UUID or hex
+  field node_id         : String;   ; stable node identifier
+  field region          : String;   ; e.g., "Phoenix-Central-Basin-01"
+  field nodetype        : String;   ; "vault" | "turbine" | "air-plenum"
+
+  field t_start         : String;   ; ISO8601
+  field t_end           : String;   ; ISO8601
+
+  ; Energy plane
+  field esurplus_j      : Float;
+  field pmargin_kw      : Float;
+  field dEdt_w          : Float;
+
+  ; Hydraulics plane
+  field q_m3s           : Float;
+  field hlr_m_per_h     : Float;
+  field rsurcharge      : Float;    ; normalized [0,1]
+
+  ; Biology plane
+  field r_pathogen      : Float;    ; [0,1]
+  field r_fouling       : Float;    ; [0,1]
+  field r_cec           : Float;    ; [0,1]
+
+  ; Carbon and materials
+  field r_carbon        : Float;    ; [0,1]
+  field r_materials     : Float;    ; [0,1]
+
+  ; Biodiversity and uncertainty
+  field r_biodiversity  : Float;    ; [0,1]
+  field r_sigma         : Float;    ; [0,1]
+
+  ; Lyapunov residual + KER
+  field vt              : Float;
+  field k_window        : Float;
+  field e_window        : Float;
+  field r_window        : Float;
+
+  field lane            : String;   ; "RESEARCH" | "EXPPROD" | "PROD"
+  field evidence_hex    : String;   ; physics / provenance anchor
+  field bostrom_did     : String;   ; signer identity
+}
+
+constraint CyboquaticNodeShard2026v1_invariants {
+  require 0.0 <= rsurcharge      <= 1.0;
+  require 0.0 <= r_pathogen      <= 1.0;
+  require 0.0 <= r_fouling       <= 1.0;
+  require 0.0 <= r_cec           <= 1.0;
+  require 0.0 <= r_carbon        <= 1.0;
+  require 0.0 <= r_materials     <= 1.0;
+  require 0.0 <= r_biodiversity  <= 1.0;
+  require 0.0 <= r_sigma         <= 1.0;
+}
+
+; File: specs/FOGRoutingDecision2026v1.aln
+
+schema FOGRoutingDecision2026v1 {
+  field event_id        : String;
+  field src_node        : String;
+  field dst_node        : String;
+  field variant_id      : String;
+
+  field decision        : String;   ; "ACCEPT" | "REJECT" | "REROUTE"
+  field pass_tailwind   : Bool;
+  field pass_biosurface : Bool;
+  field pass_hydraulic  : Bool;
+  field pass_lyapunov   : Bool;
+
+  field vt_before       : Float;
+  field vt_after        : Float;
+
+  field ts              : String;
+  field evidence_hex    : String;
+  field bostrom_did     : String;
+}
+
+constraint FOGRoutingDecision2026v1_invariants {
+  ; Admissible ACCEPT decisions must be green on all predicates
+  require decision != "ACCEPT" ||
+          (pass_tailwind && pass_biosurface && pass_hydraulic && pass_lyapunov);
+
+  ; If lyapunov passes, vt_after <= vt_before
+  require !pass_lyapunov || vt_after <= vt_before;
+}
