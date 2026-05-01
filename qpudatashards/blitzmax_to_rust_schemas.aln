@@ -1,0 +1,188 @@
+alnversion 1.0
+schema econet.bmx_to_rust.ceim_material_rsigma_ker_2026v1
+
+title BlitzMax→Rust CSV schemas for CEIM, Materials, rsigma, and KER
+region Phoenix-AZ
+basins Gila, CAP-Canal, Salt
+kernelversion KER-2026-04
+evidencehex 0xa3f5c7e9b1d20468c7e4a9d2b5f81357
+
+# 1. CEIMWindow schema (energy–mass windows)
+
+csv_type CEIMWindow
+csv_path output/pilots/central_az/ceim_windows.csv
+rust_target ceim_energy_mass_core::CEIMWindow
+medium water
+lane RESEARCH
+
+require_columns
+  node_id
+  region
+  medium
+  contaminant
+  t_start
+  t_end
+  cin_kg_m3
+  cout_kg_m3
+  q_m3_s
+  power_w
+  dt_s
+  mass_removed_kg
+  energy_j
+  eta_j_per_kg
+endrequire_columns
+
+optional_columns
+  evidence_hex
+  signing_hex
+endoptional_columns
+
+admissibility_rules
+  dt_s > 0
+  q_m3_s >= 0
+  cin_kg_m3 >= 0
+  cout_kg_m3 >= 0
+  mass_removed_kg >= 0
+  energy_j >= 0
+  eta_j_per_kg >= 0
+  no_nan_all
+endadmissibility_rules
+
+risk_mapping
+  # renergy from eta_x corridors
+  source_column eta_j_per_kg
+  target_coordinate renergy
+  corridor_table CEIMEnergyPerMassPhoenix2026v1
+endrisk_mapping
+
+risk_mapping
+  # rhydraulics from Q and dt_s via separate hydraulics crate
+  source_column q_m3_s
+  target_coordinate rhydraulics
+  corridor_table CanalHydraulicsPhoenix2026v1
+endrisk_mapping
+
+# 2. MaterialSweepRow schema (decay kinetics grid)
+
+csv_type MaterialSweepRow
+csv_path output/materials/material_sweep.csv
+rust_target econet_material_kinetics::MaterialSweepRow
+medium solid
+lane RESEARCH
+
+require_columns
+  substrate_id
+  k_day
+  micro_frac
+  t90_days
+  initial_mass_kg
+  micro_mass_kg
+endrequire_columns
+
+optional_columns
+  evidence_hex
+  signing_hex
+endoptional_columns
+
+admissibility_rules
+  k_day > 0
+  0 <= micro_frac <= 1
+  t90_days > 0
+  initial_mass_kg > 0
+  micro_mass_kg >= 0
+  no_nan_all
+endadmissibility_rules
+
+risk_mapping
+  # rt90: preference for fast decay within corridor
+  source_column t90_days
+  target_coordinate rmaterials
+  corridor_table MaterialT90Phoenix2026v1
+endrisk_mapping
+
+risk_mapping
+  # rmicro: micro-residue fraction relative to lab-safe corridors
+  source_column micro_mass_kg
+  target_coordinate rbiodiversity
+  corridor_table MicroResiduePhoenix2026v1
+endrisk_mapping
+
+# 3. SensorCalibrationSample schema (rsigma kernel inputs)
+
+csv_type SensorCalibrationSample
+csv_path output/sensors/rsigma_calibration_samples.csv
+rust_target rsigma_core::SensorCalibrationSample
+medium telemetry
+lane RESEARCH
+
+require_columns
+  sensor_id
+  sensor_type
+  time_s
+  regime
+  y_true
+  y_meas
+endrequire_columns
+
+optional_columns
+  evidence_hex
+  signing_hex
+endoptional_columns
+
+admissibility_rules
+  time_s >= 0
+  regime in ["SIM","LAB","FIELD"]
+  no_nan_all
+endadmissibility_rules
+
+risk_mapping
+  # rsigma, r_noise, r_bias are computed in Rust from error sequences
+  derived_in_rust rsigma_core::compute_risk_coords
+  target_coordinates renergy, rhydraulics, rbiology, rcarbon, rmaterials, rbiodiversity
+endrisk_mapping
+
+# 4. KERWindowInput schema (window-level indexing for CI)
+
+csv_type KERWindowInput
+csv_path output/ker/ker_window_inputs.csv
+rust_target ceim_corridor_ker::KERWindowInput
+medium water
+lane RESEARCH
+
+require_columns
+  node_id
+  window_id
+  medium
+  contaminant
+  t_start
+  t_end
+  ceim_mass_removed_kg
+  ceim_energy_j
+endrequire_columns
+
+optional_columns
+  evidence_hex
+  signing_hex
+endoptional_columns
+
+admissibility_rules
+  ceim_mass_removed_kg >= 0
+  ceim_energy_j >= 0
+  no_nan_all
+endadmissibility_rules
+
+risk_mapping
+  # Use KER crate to compute K, E, R over the window from detailed shards
+  derived_in_rust ceim_corridor_ker::compute_ker_window
+  K_threshold 0.90
+  E_threshold 0.90
+  R_threshold 0.13
+endrisk_mapping
+
+ecoimpact_scores
+  knowledge_factor 0.95
+  eco_impact 0.91
+  residual_risk 0.12
+endecoimpact_scores
+
+end_schema
