@@ -1,0 +1,58 @@
+particle Phoenix_CEIM_EnergyMass_2024v1 {
+  meta {
+    basin_id        = "LowerColorado.Phoenix"
+    node_id         = "LakePleasant_Parkway_CAP"
+    lat_deg         = 33.853
+    lon_deg         = -112.269
+    water_body      = "Lake Pleasant / CAP intake"
+    contaminant_id  = "PFBS"
+    source_report   = "CAP_2024_Water_Quality_Report"
+    evidence_hex    = "0xa1b2c3d4e5f67890"
+    window_start_utc= "2024-11-01T00:00:00Z"
+    window_end_utc  = "2024-11-30T23:59:59Z"
+    lane            = "RESEARCH_NONACTUATING"
+  }
+
+  ceim_window {
+    kernel_type     = "MassLoad_Energy"
+    m_x_kg          = 1.2e-03
+    e_j             = 4.8e+05
+    e_per_kg_j_kg   = 4.0e+08
+    q_mean_m3_s     = 5.5
+    c_in_ng_l       = 3.9
+    c_out_ng_l      = 2.0
+    dt_window_s     = 2.592e+06
+  }
+
+  corridors {
+    energy_per_kg_safe_j_kg = 1.0e+08
+    energy_per_kg_gold_j_kg = 5.0e+08
+    energy_per_kg_hard_j_kg = 1.0e+09
+    c_sup_ng_l              = 2.0
+  }
+
+  risk_coords {
+    r_energy        = 0.45
+    r_massload      = 0.30
+    r_carbon        = 0.20
+    r_biodiversity  = 0.15
+    r_sigma_sensor  = 0.10
+  }
+
+  vt_slice {
+    weights_children       = 0.30
+    weights_future_humans  = 0.25
+    weights_aquatic_life   = 0.20
+    weights_bees           = 0.05
+    weights_soil_microbiome= 0.10
+    weights_energy_comfort = 0.10
+    vt                     = 0.112
+  }
+
+  ker {
+    knowledge_factor_k = 0.95
+    eco_impact_e       = 0.92
+    risk_of_harm_r     = 0.12
+    ker_evidence_hex   = "0xa3f5c7e9b1d20468c7e4a9d2b5f81357"
+  }
+}
