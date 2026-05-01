@@ -1,0 +1,15 @@
+﻿Field / Invariant,Type / Description,Rationale
+plane_id,Utf8Id32,"Unique identifier for this data quality plane configuration (e.g., DQ-PHX-2026-01). "4
+rsigma,RiskCoord01,Normalized sensor uncertainty risk coordinate (0.0 to 1.0). 7
+rcalib,RiskCoord01,Normalized ingest/schema quality risk coordinate (0.0 to 1.0). 8
+lyap_channel,EnumLyapChannel,"Must be 'dataquality', binding the plane to a dedicated Lyapunov channel. "10
+corridor_table_id,Utf8Id64,"Foreign key to the master corridor table (e.g., ecosafety.corridors.v2). "9
+rsigma_corridor_row,Utf8Id32,VarID of the corridor row for rsigma bands within the corridor table. 3
+rcalib_corridor_row,Utf8Id32,VarID of the corridor row for rcalib bands within the corridor table. 5
+lyap_weight_rsigma,Float64,"Non-negative weight for rsigma in the Lyapunov residual, Vt. "6
+lyap_weight_rcalib,Float64,"Non-negative weight for rcalib in the Lyapunov residual, Vt. "3
+lane,EnumLane,"Governing lane (RESEARCH, PILOT, PROD) for this plane's rules. "8
+admissible_for_blockchain,Bool,True if this plane config passes all proofs and monotonicity checks for on-chain commitment. 7
+invariant.dq1.range,Constraint,Enforces "0.0 <= rsigma, rcalib <= 1.0". Prevents invalid risk values. 10
+invariant.dq5.weights_nonneg,Constraint,Enforces "lyap_weight_rsigma, lyap_weight_rcalib >= 0.0". Guarantees data quality can only down-credit K/E/R. 9
+invariant.dq7.proof_req,Constraint,Requires existence of a ker_proofs.v1 entry for monotonicity if admissible_for_blockchain is true. Ties on-chain trust to formal proof. 3
