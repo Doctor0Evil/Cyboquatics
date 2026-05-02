@@ -1,23 +1,35 @@
 alnversion 1.0
-schema ecosafety.corridors.v2
+schema corridors.ecosafety.v2
 
-particle ecosafety.corridors.v2
-  field var_id string
-  field safe f64
-  field gold f64
-  field hard f64
-  field weight f64
-  field lyap_channel string
-  field mandatory bool
+particle corridors.ecosafety.v2
+  field varid       string
+  field safe        f64
+  field gold        f64
+  field hard        f64
+  field weight      f64
+  field lyapchannel string
+  field mandatory   bool
 end
 
--- Example canonical rows (to be populated per deployment)
--- var_id, safe, gold, hard, weight, lyap_channel, mandatory
--- ENERGY.INTENSITY, 0.10, 0.30, 1.00, 0.20, energy, true
--- HYD.SURCHARGE,    0.05, 0.20, 1.00, 0.25, hydraulics, true
--- BIO.TOX,          0.05, 0.20, 1.00, 0.25, biology, true
--- CARBON.NET,       0.05, 0.30, 1.00, 0.20, carbon, true
--- MAT.T90,          0.10, 0.40, 1.00, 0.15, materials, true
--- MAT.TOX,          0.05, 0.20, 1.00, 0.25, materials, true
--- BIODIV.RISK,      0.05, 0.20, 1.00, 0.20, biodiversity, true
--- DATA.SIGMA,       0.05, 0.20, 1.00, 0.10, sigma, true
+-- Conceptual / Phoenix-pilot-derived corridor rows.
+-- varid,               safe,    gold,    hard,    weight, lyapchannel,   mandatory
+CARBON.NET_INTENSITY,  -0.30,   -0.05,   0.05,    0.20,   carbon,        true
+ENERGY.SPEC_PFAS,       0.10,    0.50,   2.00,    0.15,   energy,        true
+MAT.T90_DAYS,         180.00,  240.00, 365.00,    0.15,   materials,     true
+MAT.MICRO_RESIDUE,      0.00,    0.10,   0.30,    0.15,   materials,     true
+MAT.LEACH_TOX,          0.00,    0.05,   0.10,    0.15,   materials,     true
+BIODIV.CONNECTIVITY,    0.80,    0.60,   0.40,    0.10,   biodiversity,  true
+BIODIV.STRUCTCOMP,      1.80,    1.40,   1.20,    0.05,   biodiversity,  true
+BIODIV.COLONIZATION,    0.75,    0.50,   0.30,    0.05,   biodiversity,  true
+DATA.SIGMA,             0.05,    0.20,   1.00,    0.10,   sigma,         true
+
+-- Canonical rows (template; to be specialized per deployment).
+-- varid,             safe,   gold,   hard,   weight, lyapchannel, mandatory
+-- ENERGY.INTENSITY,  0.10,   0.30,   1.00,   0.20,   energy,      true
+-- HYD.SURCHARGE,     0.05,   0.20,   1.00,   0.25,   hydraulics,  true
+-- BIO.TOX,           0.05,   0.20,   1.00,   0.25,   biology,     true
+-- CARBON.NET,        0.05,   0.30,   1.00,   0.20,   carbon,      true
+-- MAT.T90,           0.10,   0.40,   1.00,   0.15,   materials,   true
+-- MAT.TOX,           0.05,   0.20,   1.00,   0.25,   materials,   true
+-- BIODIV.RISK,       0.05,   0.20,   1.00,   0.20,   biodiversity,true
+-- DATA.SIGMA.GLOBAL, 0.05,   0.20,   1.00,   0.10,   sigma,       true
